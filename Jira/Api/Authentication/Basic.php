@@ -37,4 +37,15 @@ class Jira_Api_Authentication_Basic implements Jira_Api_Authentication_Authentic
     {
         return base64_encode($this->user_id . ':' . $this->password);
     }
+
+    public function getId()
+    {
+        return $this->user_id;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
 }

@@ -25,4 +25,8 @@
 interface Jira_Api_Authentication_AuthenticationInterface
 {
     public function getCredential();
+
+    public function getId();
+
+    public function getPassword();
 }

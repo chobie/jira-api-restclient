@@ -151,18 +151,18 @@ class Jira_Api
     /**
      * create an issue.
      *
-     * @param $projectId
+     * @param $projectKey
      * @param $summary
      * @param $description
      * @param $issueType
      * @param array $options
      * @return mixed
      */
-    public function createIssue($projectId, $summary, $description, $issueType, $options = array())
+    public function createIssue($projectKey, $summary, $description, $issueType, $options = array())
     {
         $default = array(
             "project" => array(
-                "id"  => $projectId,
+                "key"  => $projectKey,
             ),
             "summary"     => $summary,
             "description" => $description,
