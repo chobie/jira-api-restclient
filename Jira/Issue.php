@@ -111,8 +111,8 @@ class Jira_Issue
      */
     public function getSummary()
     {
-        if (isset($this->fields['summary'])) {
-            return $this->fields['summary'];
+        if (isset($this->fields['Summary'])) {
+            return $this->fields['Summary'];
         }
     }
 
@@ -183,8 +183,8 @@ class Jira_Issue
      */
     public function getDescription()
     {
-        if (isset($this->fields['description'])) {
-            return $this->fields['description'];
+        if (isset($this->fields['Description'])) {
+            return $this->fields['Description'];
         }
     }
 
@@ -195,8 +195,8 @@ class Jira_Issue
      */
     public function getStatus()
     {
-        if (isset($this->fields['status'])) {
-            return $this->fields['status'];
+        if (isset($this->fields['Status'])) {
+            return $this->fields['Status'];
         }
     }
 
@@ -219,8 +219,8 @@ class Jira_Issue
      */
     public function getProject()
     {
-        if (isset($this->fields['project'])) {
-            return $this->fields['project'];
+        if (isset($this->fields['Project'])) {
+            return $this->fields['Project'];
         }
     }
 
@@ -231,8 +231,8 @@ class Jira_Issue
      */
     public function getFixVersions()
     {
-        if (isset($this->fields['fixVersions'])) {
-            return $this->fields['fixVersions'];
+        if (isset($this->fields['Fix Version/s'])) {
+            return $this->fields['Fix Version/s'];
         }
     }
 
@@ -279,7 +279,7 @@ class Jira_Issue
     public function get($key)
     {
         if (isset($this->fields[$key])) {
-            return $this->fields;
+            return $this->fields[$key];
         }
     }
 }

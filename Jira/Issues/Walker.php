@@ -41,7 +41,7 @@ class Jira_Issues_Walker implements Iterator
 
     protected $start_at = 0;
 
-    protected $per_page = 10;
+    protected $per_page = 50;
 
     protected $executed = false;
 
@@ -105,7 +105,11 @@ class Jira_Issues_Walker implements Iterator
      */
     public function key()
     {
-        return $this->offset + (($this->start_at-1) * $this->per_page);
+        if ($this->start_at > 0) {
+            return $this->offset + (($this->start_at-1) * $this->per_page);
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -121,11 +125,9 @@ class Jira_Issues_Walker implements Iterator
             throw new Exception('you have to call Jira_Walker::push($jql, $navigable) at first');
         }
 
-
         if (!$this->executed) {
             try {
-                $result = $this->jira->search($this->getQuery(), $this->start_at, $this->per_page, $this->navigable);
-
+                $result = $this->jira->search($this->getQuery(), $this->key(), $this->per_page, $this->navigable);
                 $this->setResult($result);
                 $this->executed = true;
 
@@ -135,10 +137,9 @@ class Jira_Issues_Walker implements Iterator
 
                 return false;
             }
-        } else if ($this->offset >= $this->max && $this->offset < $this->total){
+        } else if ($this->offset >= $this->max && $this->key() < $this->total){
             try {
-                $result = $this->jira->search($this->getQuery(), $this->start_at, $this->per_page, $this->navigable);
-
+                $result = $this->jira->search($this->getQuery(), $this->key(), $this->per_page, $this->navigable);
                 $this->setResult($result);
 
                 return true;
@@ -147,10 +148,10 @@ class Jira_Issues_Walker implements Iterator
 
                 return false;
             }
-        } else if ($this->start_at * $this->per_page + $this->offset >= $this->total) {
-            return false;
-        } else {
+        } else if (($this->start_at-1) * $this->per_page + $this->offset < $this->total) {
             return true;
+        } else {
+            return false;
         }
     }
 
