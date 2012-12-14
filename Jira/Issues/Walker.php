@@ -127,9 +127,15 @@ class Jira_Issues_Walker implements Iterator
 
         if (!$this->executed) {
             try {
+
                 $result = $this->jira->search($this->getQuery(), $this->key(), $this->per_page, $this->navigable);
+
                 $this->setResult($result);
                 $this->executed = true;
+
+                if ($result->getTotal() == 0) {
+                    return false;
+                }
 
                 return true;
             } catch (Exception $e) {

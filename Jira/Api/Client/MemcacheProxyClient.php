@@ -24,13 +24,19 @@
  */
 //namespace Jira\Api;
 
-class Jira_Api_Client_CurlClient implements Jira_Api_Client_ClientInterface
+class Jira_Api_Client_MemcacheProxyClient implements Jira_Api_Client_ClientInterface
 {
+    protected $api;
+    protected $mc;
+
     /**
      * create a traditional php client
      */
-    public function __construct()
+    public function __construct(Jira_Api_Client_ClientInterface $api, $server, $port)
     {
+        $this->api = $api;
+        $this->mc = new Memcached();
+        $this->mc->addServer($server, $port);
     }
 
     /**
@@ -46,37 +52,36 @@ class Jira_Api_Client_CurlClient implements Jira_Api_Client_ClientInterface
      */
     public function sendRequest($method, $url, $data = array(), $endpoint, Jira_Api_Authentication_AuthenticationInterface $credential)
     {
-        if (!($credential instanceof Jira_Api_Authentication_Basic)) {
-            throw new Exception(sprintf("PHPClient does not support %s authentication.", get_class($credential)));
+        if ($method == "GET") {
+            if ($result = $this->getFromCache($url, $data, $endpoint)) {
+                //$this->setCache($url, $data, $endpoint, $result);
+                return $result;
+            }
         }
+        $result = $this->api->sendRequest($method, $url, $data, $endpoint, $credential);
 
-        $curl = curl_init();
-
-        if ($method=="GET") {
-            $url .= "?" . http_build_query($data);
+        if ($method == "GET") {
+            $this->setCache($url, $data, $endpoint, $result);
         }
+        return $result;
+    }
 
-        curl_setopt($curl, CURLOPT_URL, $endpoint . $url);
-        curl_setopt($curl, CURLOPT_HEADER, 0);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_USERPWD, sprintf("%s:%s", $credential->getId(), $credential->getPassword()));
-        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: application/json; charset=utf-8"));
+    protected function getFromCache($url, $data, $endpoint)
+    {
+        $key = $endpoint . $url;
+        $key .= http_build_query($data);
+        $key = sha1($key);
 
-        if ($method == "POST") {
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-        }
+        return $this->mc->get("jira:cache:" . $key);
+    }
 
-        $data = curl_exec($curl);
+    protected function setCache($url, $data, $endpoint, $result)
+    {
+        $key = $endpoint . $url;
+        $key .= http_build_query($data);
+        $key = sha1($key);
 
-        if (is_null($data)) {
-            throw new Exception("JIRA Rest server returns unexpected result.");
-        }
-
-        return $data;
+        return $this->mc->set("jira:cache:" . $key, $result, 86400);
     }
 
 }
