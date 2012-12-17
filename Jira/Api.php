@@ -131,6 +131,11 @@ class Jira_Api
         return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s", $issueKey));
     }
 
+    public function editIssue($issueKey, $params)
+    {
+        return $this->api(self::REQUEST_PUT, sprintf("/rest/api/2/issue/%s", $issueKey), $params);
+    }
+
     /**
      * get available issue types
      *
