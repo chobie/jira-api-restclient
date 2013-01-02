@@ -48,7 +48,10 @@ class Jira_Api
 
     /** @var array $fields */
     protected $fields;
-
+    
+    /** @var array $priorities*/
+    protected $priorities;
+    
     /**
      * create a jira api client.
      *
@@ -164,6 +167,24 @@ class Jira_Api
         return $result;
     }
 
+    /**
+     * get available priorities
+     *
+     * @return mixed
+     */
+    public function getPriorties()
+    {
+    	if (!count($this->priorities)) {
+    		$priorities  = array();
+    		$result = $this->api(self::REQUEST_GET, "/rest/api/2/priority", array());
+    		/* set hash key as custom field id */
+    		foreach($result->getResult() as $k => $v) {
+    			$priorities[$v['id']] = $v;
+    		}
+    		$this->priorities = $priorities;
+    	}
+    	return $this->priorities;
+    }
 
     /**
      * create an issue.
