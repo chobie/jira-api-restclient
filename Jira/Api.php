@@ -164,6 +164,16 @@ class Jira_Api
         return $result;
     }
 
+    /**
+     * get available priorities
+     *
+     * @return mixed
+     */
+    public function getPriorties()
+    {
+    	$result = $this->api(self::REQUEST_GET, "/rest/api/2/priority", array(), true);
+    	return $result;
+    }
 
     /**
      * create an issue.
