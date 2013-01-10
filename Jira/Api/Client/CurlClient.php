@@ -44,7 +44,7 @@ class Jira_Api_Client_CurlClient implements Jira_Api_Client_ClientInterface
      * @return array|string
      * @throws Exception
      */
-    public function sendRequest($method, $url, $data = array(), $endpoint, Jira_Api_Authentication_AuthenticationInterface $credential)
+    public function sendRequest($method, $url, $data = array(), $endpoint, Jira_Api_Authentication_AuthenticationInterface $credential, $isFile = FALSE, $debug = FALSE)
     {
         if (!($credential instanceof Jira_Api_Authentication_Basic)) {
             throw new Exception(sprintf("PHPClient does not support %s authentication.", get_class($credential)));
@@ -63,11 +63,19 @@ class Jira_Api_Client_CurlClient implements Jira_Api_Client_ClientInterface
         curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: application/json; charset=utf-8"));
-
+        curl_setopt($curl, CURLOPT_VERBOSE, $debug);
+        if ($isFile) {
+        	curl_setopt($curl, CURLOPT_HTTPHEADER, array ('X-Atlassian-Token: nocheck'));
+        } else {
+        	curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: application/json;charset=UTF-8"));
+        }
         if ($method == "POST") {
             curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+            if ($isFile) {
+            	curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+            } else {
+            	curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+            }
         } else if ($method == "PUT") {
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
@@ -82,4 +90,54 @@ class Jira_Api_Client_CurlClient implements Jira_Api_Client_ClientInterface
         return $data;
     }
 
+    
+    /**
+     * send request to the api server
+     *
+     * @param $method
+     * @param $url
+     * @param array $data
+     * @param $endpoint
+     * @param $credential
+     * @return array|string
+     * @throws Exception
+     */
+    public function sendFileRequest($method, $url, $data = array(), $endpoint, Jira_Api_Authentication_AuthenticationInterface $credential, $debug = FALSE)
+    {
+    	if (!($credential instanceof Jira_Api_Authentication_Basic)) {
+    		throw new Exception(sprintf("PHPClient does not support %s authentication.", get_class($credential)));
+    	}
+    
+    	$curl = curl_init();
+    
+    	if ($method=="GET") {
+    		$url .= "?" . http_build_query($data);
+    	}
+    
+    	curl_setopt($curl, CURLOPT_URL, $endpoint . $url);
+    	curl_setopt($curl, CURLOPT_HEADER, 0);
+    	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    	curl_setopt($curl, CURLOPT_USERPWD, sprintf("%s:%s", $credential->getId(), $credential->getPassword()));
+    	curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+    	curl_setopt($curl, CURLOPT_HTTPHEADER, array ('X-Atlassian-Token: nocheck'));
+    	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+    	curl_setopt($curl, CURLOPT_VERBOSE, $debug);
+
+    	if ($method == "POST") {
+    		curl_setopt($curl, CURLOPT_POST, 1);
+    		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+    	} else if ($method == "PUT") {
+    		curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+    		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+    	}
+    	$data = curl_exec($curl);
+    
+    	if (is_null($data)) {
+    		throw new Exception("JIRA Rest server returns unexpected result.");
+    	}
+    
+    	return $data;
+    }
+    
 }
