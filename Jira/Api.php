@@ -48,6 +48,12 @@ class Jira_Api
 
     /** @var array $fields */
     protected $fields;
+    
+    /** @var array $priority */
+    protected $priorities;
+    
+    /** @var array $status */
+    protected $statuses;
 
     /**
      * create a jira api client.
@@ -181,6 +187,25 @@ class Jira_Api
     		$this->priorities = $priorities;
     	}
     	return $this->priorities;
+    }
+
+    /**
+     * get available statuses
+     *
+     * @return mixed
+     */
+    public function getStatuses()
+    {
+    	if (!count($this->statuses)) {
+    		$statuses  = array();
+    		$result = $this->api(self::REQUEST_GET, "/rest/api/2/status", array());
+    		/* set hash key as custom field id */
+    		foreach($result->getResult() as $k => $v) {
+    			$statuses[$v['id']] = $v;
+    		}
+    		$this->statuses= $statuses;
+    	}
+    	return $this->statuses;
     }
     
 
