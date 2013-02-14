@@ -73,7 +73,7 @@ class Jira_Api_Client_PHPClient implements Jira_Api_Client_ClientInterface
                 "header"  => join("\r\n", $header),
             ));
 
-        if ($method=="POST") {
+        if ($method=="POST" || $method == "PUT") {
             $__data     = json_encode($data);
             $header[]   = sprintf('Content-Length: %d', strlen($__data));
 
