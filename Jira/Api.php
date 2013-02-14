@@ -137,6 +137,48 @@ class Jira_Api
     }
 
     /**
+     * add a comment to a ticket
+     *
+     * issue key should be YOURPROJ-221
+     *
+     * @param $issueKey
+     * @param $params
+     * @return mixed
+     */
+    public function addComment($issueKey, $params)
+    {
+        return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/comment", $issueKey), $params);
+    }
+
+    /**
+     * get available transitions for a ticket
+     *
+     * issue key should be YOURPROJ-22
+     *
+     * @param $issueKey
+     * @param $params
+     * @return mixed
+     */
+    public function getTransitions($issueKey, $params)
+    {
+        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/transitions", $issueKey), $params);
+    }
+
+    /**
+     * transation a ticket
+     *
+     * issue key should be YOURPROJ-22
+     *
+     * @param $issueKey
+     * @param $params
+     * @return mixed
+     */
+    public function transition($issueKey, $params)
+    {
+        return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/transitions", $issueKey), $params);
+    }
+
+    /**
      * get available issue types
      *
      * @return mixed
