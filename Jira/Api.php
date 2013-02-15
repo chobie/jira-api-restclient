@@ -48,6 +48,12 @@ class Jira_Api
 
     /** @var array $fields */
     protected $fields;
+    
+    /** @var array $priority */
+    protected $priorities;
+    
+    /** @var array $status */
+    protected $statuses;
 
     /**
      * create a jira api client.
@@ -206,6 +212,44 @@ class Jira_Api
         return $result;
     }
 
+    /**
+     * get available priorities
+     *
+     * @return mixed
+     */
+    public function getPriorties()
+    {
+    	if (!count($this->priorities)) {
+    		$priorities  = array();
+    		$result = $this->api(self::REQUEST_GET, "/rest/api/2/priority", array());
+    	    /* set hash key as custom field id */
+    		foreach($result->getResult() as $k => $v) {
+    			$priorities[$v['id']] = $v;
+    		}
+    		$this->priorities = $priorities;
+    	}
+    	return $this->priorities;
+    }
+
+    /**
+     * get available statuses
+     *
+     * @return mixed
+     */
+    public function getStatuses()
+    {
+    	if (!count($this->statuses)) {
+    		$statuses  = array();
+    		$result = $this->api(self::REQUEST_GET, "/rest/api/2/status", array());
+    		/* set hash key as custom field id */
+    		foreach($result->getResult() as $k => $v) {
+    			$statuses[$v['id']] = $v;
+    		}
+    		$this->statuses= $statuses;
+    	}
+    	return $this->statuses;
+    }
+    
 
     /**
      * create an issue.
@@ -282,6 +326,24 @@ class Jira_Api
         return $this->api(self::REQUEST_POST, "/rest/api/2/version", $options);
     }
 
+
+    /**
+     * create JIRA Attachment
+     *
+     * @param $issue
+     * @param $filename
+     * @param array $options
+     * @return mixed
+     */
+    public function createAttachment($issue, $filename,$options = array())
+    {
+    	$options = array_merge(array(
+    			"file"            => '@' . $filename,
+    	), $options
+    	);
+    	return $this->api(self::REQUEST_POST, "/rest/api/2/issue/" . $issue . "/attachments", $options, false ,TRUE);
+    }
+    
     /**
      * send request to specified host
      *
@@ -291,16 +353,17 @@ class Jira_Api
      * @param bool $return_as_json
      * @return mixed
      */
-    public function api($method = self::REQUEST_GET, $url, $data = array(), $return_as_json = false)
+    public function api($method = self::REQUEST_GET, $url, $data = array(), $return_as_json = false, $isfile = false, $debug = FALSE)
     {
-        $result = $this->client->sendRequest(
-            $method,
-            $url,
-            $data,
-            $this->getEndpoint(),
-            $this->authentication
-        );
-
+        	$result = $this->client->sendRequest(
+        			$method,
+        			$url,
+        			$data,
+        			$this->getEndpoint(),
+        			$this->authentication,
+        			$isfile,
+        			$debug
+        	);
         if (strlen($result)) {
             $json = json_decode($result, true);
             if ($this->options & self::AUTOMAP_FIELDS) {
