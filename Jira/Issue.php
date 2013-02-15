@@ -153,6 +153,19 @@ class Jira_Issue
     }
 
     /**
+     * get the current assignee
+     *
+     * @return mixed
+     */
+
+    public function getAssignee()
+    {
+        if (isset($this->fields['assignee'])) {
+            return $this->fields['assignee'];
+        }
+    }    
+
+    /**
      * get issue updated time
      *
      * @return mixed
@@ -207,8 +220,8 @@ class Jira_Issue
      */
     public function getLabels()
     {
-        if (isset($this->fields['labels'])) {
-            return $this->fields['labels'];
+        if (isset($this->fields['Labels'])) {
+            return $this->fields['Labels'];
         }
     }
 
