@@ -58,14 +58,15 @@ class Jira_Api_Client_PHPClient implements Jira_Api_Client_ClientInterface
      */
     public function sendRequest($method, $url, $data = array(), $endpoint, Jira_Api_Authentication_AuthenticationInterface $credential)
     {
-        if (!($credential instanceof Jira_Api_Authentication_Basic)) {
+        if (!($credential instanceof Jira_Api_Authentication_Basic) && !($credential instanceof Jira_Api_Authentication_Anonymous)) {
             throw new Exception(sprintf("PHPClient does not support %s authentication.", get_class($credential)));
         }
 
-        $header = array(
-            "Authorization: Basic " . $credential->getCredential(),
-            "Content-Type: application/json",
-        );
+        $header = array();
+        if (!($credential instanceof Jira_Api_Authentication_Anonymous)) {
+          $header[] = "Authorization: Basic " . $credential->getCredential();
+        }
+        $header[] = "Content-Type: application/json";
 
         $context = array(
             "http" => array(
