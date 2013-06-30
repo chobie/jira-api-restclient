@@ -1,0 +1,28 @@
+{
+    "name": "chobie/jira-api-restclient",
+    "description": "JIRA REST API.",
+    "keywords": ["jira","rest","api"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Shuhei Tanuma",
+            "homepage": "http://blog.stfalcon.com",
+            "email": "chobieeee@php.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.2.4"
+    },
+    "autoload": {
+        "psr-0" : {
+            "Jira_" : "./"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
