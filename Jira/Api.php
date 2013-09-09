@@ -142,6 +142,42 @@ class Jira_Api
         return $this->api(self::REQUEST_PUT, sprintf("/rest/api/2/issue/%s", $issueKey), $params);
     }
 
+	
+	
+
+    public function getAttachment($attachmentId)
+    {
+        $result = $this->api(self::REQUEST_GET, "/rest/api/2/attachment/$attachmentId", array(), true);
+
+        return $result;
+    }
+	
+	public function getProjects()
+    {
+        return $this->api(self::REQUEST_GET, "/rest/api/2/project");
+    }
+	
+    public function getProject($projectKey)
+    {
+        $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}", array(), true);
+
+        return $result;
+    }
+	
+
+    public function getRoles($projectKey)
+    {
+        $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/roles", array(), true);
+        return $result;
+    }
+
+    public function getRoleDetails($projectKey, $roleId)
+    {
+        $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/role/{$roleId}", array(), true);
+        return $result;
+    }
+	
+	
     /**
      * add a comment to a ticket
      *
@@ -364,6 +400,7 @@ class Jira_Api
         			$isfile,
         			$debug
         	);
+
         if (strlen($result)) {
             $json = json_decode($result, true);
             if ($this->options & self::AUTOMAP_FIELDS) {
@@ -387,6 +424,22 @@ class Jira_Api
         } else {
             return false;
         }
+    }
+
+    public function downloadAttachment ($url)
+    {
+        $result = $this->client->sendRequest
+        (
+            self::REQUEST_GET,
+            $url,
+            array(),
+            null,
+            $this->authentication,
+            true,
+            false
+        );
+
+        return $result;
     }
 
     protected function automapFields($issue)
