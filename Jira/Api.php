@@ -152,7 +152,7 @@ class Jira_Api
         return $result;
     }
 	
-	public function getProjects()
+    public function getProjects()
     {
         return $this->api(self::REQUEST_GET, "/rest/api/2/project");
     }
@@ -163,7 +163,6 @@ class Jira_Api
 
         return $result;
     }
-	
 
     public function getRoles($projectKey)
     {
