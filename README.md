@@ -19,7 +19,7 @@ $api = new Jira_Api(
 $walker = new Jira_Issues_Walker($api);
 $walker->push("project = YOURPROJECT AND (status != closed and status != resolved) ORDER BY priority DESC");
 foreach ($walker as $issue) {
-    var_dump($result);
+    var_dump($issue);
     // send custom notification here.
 }
 ````
