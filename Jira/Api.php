@@ -130,11 +130,12 @@ class Jira_Api
      * issue key should be YOURPROJ-221
      *
      * @param $issueKey
+     * @param $expand
      * @return mixed
      */
-    public function getIssue($issueKey)
+    public function getIssue($issueKey, $expand = '')
     {
-        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s", $issueKey));
+        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s", $issueKey), array('expand' => $expand));
     }
 
     public function editIssue($issueKey, $params)

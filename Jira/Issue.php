@@ -41,6 +41,9 @@ class Jira_Issue
     /* @var array $fields */
     protected $fields;
 
+    /* @var array $expandedInformation */
+    protected $expandedInformation;
+
     /**
      * @param array $issue
      */
@@ -48,20 +51,26 @@ class Jira_Issue
     {
         if (isset($issue['expand'])) {
             $this->expand = explode(",", $issue['expand']);
+            unset($issue['expand']);
         }
         if (isset($issue['id'])) {
             $this->id = $issue['id'];
+            unset($issue['id']);
         }
 
         if (isset($issue['self'])) {
             $this->self = $issue['self'];
+            unset($issue['self']);
         }
         if (isset($issue['key'])) {
             $this->key = $issue['key'];
+            unset($issue['key']);
         }
         if (isset($issue['fields'])) {
             $this->fields = $issue['fields'];
+            unset($issue['fields']);
         }
+        $this->expandedInformation = $issue;
     }
 
     /**
@@ -283,6 +292,16 @@ class Jira_Issue
         if (isset($this->fields['watches'])) {
             return $this->fields['watches'];
         }
+    }
+
+    /**
+     * get information represented in call output due to expand=... suffix
+     * @see https://docs.atlassian.com/jira/REST/latest/
+     * @return array
+     */
+    public function getExpandedInformation()
+    {
+        return $this->expandedInformation;
     }
 
     /**
