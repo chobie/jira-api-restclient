@@ -83,6 +83,13 @@ class Jira_Api_Client_CurlClient implements Jira_Api_Client_ClientInterface
 
         $data = curl_exec($curl);
 
+        $errorNumber = curl_errno($curl);
+        if ($errorNumber > 0) {
+            throw new Jira_Api_Exception(
+                sprintf('Jira request failed: code = %s, "%s"', $errorNumber, curl_error($curl))
+            );
+        }
+
         if (is_null($data)) {
             throw new Exception("JIRA Rest server returns unexpected result.");
         }
