@@ -90,7 +90,7 @@ class Jira_Api_Client_CurlClient implements Jira_Api_Client_ClientInterface
             );
         }
 
-        if (is_null($data)) {
+        if (is_null($data) || $data === '') {
             throw new Exception("JIRA Rest server returns unexpected result.");
         }
 
