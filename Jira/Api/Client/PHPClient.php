@@ -56,7 +56,7 @@ class Jira_Api_Client_PHPClient implements Jira_Api_Client_ClientInterface
      * @return array|string
      * @throws Exception
      */
-    public function sendRequest($method, $url, $data = array(), $endpoint, Jira_Api_Authentication_AuthenticationInterface $credential)
+    public function sendRequest($method, $url, $data = array(), $endpoint, Jira_Api_Authentication_AuthenticationInterface $credential, $isFile = FALSE, $debug = FALSE)
     {
         if (!($credential instanceof Jira_Api_Authentication_Basic) && !($credential instanceof Jira_Api_Authentication_Anonymous)) {
             throw new Exception(sprintf("PHPClient does not support %s authentication.", get_class($credential)));
@@ -66,7 +66,6 @@ class Jira_Api_Client_PHPClient implements Jira_Api_Client_ClientInterface
         if (!($credential instanceof Jira_Api_Authentication_Anonymous)) {
           $header[] = "Authorization: Basic " . $credential->getCredential();
         }
-        $header[] = "Content-Type: application/json";
 
         $context = array(
             "http" => array(
@@ -74,11 +73,30 @@ class Jira_Api_Client_PHPClient implements Jira_Api_Client_ClientInterface
                 "header"  => join("\r\n", $header),
             ));
 
+
+        if (!$isFile) {
+            $header[] = "Content-Type: application/json;charset=UTF-8";
+        }
+
         if ($method=="POST" || $method == "PUT") {
-            $__data     = json_encode($data);
+            if ($isFile) {
+                $filename = preg_replace("/^@/", "", $data['file']);
+                $boundary = '--------------------------' . microtime(true);
+                $header[] = "X-Atlassian-Token: nocheck";
+                $header[] = 'Content-Type: multipart/form-data; boundary=' . $boundary;
+
+                $__data =  "--". $boundary . "\r\n".
+                    "Content-Disposition: form-data; name=\"file\"; filename=\"". $filename ."\"\r\n".
+                    "Content-Type: application/octet-stream\r\n\r\n".
+                    file_get_contents($filename) ."\r\n";
+                $__data  .= "--".$boundary."--\r\n";
+            } else {
+                $__data     = json_encode($data);
+            }
             $header[]   = sprintf('Content-Length: %d', strlen($__data));
 
             $context['http']['header']  = join("\r\n", $header);
+            var_dump($header);
             $context['http']['content'] = $__data;
         } else {
             $url .= "?" . http_build_query($data);
