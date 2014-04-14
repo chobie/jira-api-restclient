@@ -90,7 +90,12 @@ class Jira_Api_Client_CurlClient implements Jira_Api_Client_ClientInterface
             );
         }
 
-        if (is_null($data) || $data === '') {
+        // if empty result and status != "204 No Content"
+        if ($data === '' && curl_getinfo($curl, CURLINFO_HTTP_CODE) != 204) {
+            throw new Exception("JIRA Rest server returns unexpected result.");
+        }
+
+        if (is_null($data)) {
             throw new Exception("JIRA Rest server returns unexpected result.");
         }
 
