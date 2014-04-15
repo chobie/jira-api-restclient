@@ -1,5 +1,8 @@
 # Jira Api Rest Client
 
+[![Build Status](https://secure.travis-ci.org/chobie/jira-api-restclient.png)](http://travis-ci.org/chobie/jira-api-restclient)
+
+
 you know JIRA5 supports REST API. this is very useful to make some custom notifications and automated jobs.
 (JIRA also supports email notification, but it's too much to custom templates, notification timing. unfortunately it requires Administration permission.)
 this API library will help your problems regarding JIRA. hope you enjoy it.
