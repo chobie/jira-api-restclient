@@ -47,7 +47,7 @@ class Jira_Api_Client_CurlClient implements Jira_Api_Client_ClientInterface
     public function sendRequest($method, $url, $data = array(), $endpoint, Jira_Api_Authentication_AuthenticationInterface $credential, $isFile = FALSE, $debug = FALSE)
     {
         if (!($credential instanceof Jira_Api_Authentication_Basic)) {
-            throw new Exception(sprintf("PHPClient does not support %s authentication.", get_class($credential)));
+            throw new Exception(sprintf("CurlClient does not support %s authentication.", get_class($credential)));
         }
 
         $curl = curl_init();
@@ -91,6 +91,9 @@ class Jira_Api_Client_CurlClient implements Jira_Api_Client_ClientInterface
         }
 
         // if empty result and status != "204 No Content"
+        if (curl_getinfo($curl, CURLINFO_HTTP_CODE) == 401) {
+            throw new Jira_Api_UnauthorizedException("Unauthorized");
+        }
         if ($data === '' && curl_getinfo($curl, CURLINFO_HTTP_CODE) != 204) {
             throw new Exception("JIRA Rest server returns unexpected result.");
         }

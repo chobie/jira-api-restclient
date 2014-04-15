@@ -138,6 +138,8 @@ class Jira_Issues_Walker implements Iterator
                 }
 
                 return true;
+            } catch (Jira_Api_UnauthorizedException $e) {
+                throw $e;
             } catch (Exception $e) {
                 error_log($e->getMessage());
 
@@ -149,6 +151,8 @@ class Jira_Issues_Walker implements Iterator
                 $this->setResult($result);
 
                 return true;
+            } catch (Jira_Api_UnauthorizedException $e) {
+                throw $e;
             } catch (Exception $e) {
                 error_log($e->getMessage());
 

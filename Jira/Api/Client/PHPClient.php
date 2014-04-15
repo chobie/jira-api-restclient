@@ -96,7 +96,6 @@ class Jira_Api_Client_PHPClient implements Jira_Api_Client_ClientInterface
             $header[]   = sprintf('Content-Length: %d', strlen($__data));
 
             $context['http']['header']  = join("\r\n", $header);
-            var_dump($header);
             $context['http']['content'] = $__data;
         } else {
             $url .= "?" . http_build_query($data);

@@ -70,7 +70,7 @@ class Jira_Api
         $this->authentication = $authentication;
 
         if (is_null($client)) {
-            $client = new Jira_Api_Client_PHPClient();
+            $client = new Jira_Api_Client_CurlClient();
         }
 
         $this->client = $client;
