@@ -189,6 +189,12 @@ class Jira_Api
      */
     public function addComment($issueKey, $params)
     {
+        if (is_string($params)) {
+            // if $params is scalar string value -> wrapping it properly
+            $params = array(
+                'body' => $params
+            );
+        }
         return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/comment", $issueKey), $params);
     }
 
