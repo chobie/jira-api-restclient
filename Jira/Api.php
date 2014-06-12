@@ -176,6 +176,39 @@ class Jira_Api
         $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/role/{$roleId}", array(), true);
         return $result;
     }
+
+   /**
+    * Returns the meta data for creating issues. This includes the available projects, issue types
+    * and fields, including field types and whether or not those fields are required.
+    * Projects will not be returned if the user does not have permission to create issues in that project.
+    *
+    * @param $projectIds array      Combined with the projectKeys param, lists the projects with which to filter the results.
+    *                               If absent, all projects are returned. Specifiying a project that does not exist (or that
+    *                               you cannot create issues in) is not an error, but it will not be in the results.
+    * @param $projectKeys array     Combined with the projectIds param, lists the projects with which to filter the
+    *                               results. If null, all projects are returned. Specifiying a project that does not exist (or
+    *                               that you cannot create issues in) is not an error, but it will not be in the results.
+    * @param $issuetypeIds array    Combined with issuetypeNames, lists the issue types with which to filter the results.
+    *                               If null, all issue types are returned. Specifiying an issue type that does not exist is
+    *                               not an error.
+    * @param $issuetypeNames array  Combined with issuetypeIds, lists the issue types with which to filter the results.
+    *                               If null, all issue types are returned. This parameter can be specified multiple times,
+    *                               but is NOT interpreted as a comma-separated list. Specifiying an issue type that does
+    *                               not exist is not an error.
+    * @return string
+    */
+    public function getCreateMeta(array $projectIds = null, array $projectKeys = null,
+                                  array $issuetypeIds = null, array $issuetypeNames = null)
+    {
+        // Create comma seperated query parameters for the supplied filters
+        $data = array();
+        foreach(array("projectIds", "projectKeys", "issuetypeIds", "issuetypeNames") as $parameterName)
+            if(${$parameterName} !== null)
+                $data[$parameterName] = implode(",", ${$parameterName});
+
+        $result = $this->api(self::REQUEST_GET, "/rest/api/2/issue/createmeta", $data, true);
+        return $result;
+    }
 	
 	
     /**
