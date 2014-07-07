@@ -48,10 +48,10 @@ class Jira_Api
 
     /** @var array $fields */
     protected $fields;
-    
+
     /** @var array $priority */
     protected $priorities;
-    
+
     /** @var array $status */
     protected $statuses;
 
@@ -143,8 +143,8 @@ class Jira_Api
         return $this->api(self::REQUEST_PUT, sprintf("/rest/api/2/issue/%s", $issueKey), $params);
     }
 
-	
-	
+
+
 
     public function getAttachment($attachmentId)
     {
@@ -152,12 +152,12 @@ class Jira_Api
 
         return $result;
     }
-	
+
     public function getProjects()
     {
         return $this->api(self::REQUEST_GET, "/rest/api/2/project");
     }
-	
+
     public function getProject($projectKey)
     {
         $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}", array(), true);
@@ -209,8 +209,8 @@ class Jira_Api
         $result = $this->api(self::REQUEST_GET, "/rest/api/2/issue/createmeta", $data, true);
         return $result;
     }
-	
-	
+
+
     /**
      * add a comment to a ticket
      *
@@ -324,7 +324,7 @@ class Jira_Api
     	}
     	return $this->statuses;
     }
-    
+
 
     /**
      * create an issue.
@@ -418,7 +418,7 @@ class Jira_Api
     	);
     	return $this->api(self::REQUEST_POST, "/rest/api/2/issue/" . $issue . "/attachments", $options, false ,TRUE);
     }
-    
+
     /**
      * send request to specified host
      *
@@ -496,5 +496,43 @@ class Jira_Api
         }
 
         return $issue;
+    }
+
+    /**
+     * set watchers in a ticket
+     *
+     * @param $issueKey
+     * @param $watchers
+     * @return mixed
+     */
+    public function setWatchers($issueKey, $watchers)
+    {
+        $result=[];
+        foreach($watchers as $w){
+            $result[]=$this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/watchers", $issueKey), "\"".$w."\"");
+        }
+        return $result;
+    }
+
+    /**
+     * close issue
+     *
+     * @param $issueKey
+     * @return mixed
+     */
+    public function closeIssue($issueKey)
+    {
+        $result=[];
+        //  get available transitions
+        $transitions=$this->getTransitions($issueKey,[])->getResult()['transitions'];
+        //  search id for closing ticket
+        foreach ($transitions as $v) {
+            //  Close ticket if required id was found
+            if($v['name']=="Close Issue"){
+                $result=$this->transition($issueKey,['transition'=>['id'=>$v['id']]]);
+                break;
+            }
+        }
+        return $result;
     }
 }
