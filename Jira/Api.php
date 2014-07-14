@@ -509,7 +509,7 @@ class Jira_Api
     {
         $result = array();
         foreach($watchers as $w){
-            $result[]=$this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/watchers", $issueKey), $w);
+            $result[] = $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/watchers", $issueKey), $w);
         }
         return $result;
     }
