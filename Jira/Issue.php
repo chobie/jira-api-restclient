@@ -132,8 +132,8 @@ class Jira_Issue
      */
     public function getIssueType()
     {
-        if (isset($this->fields['Issuetype'])) {
-            return $this->fields['Issuetype'];
+        if (isset($this->fields['Issue Type'])) {
+            return $this->fields['Issue Type'];
         }
     }
 
@@ -172,7 +172,7 @@ class Jira_Issue
         if (isset($this->fields['Assignee'])) {
             return $this->fields['Assignee'];
         }
-    }    
+    }
 
     /**
      * get issue updated time
@@ -271,6 +271,8 @@ class Jira_Issue
     }
 
     /**
+     * Is the field exists? Maybe there should be 'Planned End'?
+     *
      * get resolution date
      *
      * @return mixed
@@ -287,10 +289,10 @@ class Jira_Issue
      *
      * @return mixed
      */
-    public function getWatches()
+    public function getWatchers()
     {
-        if (isset($this->fields['Watches'])) {
-            return $this->fields['Watches'];
+        if (isset($this->fields['Watchers'])) {
+            return $this->fields['Watchers'];
         }
     }
 
