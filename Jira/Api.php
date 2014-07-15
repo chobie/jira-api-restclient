@@ -507,9 +507,9 @@ class Jira_Api
      */
     public function setWatchers($issueKey, $watchers)
     {
-        $result=[];
+        $result = array();
         foreach($watchers as $w){
-            $result[]=$this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/watchers", $issueKey), $w);
+            $result[] = $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/watchers", $issueKey), $w);
         }
         return $result;
     }
@@ -519,17 +519,25 @@ class Jira_Api
      *
      * @param $issueKey
      * @return mixed
+     *
+     * @TODO: should have parameters? (e.g comment)
      */
     public function closeIssue($issueKey)
     {
-        $result=[];
+        $result = array();
         //  get available transitions
-        $transitions=$this->getTransitions($issueKey,[])->getResult()['transitions'];
+        $tmp_transitions = $this->getTransitions($issueKey, array());
+        $tmp_transitions_result = $tmp_transitions->getResult();
+        $transitions = $tmp_transitions_result['transitions'];
+
         //  search id for closing ticket
         foreach ($transitions as $v) {
             //  Close ticket if required id was found
-            if($v['name']=="Close Issue"){
-                $result=$this->transition($issueKey,['transition'=>['id'=>$v['id']]]);
+            if($v['name'] == "Close Issue"){
+                $result = $this->transition($issueKey, array(
+                    'transition'=> array(
+                        'id'=>$v['id']
+                    )));
                 break;
             }
         }
