@@ -297,6 +297,18 @@ class Jira_Issue
     }
 
     /**
+     * get due date
+     *
+     * @return mixed
+     */
+    public function getDueDate()
+    {
+        if (isset($this->fields['Due Date'])) {
+            return $this->fields['Due Date'];
+        }
+    }
+
+    /**
      * get information represented in call output due to expand=... suffix
      * @see https://docs.atlassian.com/jira/REST/latest/
      * @return array
