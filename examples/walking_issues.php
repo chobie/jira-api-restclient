@@ -1,11 +1,7 @@
 <?php
 require dirname(__FILE__) ."/common.php";
 
-$api = new Jira_Api(
-    "https://your-jira-project.net",
-    new Jira_Api_Authentication_Basic("yourname", "password")
-);
-
+$api = getApiClient();
 /**
  * Jira_Issues_Walker implicitly paging search request.
  * you don't need to care about paging request
@@ -17,8 +13,8 @@ $api = new Jira_Api(
  * @see
  * https://developer.atlassian.com/static/rest/jira/5.0.html#id202584
  */
-$walker = new Jira_Issues_Walker($api);
-$walker->push("project = YOURPROJECT AND  updated > -1d ORDER BY priority DESC", "*navigable");
+$walker = new \chobie\Jira\Issues\Walker($api);
+$walker->push("project = TICKETACEG AND  updated > -1d ORDER BY priority DESC", "*navigable");
 
 /** okay, then just do foreach walker variable to pull issues */
 foreach ($walker as $k => $issue) {

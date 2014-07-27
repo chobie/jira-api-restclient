@@ -9,17 +9,21 @@ this API library will help your problems regarding JIRA. hope you enjoy it.
 
 # Usage
 
+composer.json
+
+```
+composer require chobie/jira-api-restclient 2.0.*
+```
+
+
 ````php
 <?php
-require "Jira/Autoloader.php";
-Jira_Autoloader::register();
-
-$api = new Jira_Api(
+$api = new chobie\Jira\Api(
     "https://your-jira-project.net",
-    new Jira_Api_Authentication_Basic("yourname", "password")
+    new chobie\Jira\Api\Authentication\Basic("yourname", "password")
 );
 
-$walker = new Jira_Issues_Walker($api);
+$walker = new chobie\Jira\Issues\Walker($api);
 $walker->push("project = YOURPROJECT AND (status != closed and status != resolved) ORDER BY priority DESC");
 foreach ($walker as $issue) {
     var_dump($issue);
@@ -33,4 +37,4 @@ MIT License
 
 # JIRA5 Rest API Documents
 
-https://developer.atlassian.com/static/rest/jira/5.0.html
+https://developer.atlassian.com/static/rest/jira/6.0.html

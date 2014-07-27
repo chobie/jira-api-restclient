@@ -2,7 +2,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2012 Shuhei Tanuma
+ * Copyright (c) 2014 Shuhei Tanuma
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-//namespace Jira;
+namespace chobie\Jira;
 
-class Jira_Issue
+class Issue
 {
     /* @var array $expand */
     protected $expand;

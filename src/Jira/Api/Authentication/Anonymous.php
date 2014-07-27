@@ -2,7 +2,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2012 Shuhei Tanuma
+ * Copyright (c) 2014 Tim Otten
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,10 +20,28 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
  */
-//namespace Jira\Api;
+namespace chobie\Jira\Api\Authentication;
 
-class Jira_Api_Exception extends Exception
+class Anonymous implements AuthenticationInterface
 {
+    public function __construct()
+    {
+    }
+
+    public function getCredential()
+    {
+        return null;
+    }
+
+    public function getId()
+    {
+        return null;
+    }
+
+    public function getPassword()
+    {
+        return null;
+    }
+
 }

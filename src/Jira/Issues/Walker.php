@@ -2,7 +2,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2012 Shuhei Tanuma
+ * Copyright (c) 2014 Shuhei Tanuma
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-//namespace Jira\Issues;
+namespace chobie\Jira\Issues;
 
-class Jira_Issues_Walker implements Iterator
+use chobie\Jira\Api;
+
+class Walker implements \Iterator
 {
-    /* @var Jira_Api $jira */
+    /* @var Api $jira */
     protected $jira;
 
     protected $jql = null;
@@ -51,7 +53,7 @@ class Jira_Issues_Walker implements Iterator
 
     protected $callback;
 
-    public function __construct(Jira_Api $api)
+    public function __construct(Api $api)
     {
         $this->jira = $api;
     }
@@ -106,7 +108,7 @@ class Jira_Issues_Walker implements Iterator
     public function key()
     {
         if ($this->start_at > 0) {
-            return $this->offset + (($this->start_at-1) * $this->per_page);
+            return $this->offset + (($this->start_at - 1) * $this->per_page);
         } else {
             return 0;
         }
@@ -122,7 +124,7 @@ class Jira_Issues_Walker implements Iterator
     public function valid()
     {
         if (is_null($this->jql)) {
-            throw new Exception('you have to call Jira_Walker::push($jql, $navigable) at first');
+            throw new \Exception('you have to call Jira_Walker::push($jql, $navigable) at first');
         }
 
         if (!$this->executed) {
@@ -138,30 +140,34 @@ class Jira_Issues_Walker implements Iterator
                 }
 
                 return true;
-            } catch (Jira_Api_UnauthorizedException $e) {
+            } catch (Api\UnauthorizedException $e) {
                 throw $e;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 error_log($e->getMessage());
 
                 return false;
             }
-        } else if ($this->offset >= $this->max && $this->key() < $this->total){
-            try {
-                $result = $this->jira->search($this->getQuery(), $this->key(), $this->per_page, $this->navigable);
-                $this->setResult($result);
-
-                return true;
-            } catch (Jira_Api_UnauthorizedException $e) {
-                throw $e;
-            } catch (Exception $e) {
-                error_log($e->getMessage());
-
-                return false;
-            }
-        } else if (($this->start_at-1) * $this->per_page + $this->offset < $this->total) {
-            return true;
         } else {
-            return false;
+            if ($this->offset >= $this->max && $this->key() < $this->total) {
+                try {
+                    $result = $this->jira->search($this->getQuery(), $this->key(), $this->per_page, $this->navigable);
+                    $this->setResult($result);
+
+                    return true;
+                } catch (Api\UnauthorizedException $e) {
+                    throw $e;
+                } catch (\Exception $e) {
+                    error_log($e->getMessage());
+
+                    return false;
+                }
+            } else {
+                if (($this->start_at - 1) * $this->per_page + $this->offset < $this->total) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         }
     }
 
@@ -191,18 +197,18 @@ class Jira_Issues_Walker implements Iterator
         if (is_callable($callable)) {
             $this->callback = $callable;
         } else {
-            throw new Exception("passed argument is not callable");
+            throw new \Exception("passed argument is not callable");
         }
     }
 
     /**
      * @param $result
      */
-    protected function setResult(Jira_Api_Result $result)
+    protected function setResult(Api\Result $result)
     {
-        $this->total  = $result->getTotal();
+        $this->total = $result->getTotal();
         $this->offset = 0;
-        $this->max    = $result->getIssuesCount();
+        $this->max = $result->getIssuesCount();
         $this->result = $result->getIssues();
         $this->start_at++;
     }

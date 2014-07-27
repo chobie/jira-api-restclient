@@ -2,7 +2,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2012 Shuhei Tanuma
+ * Copyright (c) 2014 Shuhei Tanuma
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-//namespace Jira\Api;
+namespace chobie\Jira\Api\Client;
 
-class Jira_Api_Client_MemcacheProxyClient implements Jira_Api_Client_ClientInterface
+use chobie\Jira\Api\Authentication\AuthenticationInterface;
+use chobie\Jira\Api\Client\ClientInterface;
+
+class MemcacheProxyClient implements ClientInterface
 {
     protected $api;
     protected $mc;
@@ -32,10 +35,10 @@ class Jira_Api_Client_MemcacheProxyClient implements Jira_Api_Client_ClientInter
     /**
      * create a traditional php client
      */
-    public function __construct(Jira_Api_Client_ClientInterface $api, $server, $port)
+    public function __construct(ClientInterface $api, $server, $port)
     {
         $this->api = $api;
-        $this->mc = new Memcached();
+        $this->mc = new \Memcached();
         $this->mc->addServer($server, $port);
     }
 
@@ -48,9 +51,9 @@ class Jira_Api_Client_MemcacheProxyClient implements Jira_Api_Client_ClientInter
      * @param $endpoint
      * @param $credential
      * @return array|string
-     * @throws Exception
+     * @throws \Exception
      */
-    public function sendRequest($method, $url, $data = array(), $endpoint, Jira_Api_Authentication_AuthenticationInterface $credential)
+    public function sendRequest($method, $url, $data = array(), $endpoint, AuthenticationInterface $credential, $isFile = false, $debug = false)
     {
         if ($method == "GET") {
             if ($result = $this->getFromCache($url, $data, $endpoint)) {

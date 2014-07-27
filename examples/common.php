@@ -1,4 +1,13 @@
 <?php
-require dirname(dirname(__FILE__)) . "/Jira/Autoloader.php";
+require __DIR__ . "/../vendor/autoload.php";
 
-Jira_Autoloader::register();
+/**
+ * @return chobie\Jira\Api
+ */
+function getApiClient() {
+    $api = new \chobie\Jira\Api(
+        "https://your-jira-project.net",
+        new \chobie\Jira\Api\Authentication\Basic("yourname", "password")
+    );
+    return $api;
+}

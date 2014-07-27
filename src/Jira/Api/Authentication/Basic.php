@@ -2,7 +2,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2012 Shuhei Tanuma
+ * Copyright (c) 2014 Shuhei Tanuma
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,59 +22,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-class Jira_Api_Result
+namespace chobie\Jira\Api\Authentication;
+
+class Basic implements AuthenticationInterface
 {
-    protected $expand;
-    protected $startAt;
-    protected $maxResults;
-    protected $total;
+    private $user_id;
+    private $password;
 
-    protected $result;
-
-    public function __construct($result)
+    public function __construct($user_id, $password)
     {
-        if (isset($result['expand'])) {
-            $this->expand = explode(",", $result['expand']);
-        }
-
-        if (isset($result['startAt'])) {
-            $this->startAt = $result['startAt'];
-        }
-
-        if (isset($result['maxResults'])) {
-            $this->maxResults = $result['maxResults'];
-        }
-
-        if (isset($result['total'])) {
-            $this->total = $result['total'];
-        }
-
-        $this->result = $result;
+        $this->user_id = $user_id;
+        $this->password = $password;
     }
 
-    public function getTotal()
+    public function getCredential()
     {
-        return $this->total;
+        return base64_encode($this->user_id . ':' . $this->password);
     }
 
-    public function getIssuesCount()
+    public function getId()
     {
-        return count($this->getIssues());
+        return $this->user_id;
     }
 
-    public function getIssues()
+    public function getPassword()
     {
-        if (isset($this->result['issues'])) {
-            $result = array();
-            foreach ($this->result['issues'] as $issue) {
-                $result[] = new Jira_Issue($issue);
-            }
-            return $result;
-        }
+        return $this->password;
     }
 
-    public function getResult()
-    {
-        return $this->result;
-    }
 }
