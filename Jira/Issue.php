@@ -132,8 +132,8 @@ class Jira_Issue
      */
     public function getIssueType()
     {
-        if (isset($this->fields['issuetype'])) {
-            return $this->fields['issuetype'];
+        if (isset($this->fields['Issue Type'])) {
+            return $this->fields['Issue Type'];
         }
     }
 
@@ -144,8 +144,8 @@ class Jira_Issue
      */
     public function getReporter()
     {
-        if (isset($this->fields['reporter'])) {
-            return $this->fields['reporter'];
+        if (isset($this->fields['Reporter'])) {
+            return $this->fields['Reporter'];
         }
     }
 
@@ -156,8 +156,8 @@ class Jira_Issue
      */
     public function getCreated()
     {
-        if (isset($this->fields['created'])) {
-            return $this->fields['created'];
+        if (isset($this->fields['Created'])) {
+            return $this->fields['Created'];
         }
     }
 
@@ -169,10 +169,10 @@ class Jira_Issue
 
     public function getAssignee()
     {
-        if (isset($this->fields['assignee'])) {
-            return $this->fields['assignee'];
+        if (isset($this->fields['Assignee'])) {
+            return $this->fields['Assignee'];
         }
-    }    
+    }
 
     /**
      * get issue updated time
@@ -181,8 +181,8 @@ class Jira_Issue
      */
     public function getUpdated()
     {
-        if (isset($this->fields['updated'])) {
-            return $this->fields['updated'];
+        if (isset($this->fields['Updated'])) {
+            return $this->fields['Updated'];
         }
     }
 
@@ -193,8 +193,8 @@ class Jira_Issue
      */
     public function getPriority()
     {
-        if (isset($this->fields['priority'])) {
-            return $this->fields['priority'];
+        if (isset($this->fields['Priority'])) {
+            return $this->fields['Priority'];
         }
     }
 
@@ -265,20 +265,22 @@ class Jira_Issue
      */
     public function getResolution()
     {
-        if (isset($this->fields['resolution'])) {
-            return $this->fields['resolution'];
+        if (isset($this->fields['Resolution'])) {
+            return $this->fields['Resolution'];
         }
     }
 
     /**
+     * Is the field exists? Maybe there should be 'Planned End'?
+     *
      * get resolution date
      *
      * @return mixed
      */
     public function getResolutionDate()
     {
-        if (isset($this->fields['resolutiondate'])) {
-            return $this->fields['resolutiondate'];
+        if (isset($this->fields['Resolutiondate'])) {
+            return $this->fields['Resolutiondate'];
         }
     }
 
@@ -287,10 +289,22 @@ class Jira_Issue
      *
      * @return mixed
      */
-    public function getWatches()
+    public function getWatchers()
     {
-        if (isset($this->fields['watches'])) {
-            return $this->fields['watches'];
+        if (isset($this->fields['Watchers'])) {
+            return $this->fields['Watchers'];
+        }
+    }
+
+    /**
+     * get due date
+     *
+     * @return mixed
+     */
+    public function getDueDate()
+    {
+        if (isset($this->fields['Due Date'])) {
+            return $this->fields['Due Date'];
         }
     }
 
