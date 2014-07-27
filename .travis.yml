@@ -4,5 +4,8 @@ php:
   - 5.4
   - 5.5
 
+install:
+  - composer install --no-interaction
+
 script:
   - ./vendor/bin/phpunit
