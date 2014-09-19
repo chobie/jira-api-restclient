@@ -157,6 +157,13 @@ class Api
         return $result;
     }
 
+    public function deleteAttachment($attachmentId)
+    {
+        $result = $this->api(self::REQUEST_DELETE, "/rest/api/2/attachment/$attachmentId");
+
+        return $result;
+    }
+
     public function getProjects()
     {
         return $this->api(self::REQUEST_GET, "/rest/api/2/project");
@@ -238,6 +245,21 @@ class Api
         }
         return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/comment", $issueKey), $params);
     }
+
+    /**
+     * delete comment from a ticket
+     *
+     * issue key should be YOURPROJ-221
+     *
+     * @param $issueKey
+     * @param $commentId
+     * @return mixed
+     */
+    public function deleteComment($issueKey, $commentId)
+    {
+        return $this->api(self::REQUEST_DELETE, sprintf("/rest/api/2/issue/%s/comment/%s", $issueKey, $commentId));
+    }
+
 
     /**
      * get available transitions for a ticket
@@ -542,6 +564,22 @@ class Api
     }
 
     /**
+     * remove watchers in a ticket
+     *
+     * @param $issueKey
+     * @param $watchers
+     * @return mixed
+     */
+    public function deleteWatchers($issueKey, $watchers)
+    {
+        $result = array();
+        foreach($watchers as $w){
+            $result[] = $this->api(self::REQUEST_DELETE, sprintf("/rest/api/2/issue/%s/watchers", $issueKey), $w);
+        }
+        return $result;
+    }
+
+    /**
      * close issue
      *
      * @param $issueKey
@@ -574,4 +612,73 @@ class Api
         }
         return $result;
     }
+
+    /**
+     * reopen issue
+     *
+     * @param $issueKey
+     * @return mixed
+     *
+     * @TODO: should have parameters? (e.g comment)
+     */
+    public function reopenIssue($issueKey)
+    {
+        $result = array();
+        //  get available transitions
+        $tmp_transitions = $this->getTransitions($issueKey, array());
+        $tmp_transitions_result = $tmp_transitions->getResult();
+        $transitions = $tmp_transitions_result['transitions'];
+
+        //  search id for closing ticket
+        foreach ($transitions as $v) {
+            //  Close ticket if required id was found
+            if ($v['name'] == "Reopen Issue") {
+                $result = $this->transition(
+                    $issueKey,
+                    array(
+                        'transition' => array(
+                            'id' => $v['id']
+                        )
+                    )
+                );
+                break;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * resolve issue
+     *
+     * @param $issueKey
+     * @return mixed
+     *
+     * @TODO: should have parameters? (e.g comment)
+     */
+    public function resolveIssue($issueKey)
+    {
+        $result = array();
+        //  get available transitions
+        $tmp_transitions = $this->getTransitions($issueKey, array());
+        $tmp_transitions_result = $tmp_transitions->getResult();
+        $transitions = $tmp_transitions_result['transitions'];
+
+        //  search id for closing ticket
+        foreach ($transitions as $v) {
+            //  Close ticket if required id was found
+            if ($v['name'] == "Resolve Issue") {
+                $result = $this->transition(
+                    $issueKey,
+                    array(
+                        'transition' => array(
+                            'id' => $v['id']
+                        )
+                    )
+                );
+                break;
+            }
+        }
+        return $result;
+    }
+
 }
