@@ -45,6 +45,7 @@ class IssueType
         "iconUrl",
         "name",
         "subtask",
+        "avatarId",
     );
 
     public function __construct($types)

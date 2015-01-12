@@ -28,6 +28,7 @@ use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Client\ClientInterface;
 use chobie\Jira\Api\Result;
 use chobie\Jira\Api\Client\CurlClient;
+use chobie\Jira\Api\Exception;
 
 class Api
 {
@@ -469,6 +470,10 @@ class Api
 
         if (strlen($result)) {
             $json = json_decode($result, true);
+            if (!is_array($json)) {
+                 throw new Exception("JIRA Rest server returns unexpected result: " . $result);
+            }
+
             if ($this->options & self::AUTOMAP_FIELDS) {
                 if (isset($json['issues'])) {
                     if (!count($this->fields)) {
