@@ -35,7 +35,8 @@ class Api
     const REQUEST_POST = "POST";
     const REQUEST_PUT = "PUT";
     const REQUEST_DELETE = "DELETE";
-
+    
+    const TRANSITION_DELIMITER = 'transition:';
 
     const AUTOMAP_FIELDS = 0x01;
 
@@ -573,5 +574,52 @@ class Api
             }
         }
         return $result;
+    }
+    
+    /**
+     * create JIRA Worklog
+     *
+     * @param $issue
+     * @param $filename
+     * @param array $options
+     * @return mixed
+     */
+    public function createWorklog($issueKey, $time, $options = array())
+    {
+        
+        $options = array_merge(
+            array(
+                "timeSpent" => $time,
+            ),
+            $options
+        );
+        
+        return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/worklog", $issueKey), $options);
+    }
+    
+    /**
+     * get JIRA Worklogs for a given issue key
+     *
+     * @param $issueKey 
+     * @return mixed
+     */
+    public function getWorklogs($issueKey)
+    {
+        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/worklog", $issueKey));
+    }
+    
+    /**
+     * remove a JIRA Worklog
+     *
+     * @param $issueKey 
+     * @return mixed
+     */
+    public function removeWorklog($issueKey, $worklogId)
+    {
+        $options = array(
+            "adjustEstimate" => "auto"
+        );
+        
+        return $this->api(self::REQUEST_DELETE, sprintf("/rest/api/2/issue/%s/worklog/%s", $issueKey, $worklogId), $options);
     }
 }
