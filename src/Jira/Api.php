@@ -594,6 +594,32 @@ class Api
             $options
         );
         
-        return $this->api(self::REQUEST_POST, "/rest/api/2/issue/" . $issueKey . "/worklog", $options);
+        return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/worklog", $issueKey), $options);
+    }
+    
+    /**
+     * get JIRA Worklogs for a given issue key
+     *
+     * @param $issueKey 
+     * @return mixed
+     */
+    public function getWorklogs($issueKey)
+    {
+        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/worklog", $issueKey));
+    }
+    
+    /**
+     * remove a JIRA Worklog
+     *
+     * @param $issueKey 
+     * @return mixed
+     */
+    public function removeWorklog($issueKey, $worklogId)
+    {
+        $options = array(
+            "adjustEstimate" => "auto"
+        );
+        
+        return $this->api(self::REQUEST_DELETE, sprintf("/rest/api/2/issue/%s/worklog/%s", $issueKey, $worklogId), $options);
     }
 }
