@@ -78,6 +78,12 @@ class CurlClient implements ClientInterface
         if ($method == "POST") {
             curl_setopt($curl, CURLOPT_POST, 1);
             if ($isFile) {
+                $file = $data['file'];
+                $file = ltrim($file, '@');
+                $fileData = explode('/', $file);
+                $postName = array_pop($fileData);
+                $contentType = file_exists($file) ? mime_content_type($file) : null;
+                $data['file'] = $this->getCurValueForFile($file, $contentType, $postName);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
             } else {
                 curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
@@ -113,5 +119,29 @@ class CurlClient implements ClientInterface
         return $data;
     }
 
+    /**
+     * Creates a valid file for curl request.
+     *
+     * @param string      $fileName
+     * @param string|null $contentType
+     * @param string|null $postName
+     *
+     * @return \CURLFile|string
+     */
+    private function getCurValueForFile($fileName, $contentType = null, $postName = null)
+    {
+        // PHP 5.5 introduced a CurlFile object that deprecates the old @filename syntax
+        // See: https://wiki.php.net/rfc/curl-file-upload
+        if (function_exists('curl_file_create')) {
+            return curl_file_create($fileName, $contentType, $postName);
+        }
 
+        // Use the old style if using an older version of PHP
+        $value = "@{filename};filename=" . $postName;
+        if ($contentType) {
+            $value .= ';type=' . $contentType;
+        }
+
+        return $value;
+    }
 }
