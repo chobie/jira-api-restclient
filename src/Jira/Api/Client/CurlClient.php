@@ -102,7 +102,7 @@ class CurlClient implements ClientInterface
         if (curl_getinfo($curl, CURLINFO_HTTP_CODE) == 401) {
             throw new UnauthorizedException("Unauthorized");
         }
-        if ($data === '' && curl_getinfo($curl, CURLINFO_HTTP_CODE) != 204) {
+	if ($data === '' && !in_array(curl_getinfo($curl, CURLINFO_HTTP_CODE), array(201,204))) {
             throw new Exception("JIRA Rest server returns unexpected result.");
         }
 
