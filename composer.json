@@ -1,6 +1,6 @@
 {
-    "name": "chobie/jira-api-restclient",
-    "description": "JIRA REST API.",
+    "name": "t-keller/jira-api-restclient",
+    "description": "Jira REST API Wrapper",
     "keywords": ["jira","rest","api"],
     "type": "library",
     "license": "MIT",
@@ -9,6 +9,10 @@
             "name": "Shuhei Tanuma",
             "homepage": "http://chobie.github.io/",
             "email": "chobieeee@php.net"
+        },
+        {
+            "name": "Thomas Keller",
+            "homepage": "https://github.com/t-keller"
         }
     ],
     "minimum-stability": "dev",
