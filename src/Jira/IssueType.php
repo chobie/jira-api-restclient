@@ -85,4 +85,9 @@ class IssueType
     {
         return $this->iconUrl;
     }
+
+    public function getAvatarId()
+    {
+        return $this->avatarId;
+    }
 }
