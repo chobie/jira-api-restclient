@@ -71,6 +71,7 @@ class CurlClient implements ClientInterface
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($curl, CURLOPT_VERBOSE, $debug);
         if ($isFile) {
+            curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
             curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-Atlassian-Token: nocheck'));
         } else {
             curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: application/json;charset=UTF-8"));
@@ -82,11 +83,9 @@ class CurlClient implements ClientInterface
             } else {
                 curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
             }
-        } else {
-            if ($method == "PUT") {
-                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-            }
+        } elseif ($method == "PUT") {
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
         }
 
         $data = curl_exec($curl);
