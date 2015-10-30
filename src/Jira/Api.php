@@ -150,6 +150,24 @@ class Api
     }
 
 
+     /**
+     * Delete issue
+     *
+     * @param $issueKey should be YOURPROJ-221
+     * @param $deleteSubtasks if all subtask should be deleted
+     * @return mixed
+     */
+    public function deleteIssue($issueKey, $deleteSubtasks = 'true')
+    {
+        return $this->api(
+            self::REQUEST_DELETE, sprintf("/rest/api/2/issue/%s", $issueKey), 
+            array (
+                'deleteSubtasks' => $deleteSubtasks
+                )
+        );
+    }   
+
+
     public function getAttachment($attachmentId)
     {
         $result = $this->api(self::REQUEST_GET, "/rest/api/2/attachment/$attachmentId", array(), true);
