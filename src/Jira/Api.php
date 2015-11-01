@@ -271,6 +271,8 @@ class Api
         return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/transitions", $issueKey), $params);
     }
 
+
+
     /**
      * transation a ticket
      *
@@ -283,6 +285,43 @@ class Api
     public function transition($issueKey, $params)
     {
         return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/transitions", $issueKey), $params);
+    }
+
+    /**
+     * transation by step name
+     *
+     *
+     * @param $issueKey like YOURPROJ-22
+     * @param $stepName Step name like 'Done' or 'To Do'
+     * @param $params (array of parameters from JIRA API)
+     * @return mixed
+     */
+    public function transitionByStepName($issueKey, $stepName, $params = array())
+    {
+         $result = array();
+        //  get available transitions
+        $tmp_transitions = $this->getTransitions($issueKey, array());
+        $tmp_transitions_result = $tmp_transitions->getResult();
+        $transitions = $tmp_transitions_result['transitions'];
+
+        //  search id for closing ticket
+        foreach ($transitions as $v) {
+            //  Close ticket if required id was found
+            if ($v['name'] == $stepName) {
+                $result = $this->transition(
+                    $issueKey,
+                    array_merge($params,
+                        array(
+                            'transition' => array(
+                            'id' => $v['id']
+                            )
+                        )
+                    )
+                );
+                break;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -565,31 +604,9 @@ class Api
      * @param $issueKey
      * @return mixed
      *
-     * @TODO: should have parameters? (e.g comment)
      */
     public function closeIssue($issueKey)
     {
-        $result = array();
-        //  get available transitions
-        $tmp_transitions = $this->getTransitions($issueKey, array());
-        $tmp_transitions_result = $tmp_transitions->getResult();
-        $transitions = $tmp_transitions_result['transitions'];
-
-        //  search id for closing ticket
-        foreach ($transitions as $v) {
-            //  Close ticket if required id was found
-            if ($v['name'] == "Close Issue") {
-                $result = $this->transition(
-                    $issueKey,
-                    array(
-                        'transition' => array(
-                            'id' => $v['id']
-                        )
-                    )
-                );
-                break;
-            }
-        }
-        return $result;
+        return $this->transitionByStepName($issueKey,'Close Issue');
     }
 }
