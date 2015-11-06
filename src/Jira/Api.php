@@ -256,6 +256,20 @@ class Api
         }
         return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/comment", $issueKey), $params);
     }
+    
+    /**
+     * get all worklogs for an issue
+     *
+     * issue key should be YOURPROJ-22
+     *
+     * @param $issueKey
+     * @param $params
+     * @return mixed
+     */
+    public function getWorklogs($issueKey, $params)
+    {
+        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/worklog", $issueKey), $params);
+    }
 
     /**
      * get available transitions for a ticket
