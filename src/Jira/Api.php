@@ -28,6 +28,7 @@ use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Client\ClientInterface;
 use chobie\Jira\Api\Result;
 use chobie\Jira\Api\Client\CurlClient;
+use chobie\Jira\Api\Exception;
 
 class Api
 {
@@ -65,13 +66,16 @@ class Api
      *
      * @param $endpoint
      * @param AuthenticationInterface $authentication
-     * @param ClientInterface $client
+     * @param ClientInterface|null $client
      */
     public function __construct(
         $endpoint,
         AuthenticationInterface $authentication,
         ClientInterface $client = null
     ) {
+        //Regular expression to remove trailing slash
+        $endpoint = preg_replace('{/$}', '', $endpoint);
+        
         $this->setEndPoint($endpoint);
         $this->authentication = $authentication;
 
@@ -82,6 +86,9 @@ class Api
         $this->client = $client;
     }
 
+    /**
+     * @param int $options
+     */
     public function setOptions($options)
     {
         $this->options = $options;
@@ -100,7 +107,8 @@ class Api
     /**
      * set end point url.
      *
-     * @param $url
+     * @param string $url
+     * @return void
      */
     public function setEndPoint($url)
     {
@@ -135,21 +143,46 @@ class Api
      *
      * issue key should be YOURPROJ-221
      *
-     * @param $issueKey
-     * @param $expand
-     * @return mixed
+     * @param string $issueKey
+     * @param string $expand
+     * @return Result|false|mixed
      */
     public function getIssue($issueKey, $expand = '')
     {
         return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s", $issueKey), array('expand' => $expand));
     }
 
+    /**
+     * @param string $issueKey
+     * @param array $params
+     * @return Result|false|mixed
+     */
     public function editIssue($issueKey, $params)
     {
         return $this->api(self::REQUEST_PUT, sprintf("/rest/api/2/issue/%s", $issueKey), $params);
     }
 
+    /**
+     * Delete issue
+     *
+     * @param string $issueKey should be YOURPROJ-221
+     * @param string $deleteSubtasks if all subtask should be deleted
+     * @return mixed
+     */
+    public function deleteIssue($issueKey, $deleteSubtasks = 'true')
+    {
+        return $this->api(
+            self::REQUEST_DELETE, sprintf("/rest/api/2/issue/%s", $issueKey), 
+            array (
+                'deleteSubtasks' => $deleteSubtasks
+                )
+        );
+    }   
 
+    /**
+     * @param string $attachmentId
+     * @return Result|false|mixed
+     */
     public function getAttachment($attachmentId)
     {
         $result = $this->api(self::REQUEST_GET, "/rest/api/2/attachment/$attachmentId", array(), true);
@@ -157,24 +190,43 @@ class Api
         return $result;
     }
 
-    public function getProjects()
+
+    /**
+     * @param string $expand
+     * @return Result|false|mixed
+     */
+    public function getProjects($expand = '')
     {
-        return $this->api(self::REQUEST_GET, "/rest/api/2/project");
+        return $this->api(self::REQUEST_GET, "/rest/api/2/project",array('expand' => $expand), true);
     }
 
-    public function getProject($projectKey)
+    /**
+     * @param string $projectKey
+     * @param string $expand
+     * @return Result|false|mixed
+     */
+    public function getProject($projectKey, $expand = '')
     {
-        $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}", array(), true);
+        $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}", array('expand' => $expand), true);
 
         return $result;
     }
 
+    /**
+     * @param string $projectKey
+     * @return Result|false|mixed
+     */
     public function getRoles($projectKey)
     {
         $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/roles", array(), true);
         return $result;
     }
 
+    /**
+     * @param string $projectKey
+     * @param int $roleId
+     * @return Result|false|mixed
+     */
     public function getRoleDetails($projectKey, $roleId)
     {
         $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/role/{$roleId}", array(), true);
@@ -185,6 +237,7 @@ class Api
      * Returns the meta data for creating issues. This includes the available projects, issue types
      * and fields, including field types and whether or not those fields are required.
      * Projects will not be returned if the user does not have permission to create issues in that project.
+     * Fields will only be returned if "projects.issuetypes.fields" is added as expand parameter.
      *
      * @param $projectIds array      Combined with the projectKeys param, lists the projects with which to filter the results.
      *                               If absent, all projects are returned. Specifiying a project that does not exist (or that
@@ -199,20 +252,29 @@ class Api
      *                               If null, all issue types are returned. This parameter can be specified multiple times,
      *                               but is NOT interpreted as a comma-separated list. Specifiying an issue type that does
      *                               not exist is not an error.
+     * @param $expand array          Optional list of entities to expand in the response.
      * @return string
      */
     public function getCreateMeta(
         array $projectIds = null,
         array $projectKeys = null,
         array $issuetypeIds = null,
-        array $issuetypeNames = null
+        array $issuetypeNames = null,
+        array $expand = null
     ) {
-        // Create comma seperated query parameters for the supplied filters
+        // Create comma separated query parameters for the supplied filters
         $data = array();
-        foreach (array("projectIds", "projectKeys", "issuetypeIds", "issuetypeNames") as $parameterName)
-            if (${$parameterName} !== null) {
-                $data[$parameterName] = implode(",", ${$parameterName});
-            }
+
+        if($projectIds !== null)
+            $data["projectIds"] = implode(",", $projectIds);
+        if($projectKeys !== null)
+            $data["projectKeys"] = implode(",", $projectKeys);
+        if($issuetypeIds !== null)
+            $data["issuetypeIds"] = implode(",", $issuetypeIds);
+        if($issuetypeNames !== null)
+            $data["issuetypeNames"] = implode(",", $issuetypeNames);
+        if($expand !== null)
+            $data["expand"] = implode(",", $expand);
 
         $result = $this->api(self::REQUEST_GET, "/rest/api/2/issue/createmeta", $data, true);
         return $result;
@@ -226,7 +288,7 @@ class Api
      *
      * @param $issueKey
      * @param $params
-     * @return mixed
+     * @return Result|mixed|false
      */
     public function addComment($issueKey, $params)
     {
@@ -238,6 +300,20 @@ class Api
         }
         return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/comment", $issueKey), $params);
     }
+    
+    /**
+     * get all worklogs for an issue
+     *
+     * issue key should be YOURPROJ-22
+     *
+     * @param $issueKey
+     * @param $params
+     * @return mixed
+     */
+    public function getWorklogs($issueKey, $params)
+    {
+        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/worklog", $issueKey), $params);
+    }
 
     /**
      * get available transitions for a ticket
@@ -246,21 +322,23 @@ class Api
      *
      * @param $issueKey
      * @param $params
-     * @return mixed
+     * @return Result|mixed|false
      */
     public function getTransitions($issueKey, $params)
     {
         return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/transitions", $issueKey), $params);
     }
 
+
+
     /**
-     * transation a ticket
+     * transition a ticket
      *
      * issue key should be YOURPROJ-22
      *
      * @param $issueKey
      * @param $params
-     * @return mixed
+     * @return Result|mixed|false
      */
     public function transition($issueKey, $params)
     {
@@ -268,9 +346,45 @@ class Api
     }
 
     /**
+     * Transition by step name
+     *
+     * @param string $issueKey like YOURPROJ-22
+     * @param string $stepName Step name like 'Done' or 'To Do'
+     * @param $params (array of parameters from JIRA API)
+     * @return mixed
+     */
+    public function transitionByStepName($issueKey, $stepName, $params = array())
+    {
+         $result = array();
+        //  get available transitions
+        $tmp_transitions = $this->getTransitions($issueKey, array());
+        $tmp_transitions_result = $tmp_transitions->getResult();
+        $transitions = $tmp_transitions_result['transitions'];
+
+        //  search id for closing ticket
+        foreach ($transitions as $v) {
+            //  Close ticket if required id was found
+            if ($v['name'] == $stepName) {
+                $result = $this->transition(
+                    $issueKey,
+                    array_merge($params,
+                        array(
+                            'transition' => array(
+                            'id' => $v['id']
+                            )
+                        )
+                    )
+                );
+                break;
+            }
+        }
+        return $result;
+    }
+
+    /**
      * get available issue types
      *
-     * @return mixed
+     * @return IssueType[]
      */
     public function getIssueTypes()
     {
@@ -287,6 +401,7 @@ class Api
     /**
      * get available versions
      *
+     * @param string $projectKey
      * @return mixed
      */
     public function getVersions($projectKey)
@@ -296,11 +411,22 @@ class Api
     }
 
     /**
+     * For backwards compatibility
+     *
+     * @deprecated use getPriorities() instead
+     * @return mixed
+     */
+    public function getPriorties()
+    {
+        return $this->getPriorities();
+    }
+
+    /**
      * get available priorities
      *
      * @return mixed
      */
-    public function getPriorties()
+    public function getPriorities()
     {
         if (!count($this->priorities)) {
             $priorities = array();
@@ -317,7 +443,7 @@ class Api
     /**
      * get available statuses
      *
-     * @return mixed
+     * @return array
      */
     public function getStatuses()
     {
@@ -341,7 +467,7 @@ class Api
      * @param $summary
      * @param $issueType
      * @param array $options
-     * @return mixed
+     * @return Result|mixed|false
      */
     public function createIssue($projectKey, $summary, $issueType, $options = array())
     {
@@ -375,8 +501,7 @@ class Api
      * @param $startAt
      * @param $maxResult
      * @param string $fields
-     *
-     * @return Jira_API_Result
+     * @return Result|mixed|false
      */
     public function search($jql, $startAt = 0, $maxResult = 20, $fields = '*navigable')
     {
@@ -424,8 +549,8 @@ class Api
     /**
      * create JIRA Attachment
      *
-     * @param $issue
-     * @param $filename
+     * @param string $issue Jira Issue key
+     * @param string $filename Path to file
      * @param array $options
      * @return mixed
      */
@@ -433,21 +558,57 @@ class Api
     {
         $options = array_merge(
             array(
-                "file" => '@' . $filename,
+                "file" => '@' . $filename . ';filename=' . pathinfo($filename, PATHINFO_BASENAME)
             ),
             $options
         );
+
         return $this->api(self::REQUEST_POST, "/rest/api/2/issue/" . $issue . "/attachments", $options, false, true);
+    }
+
+    /**
+     * Create a remote link
+     *
+     * @param $issue
+     * @param array $object
+     * @param string $relationship
+     * @param string $globalid
+     * @param array $application
+     * @return mixed
+     */
+    public function createRemotelink(
+            $issue,
+            $object = array(),
+            $relationship = null,
+            $globalid = null,
+            $application = null
+    ) {
+        $options = array(
+                        "globalid" => $globalid,
+                        "relationship" => $relationship,
+                        "object" => $object
+                    );
+
+        if (!is_null($application)) {
+            $options['application'] = $application;
+        }
+
+        return $this->api(self::REQUEST_POST,
+                            "/rest/api/2/issue/" . $issue . "/remotelink",
+                            $options, true);
     }
 
     /**
      * send request to specified host
      *
      * @param string $method
-     * @param $url
+     * @param string $url
      * @param array $data
      * @param bool $return_as_json
-     * @return mixed
+     * @param bool $isfile
+     * @param bool $debug
+     * @return Result|false|mixed
+     * @throws Exception
      */
     public function api(
         $method = self::REQUEST_GET,
@@ -469,6 +630,10 @@ class Api
 
         if (strlen($result)) {
             $json = json_decode($result, true);
+            if (!is_array($json)) {
+                 throw new Exception("JIRA Rest server returns unexpected result: " . $result);
+            }
+
             if ($this->options & self::AUTOMAP_FIELDS) {
                 if (isset($json['issues'])) {
                     if (!count($this->fields)) {
@@ -547,31 +712,9 @@ class Api
      * @param $issueKey
      * @return mixed
      *
-     * @TODO: should have parameters? (e.g comment)
      */
     public function closeIssue($issueKey)
     {
-        $result = array();
-        //  get available transitions
-        $tmp_transitions = $this->getTransitions($issueKey, array());
-        $tmp_transitions_result = $tmp_transitions->getResult();
-        $transitions = $tmp_transitions_result['transitions'];
-
-        //  search id for closing ticket
-        foreach ($transitions as $v) {
-            //  Close ticket if required id was found
-            if ($v['name'] == "Close Issue") {
-                $result = $this->transition(
-                    $issueKey,
-                    array(
-                        'transition' => array(
-                            'id' => $v['id']
-                        )
-                    )
-                );
-                break;
-            }
-        }
-        return $result;
+        return $this->transitionByStepName($issueKey,'Close Issue');
     }
 }

@@ -38,6 +38,8 @@ class IssueType
 
     protected $subtask;
 
+    protected $avatarId;
+
     private $acceptable_keys = array(
         "self",
         "id",
@@ -45,6 +47,7 @@ class IssueType
         "iconUrl",
         "name",
         "subtask",
+        "avatarId",
     );
 
     public function __construct($types)
@@ -81,5 +84,10 @@ class IssueType
     public function getIconUrl()
     {
         return $this->iconUrl;
+    }
+
+    public function getAvatarId()
+    {
+        return $this->avatarId;
     }
 }

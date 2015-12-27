@@ -23,6 +23,11 @@
             "chobie\\" : "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "chobie\\Tests\\": "tests"
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.0-dev"

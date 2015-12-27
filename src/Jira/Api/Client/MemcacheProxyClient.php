@@ -25,7 +25,6 @@
 namespace chobie\Jira\Api\Client;
 
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
-use chobie\Jira\Api\Client\ClientInterface;
 
 class MemcacheProxyClient implements ClientInterface
 {
@@ -34,6 +33,9 @@ class MemcacheProxyClient implements ClientInterface
 
     /**
      * create a traditional php client
+     * @param ClientInterface $api
+     * @param $server
+     * @param $port
      */
     public function __construct(ClientInterface $api, $server, $port)
     {
@@ -49,9 +51,10 @@ class MemcacheProxyClient implements ClientInterface
      * @param $url
      * @param array $data
      * @param $endpoint
-     * @param $credential
+     * @param AuthenticationInterface $credential
+     * @param bool $isFile
+     * @param bool $debug
      * @return array|string
-     * @throws \Exception
      */
     public function sendRequest($method, $url, $data = array(), $endpoint, AuthenticationInterface $credential, $isFile = false, $debug = false)
     {
