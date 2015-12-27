@@ -26,7 +26,6 @@ namespace chobie\Jira\Api\Client;
 
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Authentication\Basic;
-use chobie\Jira\Api\Client\ClientInterface;
 use chobie\Jira\Api\Exception;
 use chobie\Jira\Api\UnauthorizedException;
 
@@ -55,10 +54,6 @@ class CurlClient implements ClientInterface
      */
     public function sendRequest($method, $url, $data = array(), $endpoint, AuthenticationInterface $credential, $isFile = false, $debug = false)
     {
-        if (!($credential instanceof Basic)) {
-            throw new \Exception(sprintf("CurlClient does not support %s authentication.", get_class($credential)));
-        }
-
         $curl = curl_init();
 
         if ($method == "GET") {
@@ -68,7 +63,9 @@ class CurlClient implements ClientInterface
         curl_setopt($curl, CURLOPT_URL, $endpoint . $url);
         curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_USERPWD, sprintf("%s:%s", $credential->getId(), $credential->getPassword()));
+        if ($credential instanceof Basic) {
+            curl_setopt($curl, CURLOPT_USERPWD, sprintf("%s:%s", $credential->getId(), $credential->getPassword()));
+        }
         curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
