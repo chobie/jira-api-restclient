@@ -35,10 +35,10 @@ interface ClientInterface
      * @param $url
      * @param array $data
      * @param $endpoint
-     * @param $credential
+     * @param AuthenticationInterface $credential
+     * @param bool $isFile
+     * @param bool $debug
      * @return array|string
-     *
-     * @throws \Exception
      */
     public function sendRequest($method, $url, $data = array(), $endpoint, AuthenticationInterface $credential, $isFile = false, $debug = false);
 }

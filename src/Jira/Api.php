@@ -262,12 +262,19 @@ class Api
         array $issuetypeNames = null,
         array $expand = null
     ) {
-        // Create comma seperated query parameters for the supplied filters
+        // Create comma separated query parameters for the supplied filters
         $data = array();
-        foreach (array("projectIds", "projectKeys", "issuetypeIds", "issuetypeNames", "expand") as $parameterName)
-            if (${$parameterName} !== null) {
-                $data[$parameterName] = implode(",", ${$parameterName});
-            }
+
+        if($projectIds !== null)
+            $data["projectIds"] = implode(",", $projectIds);
+        if($projectKeys !== null)
+            $data["projectKeys"] = implode(",", $projectKeys);
+        if($issuetypeIds !== null)
+            $data["issuetypeIds"] = implode(",", $issuetypeIds);
+        if($issuetypeNames !== null)
+            $data["issuetypeNames"] = implode(",", $issuetypeNames);
+        if($expand !== null)
+            $data["expand"] = implode(",", $expand);
 
         $result = $this->api(self::REQUEST_GET, "/rest/api/2/issue/createmeta", $data, true);
         return $result;
@@ -560,12 +567,12 @@ class Api
     }
 
     /**
-     * create a remote link
+     * Create a remote link
      *
      * @param $issue
      * @param array $object
      * @param string $relationship
-     * @param string globalid
+     * @param string $globalid
      * @param array $application
      * @return mixed
      */
@@ -600,7 +607,8 @@ class Api
      * @param bool $return_as_json
      * @param bool $isfile
      * @param bool $debug
-     * @return Result|mixed|false
+     * @return Result|false|mixed
+     * @throws Exception
      */
     public function api(
         $method = self::REQUEST_GET,
