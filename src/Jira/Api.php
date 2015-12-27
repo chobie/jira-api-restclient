@@ -72,6 +72,9 @@ class Api
         AuthenticationInterface $authentication,
         ClientInterface $client = null
     ) {
+        //Regular expression to remove trailing slash
+        $endpoint = preg_replace('{/$}', '', $endpoint);
+        
         $this->setEndPoint($endpoint);
         $this->authentication = $authentication;
 
@@ -148,6 +151,24 @@ class Api
     {
         return $this->api(self::REQUEST_PUT, sprintf("/rest/api/2/issue/%s", $issueKey), $params);
     }
+
+
+     /**
+     * Delete issue
+     *
+     * @param $issueKey should be YOURPROJ-221
+     * @param $deleteSubtasks if all subtask should be deleted
+     * @return mixed
+     */
+    public function deleteIssue($issueKey, $deleteSubtasks = 'true')
+    {
+        return $this->api(
+            self::REQUEST_DELETE, sprintf("/rest/api/2/issue/%s", $issueKey), 
+            array (
+                'deleteSubtasks' => $deleteSubtasks
+                )
+        );
+    }   
 
 
     public function getAttachment($attachmentId)
@@ -238,6 +259,20 @@ class Api
         }
         return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/comment", $issueKey), $params);
     }
+    
+    /**
+     * get all worklogs for an issue
+     *
+     * issue key should be YOURPROJ-22
+     *
+     * @param $issueKey
+     * @param $params
+     * @return mixed
+     */
+    public function getWorklogs($issueKey, $params)
+    {
+        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/worklog", $issueKey), $params);
+    }
 
     /**
      * get available transitions for a ticket
@@ -253,6 +288,8 @@ class Api
         return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/transitions", $issueKey), $params);
     }
 
+
+
     /**
      * transation a ticket
      *
@@ -265,6 +302,43 @@ class Api
     public function transition($issueKey, $params)
     {
         return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/transitions", $issueKey), $params);
+    }
+
+    /**
+     * transation by step name
+     *
+     *
+     * @param $issueKey like YOURPROJ-22
+     * @param $stepName Step name like 'Done' or 'To Do'
+     * @param $params (array of parameters from JIRA API)
+     * @return mixed
+     */
+    public function transitionByStepName($issueKey, $stepName, $params = array())
+    {
+         $result = array();
+        //  get available transitions
+        $tmp_transitions = $this->getTransitions($issueKey, array());
+        $tmp_transitions_result = $tmp_transitions->getResult();
+        $transitions = $tmp_transitions_result['transitions'];
+
+        //  search id for closing ticket
+        foreach ($transitions as $v) {
+            //  Close ticket if required id was found
+            if ($v['name'] == $stepName) {
+                $result = $this->transition(
+                    $issueKey,
+                    array_merge($params,
+                        array(
+                            'transition' => array(
+                            'id' => $v['id']
+                            )
+                        )
+                    )
+                );
+                break;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -433,7 +507,7 @@ class Api
     {
         $options = array_merge(
             array(
-                "file" => '@' . $filename,
+                "file" => '@' . $filename . ';filename=' . pathinfo($filename, PATHINFO_BASENAME),
             ),
             $options
         );
@@ -547,31 +621,9 @@ class Api
      * @param $issueKey
      * @return mixed
      *
-     * @TODO: should have parameters? (e.g comment)
      */
     public function closeIssue($issueKey)
     {
-        $result = array();
-        //  get available transitions
-        $tmp_transitions = $this->getTransitions($issueKey, array());
-        $tmp_transitions_result = $tmp_transitions->getResult();
-        $transitions = $tmp_transitions_result['transitions'];
-
-        //  search id for closing ticket
-        foreach ($transitions as $v) {
-            //  Close ticket if required id was found
-            if ($v['name'] == "Close Issue") {
-                $result = $this->transition(
-                    $issueKey,
-                    array(
-                        'transition' => array(
-                            'id' => $v['id']
-                        )
-                    )
-                );
-                break;
-            }
-        }
-        return $result;
+        return $this->transitionByStepName($issueKey,'Close Issue');
     }
 }
