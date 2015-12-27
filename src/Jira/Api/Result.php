@@ -61,20 +61,27 @@ class Result
         return $this->total;
     }
 
+    /**
+     * @return int
+     */
     public function getIssuesCount()
     {
         return count($this->getIssues());
     }
 
+    /**
+     * @return Issue[]
+     */
     public function getIssues()
     {
+        $result = array();
         if (isset($this->result['issues'])) {
-            $result = array();
             foreach ($this->result['issues'] as $issue) {
                 $result[] = new Issue($issue);
             }
-            return $result;
         }
+
+    return $result;
     }
 
     public function getResult()
