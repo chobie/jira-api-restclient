@@ -466,16 +466,13 @@ class Api
      * @param string $issue Jira Issue key
      * @param string $filename Path to file
      * @param array $options
-     * @param string $uploadFileName The file name to be used as attachment name
      * @return mixed
      */
-    public function createAttachment($issue, $filename, $options = array(), $uploadFileName = null)
+    public function createAttachment($issue, $filename, $options = array())
     {
-        $cFile = $this->getCurlValue($filename, null, $uploadFileName);
-
         $options = array_merge(
             array(
-                "file" => $cFile,
+                "file" => '@' . $filename
             ),
             $options
         );
@@ -618,34 +615,5 @@ class Api
             }
         }
         return $result;
-    }
-
-    /**
-     * Helper function courtesy of
-     * https://github.com/guzzle/guzzle/blob/3a0787217e6c0246b457e637ddd33332efea1d2a/src/Guzzle/Http/Message/PostFile.php#L90
-     *
-     * @param string $fileName
-     * @param string $contentType
-     * @param string|null $postName
-     * @return \CURLFile|string
-     */
-    protected function getCurlValue($fileName, $contentType, $postName = null)
-    {
-        if ($postName === null) {
-            $postName = basename($fileName);
-        }
-        // PHP 5.5 introduced a CurlFile object that deprecates the old @filename syntax
-        // See: https://wiki.php.net/rfc/curl-file-upload
-        if (function_exists('curl_file_create')) {
-            return curl_file_create($fileName, $contentType, $postName);
-        }
-
-        // Use the old style if using an older version of PHP
-        $value = "@{$fileName};filename=" . $postName;
-        if ($contentType) {
-            $value .= ';type=' . $contentType;
-        }
-
-        return $value;
     }
 }
