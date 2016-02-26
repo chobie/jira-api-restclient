@@ -99,7 +99,7 @@ class PHPClient implements ClientInterface
                 $header[] = 'Content-Type: multipart/form-data; boundary=' . $boundary;
 
                 $__data = "--" . $boundary . "\r\n" .
-                    "Content-Disposition: form-data; name=\"file\"; filename=\"" . $filename . "\"\r\n" .
+                    "Content-Disposition: form-data; name=\"file\"; filename=\"" . basename($filename) . "\"\r\n" .
                     "Content-Type: application/octet-stream\r\n\r\n" .
                     file_get_contents($filename) . "\r\n";
                 $__data .= "--" . $boundary . "--\r\n";
