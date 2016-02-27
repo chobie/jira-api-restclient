@@ -72,6 +72,9 @@ class Api
         AuthenticationInterface $authentication,
         ClientInterface $client = null
     ) {
+        //Regular expression to remove trailing slash
+        $endpoint = preg_replace('{/$}', '', $endpoint);
+        
         $this->setEndPoint($endpoint);
         $this->authentication = $authentication;
 
@@ -148,6 +151,24 @@ class Api
     {
         return $this->api(self::REQUEST_PUT, sprintf("/rest/api/2/issue/%s", $issueKey), $params);
     }
+
+
+     /**
+     * Delete issue
+     *
+     * @param $issueKey should be YOURPROJ-221
+     * @param $deleteSubtasks if all subtask should be deleted
+     * @return mixed
+     */
+    public function deleteIssue($issueKey, $deleteSubtasks = 'true')
+    {
+        return $this->api(
+            self::REQUEST_DELETE, sprintf("/rest/api/2/issue/%s", $issueKey), 
+            array (
+                'deleteSubtasks' => $deleteSubtasks
+                )
+        );
+    }   
 
 
     public function getAttachment($attachmentId)
@@ -237,6 +258,20 @@ class Api
             );
         }
         return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/comment", $issueKey), $params);
+    }
+    
+    /**
+     * get all worklogs for an issue
+     *
+     * issue key should be YOURPROJ-22
+     *
+     * @param $issueKey
+     * @param $params
+     * @return mixed
+     */
+    public function getWorklogs($issueKey, $params)
+    {
+        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/worklog", $issueKey), $params);
     }
 
     /**
