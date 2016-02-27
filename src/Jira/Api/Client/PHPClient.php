@@ -38,7 +38,7 @@ class PHPClient implements ClientInterface
     public function __construct()
     {
         $wrappers = stream_get_wrappers();
-        if (in_array("https", $wrappers)) {
+        if (in_array('https', $wrappers)) {
             $this->https_support = true;
         }
 
@@ -70,38 +70,38 @@ class PHPClient implements ClientInterface
         $debug = false
     ) {
         if (!($credential instanceof Basic) && !($credential instanceof Anonymous)) {
-            throw new \Exception(sprintf("PHPClient does not support %s authentication.", get_class($credential)));
+            throw new \Exception(sprintf('PHPClient does not support %s authentication.', get_class($credential)));
         }
 
         $header = array();
         if (!($credential instanceof Anonymous)) {
-            $header[] = "Authorization: Basic " . $credential->getCredential();
+            $header[] = 'Authorization: Basic ' . $credential->getCredential();
         }
 
         $context = array(
-            "http" => array(
-                "method" => $method,
-                "header" => join("\r\n", $header),
+            'http' => array(
+                'method' => $method,
+                'header' => join("\r\n", $header),
             )
         );
 
 
         if (!$isFile) {
-            $header[] = "Content-Type: application/json;charset=UTF-8";
+            $header[] = 'Content-Type: application/json;charset=UTF-8';
         }
 
-        if ($method == "POST" || $method == "PUT") {
+        if ($method == 'POST' || $method == 'PUT') {
             if ($isFile) {
-                $filename = preg_replace("/^@/", "", $data['file']);
+                $filename = preg_replace('/^@/', '', $data['file']);
                 $boundary = '--------------------------' . microtime(true);
-                $header[] = "X-Atlassian-Token: nocheck";
+                $header[] = 'X-Atlassian-Token: nocheck';
                 $header[] = 'Content-Type: multipart/form-data; boundary=' . $boundary;
 
-                $__data = "--" . $boundary . "\r\n" .
-                    "Content-Disposition: form-data; name=\"file\"; filename=\"" . basename($filename) . "\"\r\n" .
+                $__data = '--' . $boundary . "\r\n" .
+                    'Content-Disposition: form-data; name="file"; filename="' . basename($filename) . "\"\r\n" .
                     "Content-Type: application/octet-stream\r\n\r\n" .
                     file_get_contents($filename) . "\r\n";
-                $__data .= "--" . $boundary . "--\r\n";
+                $__data .= '--' . $boundary . "--\r\n";
             } else {
                 $__data = json_encode($data);
             }
@@ -110,15 +110,15 @@ class PHPClient implements ClientInterface
             $context['http']['header'] = join("\r\n", $header);
             $context['http']['content'] = $__data;
         } else {
-            $url .= "?" . http_build_query($data);
+            $url .= '?' . http_build_query($data);
         }
 
-        if (strpos($endpoint, "https://") === 0 && !$this->isSupportHttps()) {
-            throw new \Exception("does not support https wrapper. please enable openssl extension");
+        if (strpos($endpoint, 'https://') === 0 && !$this->isSupportHttps()) {
+            throw new \Exception('does not support https wrapper. please enable openssl extension');
         }
 
 
-        set_error_handler(array($this, "errorHandler"));
+        set_error_handler(array($this, 'errorHandler'));
         $data = file_get_contents(
             $endpoint . $url,
             false,
@@ -127,7 +127,7 @@ class PHPClient implements ClientInterface
         restore_error_handler();
 
         if (is_null($data)) {
-            throw new \Exception("JIRA Rest server returns unexpected result.");
+            throw new \Exception('JIRA Rest server returns unexpected result.');
         }
 
         return $data;

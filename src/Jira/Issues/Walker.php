@@ -197,7 +197,7 @@ class Walker implements \Iterator
         if (is_callable($callable)) {
             $this->callback = $callable;
         } else {
-            throw new \Exception("passed argument is not callable");
+            throw new \Exception('passed argument is not callable');
         }
     }
 

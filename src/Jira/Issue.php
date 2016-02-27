@@ -50,7 +50,7 @@ class Issue
     public function __construct($issue = array())
     {
         if (isset($issue['expand'])) {
-            $this->expand = explode(",", $issue['expand']);
+            $this->expand = explode(',', $issue['expand']);
             unset($issue['expand']);
         }
         if (isset($issue['id'])) {
