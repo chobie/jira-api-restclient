@@ -75,6 +75,8 @@ class Result
             }
             return $result;
         }
+
+        return array();
     }
 
     public function getResult()

@@ -49,5 +49,4 @@ class Basic implements AuthenticationInterface
     {
         return $this->password;
     }
-
 }

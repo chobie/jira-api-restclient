@@ -212,10 +212,11 @@ class Api
     ) {
         // Create comma seperated query parameters for the supplied filters
         $data = array();
-        foreach (array("projectIds", "projectKeys", "issuetypeIds", "issuetypeNames", "expand") as $parameterName)
+        foreach (array("projectIds", "projectKeys", "issuetypeIds", "issuetypeNames", "expand") as $parameterName) {
             if (${$parameterName} !== null) {
                 $data[$parameterName] = implode(",", ${$parameterName});
             }
+        }
 
         $result = $this->api(self::REQUEST_GET, "/rest/api/2/issue/createmeta", $data, true);
         return $result;
@@ -241,7 +242,7 @@ class Api
         }
         return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/comment", $issueKey), $params);
     }
-    
+
     /**
      * get all worklogs for an issue
      *
@@ -393,7 +394,7 @@ class Api
      * @param $maxResult
      * @param string $fields
      *
-     * @return Jira_API_Result
+     * @return Result
      */
     public function search($jql, $startAt = 0, $maxResult = 20, $fields = '*navigable')
     {
@@ -543,16 +544,15 @@ class Api
 
     public function downloadAttachment($url)
     {
-        $result = $this->client->sendRequest
-            (
-                self::REQUEST_GET,
-                $url,
-                array(),
-                null,
-                $this->authentication,
-                true,
-                false
-            );
+        $result = $this->client->sendRequest(
+            self::REQUEST_GET,
+            $url,
+            array(),
+            null,
+            $this->authentication,
+            true,
+            false
+        );
 
         return $result;
     }

@@ -40,5 +40,13 @@ interface ClientInterface
      *
      * @throws \Exception
      */
-    public function sendRequest($method, $url, $data = array(), $endpoint, AuthenticationInterface $credential, $isFile = false, $debug = false);
+    public function sendRequest(
+        $method,
+        $url,
+        $data = array(),
+        $endpoint,
+        AuthenticationInterface $credential,
+        $isFile = false,
+        $debug = false
+    );
 }

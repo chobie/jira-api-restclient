@@ -190,7 +190,7 @@ class Walker implements \Iterator
 
     /**
      * @param $callable
-     * @throws Exception
+     * @throws \Exception
      */
     public function setDelegate($callable)
     {

@@ -120,9 +120,7 @@ class Issue
      */
     public function getSummary()
     {
-        if (isset($this->fields['Summary'])) {
-            return $this->fields['Summary'];
-        }
+        return $this->get('Summary');
     }
 
     /**
@@ -132,9 +130,7 @@ class Issue
      */
     public function getIssueType()
     {
-        if (isset($this->fields['Issue Type'])) {
-            return $this->fields['Issue Type'];
-        }
+        return $this->get('Issue Type');
     }
 
     /**
@@ -144,9 +140,7 @@ class Issue
      */
     public function getReporter()
     {
-        if (isset($this->fields['Reporter'])) {
-            return $this->fields['Reporter'];
-        }
+        return $this->get('Reporter');
     }
 
     /**
@@ -156,9 +150,7 @@ class Issue
      */
     public function getCreated()
     {
-        if (isset($this->fields['Created'])) {
-            return $this->fields['Created'];
-        }
+        return $this->get('Created');
     }
 
     /**
@@ -169,9 +161,7 @@ class Issue
 
     public function getAssignee()
     {
-        if (isset($this->fields['Assignee'])) {
-            return $this->fields['Assignee'];
-        }
+        return $this->get('Assignee');
     }
 
     /**
@@ -181,9 +171,7 @@ class Issue
      */
     public function getUpdated()
     {
-        if (isset($this->fields['Updated'])) {
-            return $this->fields['Updated'];
-        }
+        return $this->get('Updated');
     }
 
     /**
@@ -193,9 +181,7 @@ class Issue
      */
     public function getPriority()
     {
-        if (isset($this->fields['Priority'])) {
-            return $this->fields['Priority'];
-        }
+        return $this->get('Priority');
     }
 
     /**
@@ -205,9 +191,7 @@ class Issue
      */
     public function getDescription()
     {
-        if (isset($this->fields['Description'])) {
-            return $this->fields['Description'];
-        }
+        return $this->get('Description');
     }
 
     /**
@@ -217,9 +201,7 @@ class Issue
      */
     public function getStatus()
     {
-        if (isset($this->fields['Status'])) {
-            return $this->fields['Status'];
-        }
+        return $this->get('Status');
     }
 
     /**
@@ -229,9 +211,7 @@ class Issue
      */
     public function getLabels()
     {
-        if (isset($this->fields['Labels'])) {
-            return $this->fields['Labels'];
-        }
+        return $this->get('Labels');
     }
 
     /**
@@ -241,9 +221,7 @@ class Issue
      */
     public function getProject()
     {
-        if (isset($this->fields['Project'])) {
-            return $this->fields['Project'];
-        }
+        return $this->get('Project');
     }
 
     /**
@@ -253,9 +231,7 @@ class Issue
      */
     public function getFixVersions()
     {
-        if (isset($this->fields['Fix Version/s'])) {
-            return $this->fields['Fix Version/s'];
-        }
+        return $this->get('Fix Version/s');
     }
 
     /**
@@ -265,9 +241,7 @@ class Issue
      */
     public function getResolution()
     {
-        if (isset($this->fields['Resolution'])) {
-            return $this->fields['Resolution'];
-        }
+        return $this->get('Resolution');
     }
 
     /**
@@ -279,9 +253,7 @@ class Issue
      */
     public function getResolutionDate()
     {
-        if (isset($this->fields['Resolutiondate'])) {
-            return $this->fields['Resolutiondate'];
-        }
+        return $this->get('Resolutiondate');
     }
 
     /**
@@ -291,9 +263,7 @@ class Issue
      */
     public function getWatchers()
     {
-        if (isset($this->fields['Watchers'])) {
-            return $this->fields['Watchers'];
-        }
+        return $this->get('Watchers');
     }
 
     /**
@@ -303,9 +273,7 @@ class Issue
      */
     public function getDueDate()
     {
-        if (isset($this->fields['Due Date'])) {
-            return $this->fields['Due Date'];
-        }
+        return $this->get('Due Date');
     }
 
     /**
@@ -327,5 +295,7 @@ class Issue
         if (isset($this->fields[$key])) {
             return $this->fields[$key];
         }
+
+        return null;
     }
 }

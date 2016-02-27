@@ -27,7 +27,6 @@ namespace chobie\Jira\Api\Client;
 use chobie\Jira\Api\Authentication\Anonymous;
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Authentication\Basic;
-use chobie\Jira\Api\Client\ClientInterface;
 
 class PHPClient implements ClientInterface
 {
