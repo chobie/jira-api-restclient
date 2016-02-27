@@ -458,6 +458,38 @@ class Api
     }
 
     /**
+     * create a remote link
+     *
+     * @param $issue
+     * @param array $object
+     * @param string $relationship
+     * @param string globalid
+     * @param array $application
+     * @return mixed
+     */
+    public function createRemotelink(
+            $issue,
+            $object = array(),
+            $relationship = null,
+            $globalid = null,
+            $application = null
+    ) {
+        $options = array(
+                        "globalid" => $globalid,
+                        "relationship" => $relationship,
+                        "object" => $object
+                    );
+
+        if (!is_null($application)) {
+            $options['application'] = $application;
+        }
+
+        return $this->api(self::REQUEST_POST,
+                            "/rest/api/2/issue/" . $issue . "/remotelink",
+                            $options, true);
+    }
+
+    /**
      * send request to specified host
      *
      * @param string $method
