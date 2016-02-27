@@ -157,14 +157,14 @@ class Api
         return $result;
     }
 
-    public function getProjects()
+    public function getProjects($expand = '')
     {
-        return $this->api(self::REQUEST_GET, "/rest/api/2/project");
+        return $this->api(self::REQUEST_GET, "/rest/api/2/project",array('expand' => $expand), true);
     }
 
-    public function getProject($projectKey)
+    public function getProject($projectKey, $expand = '')
     {
-        $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}", array(), true);
+        $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}", array('expand' => $expand)), true);
 
         return $result;
     }
