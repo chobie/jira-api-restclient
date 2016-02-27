@@ -1,5 +1,5 @@
 {
-    "name": "chobie/jira-api-restclient",
+    "name": "dermika/jira-api-restclient",
     "description": "JIRA REST API.",
     "keywords": ["jira","rest","api"],
     "type": "library",
@@ -9,6 +9,10 @@
             "name": "Shuhei Tanuma",
             "homepage": "http://chobie.github.io/",
             "email": "chobieeee@php.net"
+        },
+		{
+            "name": "DerMika",
+            "email": "dieter@dermika.be"
         }
     ],
     "minimum-stability": "dev",

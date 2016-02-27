@@ -42,13 +42,16 @@ class CurlClient implements ClientInterface
     /**
      * send request to the api server
      *
-     * @param $method
-     * @param $url
+     * @param string $method
+     * @param string $url
      * @param array $data
-     * @param $endpoint
-     * @param $credential
+     * @param string $endpoint
+     * @param AuthenticationInterface $credential
+     * @param boolean $isFile
+     * @param boolean $debug
      * @return array|string
-     * @throws Exception
+     * @throws \Exception
+     * @throws UnauthorizedException
      */
     public function sendRequest($method, $url, $data = array(), $endpoint, AuthenticationInterface $credential, $isFile = false, $debug = false)
     {
