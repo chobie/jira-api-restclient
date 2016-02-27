@@ -18,12 +18,12 @@ composer require chobie/jira-api-restclient 2.0.*
 
 ````php
 <?php
-$api = new chobie\Jira\Api(
+$api = new \chobie\Jira\Api(
     "https://your-jira-project.net",
-    new chobie\Jira\Api\Authentication\Basic("yourname", "password")
+    new \chobie\Jira\Api\Authentication\Basic("yourname", "password")
 );
 
-$walker = new chobie\Jira\Issues\Walker($api);
+$walker = new \chobie\Jira\Issues\Walker($api);
 $walker->push("project = YOURPROJECT AND (status != closed and status != resolved) ORDER BY priority DESC");
 foreach ($walker as $issue) {
     var_dump($issue);
