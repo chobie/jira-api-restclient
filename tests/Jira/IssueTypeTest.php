@@ -1,6 +1,6 @@
 <?php
 
-namespace chobie\Tests\Jira;
+namespace Tests\chobie\Jira;
 
 use chobie\Jira\IssueType;
 
