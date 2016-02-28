@@ -25,7 +25,6 @@
 namespace chobie\Jira\Api\Client;
 
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
-use chobie\Jira\Api\Client\ClientInterface;
 
 class MemcacheProxyClient implements ClientInterface
 {
@@ -53,9 +52,16 @@ class MemcacheProxyClient implements ClientInterface
      * @return array|string
      * @throws \Exception
      */
-    public function sendRequest($method, $url, $data = array(), $endpoint, AuthenticationInterface $credential, $isFile = false, $debug = false)
-    {
-        if ($method == "GET") {
+    public function sendRequest(
+        $method,
+        $url,
+        $data = array(),
+        $endpoint,
+        AuthenticationInterface $credential,
+        $isFile = false,
+        $debug = false
+    ) {
+        if ($method == 'GET') {
             if ($result = $this->getFromCache($url, $data, $endpoint)) {
                 //$this->setCache($url, $data, $endpoint, $result);
                 return $result;
@@ -63,7 +69,7 @@ class MemcacheProxyClient implements ClientInterface
         }
         $result = $this->api->sendRequest($method, $url, $data, $endpoint, $credential);
 
-        if ($method == "GET") {
+        if ($method == 'GET') {
             $this->setCache($url, $data, $endpoint, $result);
         }
         return $result;
@@ -75,7 +81,7 @@ class MemcacheProxyClient implements ClientInterface
         $key .= http_build_query($data);
         $key = sha1($key);
 
-        return $this->mc->get("jira:cache:" . $key);
+        return $this->mc->get('jira:cache:' . $key);
     }
 
     protected function setCache($url, $data, $endpoint, $result)
@@ -84,7 +90,6 @@ class MemcacheProxyClient implements ClientInterface
         $key .= http_build_query($data);
         $key = sha1($key);
 
-        return $this->mc->set("jira:cache:" . $key, $result, 86400);
+        return $this->mc->set('jira:cache:' . $key, $result, 86400);
     }
-
 }

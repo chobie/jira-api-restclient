@@ -41,13 +41,13 @@ class IssueType
     protected $avatarId;
 
     private $acceptable_keys = array(
-        "self",
-        "id",
-        "description",
-        "iconUrl",
-        "name",
-        "subtask",
-        "avatarId",
+        'self',
+        'id',
+        'description',
+        'iconUrl',
+        'name',
+        'subtask',
+        'avatarId',
     );
 
     public function __construct($types)

@@ -38,7 +38,7 @@ class Result
     public function __construct($result)
     {
         if (isset($result['expand'])) {
-            $this->expand = explode(",", $result['expand']);
+            $this->expand = explode(',', $result['expand']);
         }
 
         if (isset($result['startAt'])) {
@@ -75,6 +75,8 @@ class Result
             }
             return $result;
         }
+
+        return array();
     }
 
     public function getResult()

@@ -43,5 +43,4 @@ class Anonymous implements AuthenticationInterface
     {
         return null;
     }
-
 }

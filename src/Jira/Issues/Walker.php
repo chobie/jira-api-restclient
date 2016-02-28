@@ -190,14 +190,14 @@ class Walker implements \Iterator
 
     /**
      * @param $callable
-     * @throws Exception
+     * @throws \Exception
      */
     public function setDelegate($callable)
     {
         if (is_callable($callable)) {
             $this->callback = $callable;
         } else {
-            throw new \Exception("passed argument is not callable");
+            throw new \Exception('passed argument is not callable');
         }
     }
 

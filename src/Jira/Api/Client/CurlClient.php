@@ -26,7 +26,6 @@ namespace chobie\Jira\Api\Client;
 
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Authentication\Basic;
-use chobie\Jira\Api\Client\ClientInterface;
 use chobie\Jira\Api\Exception;
 use chobie\Jira\Api\UnauthorizedException;
 
@@ -50,22 +49,29 @@ class CurlClient implements ClientInterface
      * @return array|string
      * @throws Exception
      */
-    public function sendRequest($method, $url, $data = array(), $endpoint, AuthenticationInterface $credential, $isFile = false, $debug = false)
-    {
+    public function sendRequest(
+        $method,
+        $url,
+        $data = array(),
+        $endpoint,
+        AuthenticationInterface $credential,
+        $isFile = false,
+        $debug = false
+    ) {
         if (!($credential instanceof Basic)) {
-            throw new \Exception(sprintf("CurlClient does not support %s authentication.", get_class($credential)));
+            throw new \Exception(sprintf('CurlClient does not support %s authentication.', get_class($credential)));
         }
 
         $curl = curl_init();
 
-        if ($method == "GET") {
-            $url .= "?" . http_build_query($data);
+        if ($method == 'GET') {
+            $url .= '?' . http_build_query($data);
         }
 
         curl_setopt($curl, CURLOPT_URL, $endpoint . $url);
         curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_USERPWD, sprintf("%s:%s", $credential->getId(), $credential->getPassword()));
+        curl_setopt($curl, CURLOPT_USERPWD, sprintf('%s:%s', $credential->getId(), $credential->getPassword()));
         curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
@@ -76,17 +82,17 @@ class CurlClient implements ClientInterface
             }
             curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-Atlassian-Token: nocheck'));
         } else {
-            curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: application/json;charset=UTF-8"));
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json;charset=UTF-8'));
         }
-        if ($method == "POST") {
+        if ($method == 'POST') {
             curl_setopt($curl, CURLOPT_POST, 1);
             if ($isFile) {
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
             } else {
                 curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
             }
-        } elseif ($method == "PUT") {
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+        } elseif ($method == 'PUT') {
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
             curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
         }
 
@@ -101,18 +107,16 @@ class CurlClient implements ClientInterface
 
         // if empty result and status != "204 No Content"
         if (curl_getinfo($curl, CURLINFO_HTTP_CODE) == 401) {
-            throw new UnauthorizedException("Unauthorized");
+            throw new UnauthorizedException('Unauthorized');
         }
-	if ($data === '' && !in_array(curl_getinfo($curl, CURLINFO_HTTP_CODE), array(201,204))) {
-            throw new Exception("JIRA Rest server returns unexpected result.");
+        if ($data === '' && !in_array(curl_getinfo($curl, CURLINFO_HTTP_CODE), array(201,204))) {
+            throw new Exception('JIRA Rest server returns unexpected result.');
         }
 
         if (is_null($data)) {
-            throw new Exception("JIRA Rest server returns unexpected result.");
+            throw new Exception('JIRA Rest server returns unexpected result.');
         }
 
         return $data;
     }
-
-
 }

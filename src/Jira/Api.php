@@ -31,10 +31,10 @@ use chobie\Jira\Api\Client\CurlClient;
 
 class Api
 {
-    const REQUEST_GET = "GET";
-    const REQUEST_POST = "POST";
-    const REQUEST_PUT = "PUT";
-    const REQUEST_DELETE = "DELETE";
+    const REQUEST_GET = 'GET';
+    const REQUEST_POST = 'POST';
+    const REQUEST_PUT = 'PUT';
+    const REQUEST_DELETE = 'DELETE';
 
 
     const AUTOMAP_FIELDS = 0x01;
@@ -118,7 +118,7 @@ class Api
     {
         if (!count($this->fields)) {
             $fields = array();
-            $_fields = $this->api(self::REQUEST_GET, "/rest/api/2/field", array());
+            $_fields = $this->api(self::REQUEST_GET, '/rest/api/2/field', array());
 
             /* set hash key as custom field id */
             foreach ($_fields->getResult() as $k => $v) {
@@ -141,12 +141,12 @@ class Api
      */
     public function getIssue($issueKey, $expand = '')
     {
-        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s", $issueKey), array('expand' => $expand));
+        return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/issue/%s', $issueKey), array('expand' => $expand));
     }
 
     public function editIssue($issueKey, $params)
     {
-        return $this->api(self::REQUEST_PUT, sprintf("/rest/api/2/issue/%s", $issueKey), $params);
+        return $this->api(self::REQUEST_PUT, sprintf('/rest/api/2/issue/%s', $issueKey), $params);
     }
 
 
@@ -159,7 +159,7 @@ class Api
 
     public function getProjects()
     {
-        return $this->api(self::REQUEST_GET, "/rest/api/2/project");
+        return $this->api(self::REQUEST_GET, '/rest/api/2/project');
     }
 
     public function getProject($projectKey)
@@ -212,12 +212,13 @@ class Api
     ) {
         // Create comma seperated query parameters for the supplied filters
         $data = array();
-        foreach (array("projectIds", "projectKeys", "issuetypeIds", "issuetypeNames", "expand") as $parameterName)
+        foreach (array('projectIds', 'projectKeys', 'issuetypeIds', 'issuetypeNames', 'expand') as $parameterName) {
             if (${$parameterName} !== null) {
-                $data[$parameterName] = implode(",", ${$parameterName});
+                $data[$parameterName] = implode(',', ${$parameterName});
             }
+        }
 
-        $result = $this->api(self::REQUEST_GET, "/rest/api/2/issue/createmeta", $data, true);
+        $result = $this->api(self::REQUEST_GET, '/rest/api/2/issue/createmeta', $data, true);
         return $result;
     }
 
@@ -239,9 +240,9 @@ class Api
                 'body' => $params
             );
         }
-        return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/comment", $issueKey), $params);
+        return $this->api(self::REQUEST_POST, sprintf('/rest/api/2/issue/%s/comment', $issueKey), $params);
     }
-    
+
     /**
      * get all worklogs for an issue
      *
@@ -253,7 +254,7 @@ class Api
      */
     public function getWorklogs($issueKey, $params)
     {
-        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/worklog", $issueKey), $params);
+        return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/issue/%s/worklog', $issueKey), $params);
     }
 
     /**
@@ -267,7 +268,7 @@ class Api
      */
     public function getTransitions($issueKey, $params)
     {
-        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/transitions", $issueKey), $params);
+        return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/issue/%s/transitions', $issueKey), $params);
     }
 
     /**
@@ -281,7 +282,7 @@ class Api
      */
     public function transition($issueKey, $params)
     {
-        return $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/transitions", $issueKey), $params);
+        return $this->api(self::REQUEST_POST, sprintf('/rest/api/2/issue/%s/transitions', $issueKey), $params);
     }
 
     /**
@@ -292,7 +293,7 @@ class Api
     public function getIssueTypes()
     {
         $result = array();
-        $types = $this->api(self::REQUEST_GET, "/rest/api/2/issuetype", array(), true);
+        $types = $this->api(self::REQUEST_GET, '/rest/api/2/issuetype', array(), true);
 
         foreach ($types as $issue_type) {
             $result[] = new IssueType($issue_type);
@@ -354,7 +355,7 @@ class Api
     {
         if (!count($this->statuses)) {
             $statuses = array();
-            $result = $this->api(self::REQUEST_GET, "/rest/api/2/status", array());
+            $result = $this->api(self::REQUEST_GET, '/rest/api/2/status', array());
             /* set hash key as custom field id */
             foreach ($result->getResult() as $k => $v) {
                 $statuses[$v['id']] = $v;
@@ -377,12 +378,12 @@ class Api
     public function createIssue($projectKey, $summary, $issueType, $options = array())
     {
         $default = array(
-            "project" => array(
-                "key" => $projectKey,
+            'project' => array(
+                'key' => $projectKey,
             ),
-            "summary" => $summary,
-            "issuetype" => array(
-                "id" => $issueType,
+            'summary' => $summary,
+            'issuetype' => array(
+                'id' => $issueType,
             )
         );
 
@@ -390,9 +391,9 @@ class Api
 
         $result = $this->api(
             self::REQUEST_POST,
-            "/rest/api/2/issue/",
+            '/rest/api/2/issue/',
             array(
-                "fields" => $default
+                'fields' => $default
             )
         );
 
@@ -407,18 +408,18 @@ class Api
      * @param $maxResult
      * @param string $fields
      *
-     * @return Jira_API_Result
+     * @return Result
      */
     public function search($jql, $startAt = 0, $maxResult = 20, $fields = '*navigable')
     {
         $result = $this->api(
             self::REQUEST_GET,
-            "/rest/api/2/search",
+            '/rest/api/2/search',
             array(
-                "jql" => $jql,
-                "startAt" => $startAt,
-                "maxResults" => $maxResult,
-                "fields" => $fields,
+                'jql' => $jql,
+                'startAt' => $startAt,
+                'maxResults' => $maxResult,
+                'fields' => $fields,
             )
         );
 
@@ -437,18 +438,18 @@ class Api
     {
         $options = array_merge(
             array(
-                "name" => $name,
-                "description" => "",
-                "project" => $project_id,
+                'name' => $name,
+                'description' => '',
+                'project' => $project_id,
                 //"userReleaseDate" => "",
                 //"releaseDate"     => "",
-                "released" => false,
-                "archived" => false,
+                'released' => false,
+                'archived' => false,
             ),
             $options
         );
 
-        return $this->api(self::REQUEST_POST, "/rest/api/2/version", $options);
+        return $this->api(self::REQUEST_POST, '/rest/api/2/version', $options);
     }
 
 
@@ -464,11 +465,11 @@ class Api
     {
         $options = array_merge(
             array(
-                "file" => '@' . $filename,
+                'file' => '@' . $filename,
             ),
             $options
         );
-        return $this->api(self::REQUEST_POST, "/rest/api/2/issue/" . $issue . "/attachments", $options, false, true);
+        return $this->api(self::REQUEST_POST, '/rest/api/2/issue/' . $issue . '/attachments', $options, false, true);
     }
 
     /**
@@ -557,16 +558,15 @@ class Api
 
     public function downloadAttachment($url)
     {
-        $result = $this->client->sendRequest
-            (
-                self::REQUEST_GET,
-                $url,
-                array(),
-                null,
-                $this->authentication,
-                true,
-                false
-            );
+        $result = $this->client->sendRequest(
+            self::REQUEST_GET,
+            $url,
+            array(),
+            null,
+            $this->authentication,
+            true,
+            false
+        );
 
         return $result;
     }
@@ -599,7 +599,7 @@ class Api
     {
         $result = array();
         foreach ($watchers as $w) {
-            $result[] = $this->api(self::REQUEST_POST, sprintf("/rest/api/2/issue/%s/watchers", $issueKey), $w);
+            $result[] = $this->api(self::REQUEST_POST, sprintf('/rest/api/2/issue/%s/watchers', $issueKey), $w);
         }
         return $result;
     }
@@ -623,7 +623,7 @@ class Api
         //  search id for closing ticket
         foreach ($transitions as $v) {
             //  Close ticket if required id was found
-            if ($v['name'] == "Close Issue") {
+            if ($v['name'] == 'Close Issue') {
                 $result = $this->transition(
                     $issueKey,
                     array(
