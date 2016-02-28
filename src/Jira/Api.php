@@ -36,7 +36,6 @@ class Api
     const REQUEST_PUT = 'PUT';
     const REQUEST_DELETE = 'DELETE';
 
-
     const AUTOMAP_FIELDS = 0x01;
 
     /** @var string $endpoint */
@@ -61,9 +60,9 @@ class Api
     protected $statuses;
 
     /**
-     * create a jira api client.
+     * Create a JIRA API client.
      *
-     * @param $endpoint
+     * @param string $endpoint URL
      * @param AuthenticationInterface $authentication
      * @param ClientInterface $client
      */
@@ -82,15 +81,18 @@ class Api
         $this->client = $client;
     }
 
+    /**
+     * @param int $options
+     */
     public function setOptions($options)
     {
         $this->options = $options;
     }
 
     /**
-     * get endpoint url
+     * Get Endpoint URL
      *
-     * @return mixed
+     * @return string
      */
     public function getEndpoint()
     {
@@ -98,11 +100,11 @@ class Api
     }
 
     /**
-     * set end point url.
+     * Set Endpoint URL
      *
-     * @param $url
+     * @param string $url
      */
-    public function setEndPoint($url)
+    public function setEndpoint($url)
     {
         $this->fields = array();
 
@@ -110,7 +112,7 @@ class Api
     }
 
     /**
-     * get fields definitions.
+     * Get fields definitions.
      *
      * @return array
      */
@@ -131,54 +133,75 @@ class Api
     }
 
     /**
-     * get specified issue.
+     * Get specified issue.
      *
-     * issue key should be YOURPROJ-221
-     *
-     * @param $issueKey
-     * @param $expand
-     * @return mixed
+     * @param string $issueKey Issue key should be YOURPROJ-221
+     * @param string $expand
+     * @return Result|false
      */
     public function getIssue($issueKey, $expand = '')
     {
         return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/issue/%s', $issueKey), array('expand' => $expand));
     }
 
+    /**
+     * @param string $issueKey
+     * @param array $params
+     *
+     * @return Result|false
+     */
     public function editIssue($issueKey, $params)
     {
         return $this->api(self::REQUEST_PUT, sprintf('/rest/api/2/issue/%s', $issueKey), $params);
     }
 
-
+    /**
+     * @param string $attachmentId
+     *
+     * @return array|false
+     */
     public function getAttachment($attachmentId)
     {
-        $result = $this->api(self::REQUEST_GET, "/rest/api/2/attachment/$attachmentId", array(), true);
-
-        return $result;
+        return $this->api(self::REQUEST_GET, '/rest/api/2/attachment/' . $attachmentId, array(), true);
     }
 
+    /**
+     * @return Result|false
+     */
     public function getProjects()
     {
         return $this->api(self::REQUEST_GET, '/rest/api/2/project');
     }
 
+    /**
+     * @param string $projectKey
+     *
+     * @return array|false
+     */
     public function getProject($projectKey)
     {
-        $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}", array(), true);
-
-        return $result;
+        return $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}", array(), true);
     }
 
+    /**
+     * @param string $projectKey
+     *
+     * @return array|false
+     */
     public function getRoles($projectKey)
     {
-        $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/roles", array(), true);
-        return $result;
+        return $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/roles", array(), true);
     }
 
+    /**
+     * @param string $projectKey
+     * @param string $roleId
+     *
+     * @return array|false
+     */
     public function getRoleDetails($projectKey, $roleId)
     {
-        $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/role/{$roleId}", array(), true);
-        return $result;
+        return $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/role/{$roleId}", array(), true);
     }
 
     /**
@@ -201,7 +224,7 @@ class Api
      *                               but is NOT interpreted as a comma-separated list. Specifiying an issue type that does
      *                               not exist is not an error.
      * @param $expand array          Optional list of entities to expand in the response.
-     * @return string
+     * @return array|false
      */
     public function getCreateMeta(
         array $projectIds = null,
@@ -210,27 +233,39 @@ class Api
         array $issuetypeNames = null,
         array $expand = null
     ) {
-        // Create comma seperated query parameters for the supplied filters
+        // Create comma separated query parameters for the supplied filters
         $data = array();
-        foreach (array('projectIds', 'projectKeys', 'issuetypeIds', 'issuetypeNames', 'expand') as $parameterName) {
-            if (${$parameterName} !== null) {
-                $data[$parameterName] = implode(',', ${$parameterName});
-            }
+
+        if($projectIds !== null) {
+            $data['projectIds'] = implode(',', $projectIds);
         }
 
-        $result = $this->api(self::REQUEST_GET, '/rest/api/2/issue/createmeta', $data, true);
-        return $result;
+        if($projectKeys !== null) {
+            $data['projectKeys'] = implode(',', $projectKeys);
+        }
+
+        if($issuetypeIds !== null) {
+            $data['issuetypeIds'] = implode(',', $issuetypeIds);
+        }
+
+        if($issuetypeNames !== null) {
+            $data['issuetypeNames'] = implode(',', $issuetypeNames);
+        }
+
+        if($expand !== null) {
+            $data['expand'] = implode(',', $expand);
+        }
+
+        return $this->api(self::REQUEST_GET, '/rest/api/2/issue/createmeta', $data, true);
     }
 
 
     /**
-     * add a comment to a ticket
+     * Add a comment to a ticket
      *
-     * issue key should be YOURPROJ-221
-     *
-     * @param $issueKey
-     * @param $params
-     * @return mixed
+     * @param string $issueKey Issue key should be YOURPROJ-221
+     * @param array $params
+     * @return Result|false
      */
     public function addComment($issueKey, $params)
     {
@@ -244,13 +279,11 @@ class Api
     }
 
     /**
-     * get all worklogs for an issue
+     * Get all worklogs for an issue
      *
-     * issue key should be YOURPROJ-22
-     *
-     * @param $issueKey
+     * @param $issueKey Issue key should be YOURPROJ-22
      * @param $params
-     * @return mixed
+     * @return Result|false
      */
     public function getWorklogs($issueKey, $params)
     {
@@ -258,13 +291,11 @@ class Api
     }
 
     /**
-     * get available transitions for a ticket
+     * Get available transitions for a ticket
      *
-     * issue key should be YOURPROJ-22
-     *
-     * @param $issueKey
-     * @param $params
-     * @return mixed
+     * @param string $issueKey Issue key should be YOURPROJ-22
+     * @param array $params
+     * @return Result|false
      */
     public function getTransitions($issueKey, $params)
     {
@@ -272,13 +303,11 @@ class Api
     }
 
     /**
-     * transation a ticket
+     * Transition a ticket
      *
-     * issue key should be YOURPROJ-22
-     *
-     * @param $issueKey
-     * @param $params
-     * @return mixed
+     * @param string $issueKey Issue key should be YOURPROJ-22
+     * @param array $params
+     * @return Result|false
      */
     public function transition($issueKey, $params)
     {
@@ -286,9 +315,9 @@ class Api
     }
 
     /**
-     * get available issue types
+     * Get available issue types
      *
-     * @return mixed
+     * @return IssueType[]
      */
     public function getIssueTypes()
     {
@@ -303,14 +332,15 @@ class Api
     }
 
     /**
-     * get available versions
+     * Get available versions
      *
-     * @return mixed
+     * @param string $projectKey
+     *
+     * @return array|false
      */
     public function getVersions($projectKey)
     {
-        $result = $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/versions", array(), true);
-        return $result;
+        return $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/versions", array(), true);
     }
 
     /**
@@ -347,9 +377,9 @@ class Api
     }
 
     /**
-     * get available statuses
+     * Get available statuses
      *
-     * @return mixed
+     * @return array
      */
     public function getStatuses()
     {
@@ -367,13 +397,13 @@ class Api
 
 
     /**
-     * create an issue.
+     * Create an issue.
      *
-     * @param $projectKey
-     * @param $summary
-     * @param $issueType
+     * @param string $projectKey
+     * @param string $summary
+     * @param string $issueType
      * @param array $options
-     * @return mixed
+     * @return Result|false
      */
     public function createIssue($projectKey, $summary, $issueType, $options = array())
     {
@@ -401,14 +431,14 @@ class Api
     }
 
     /**
-     * query issues
+     * Query issues
      *
-     * @param $jql
-     * @param $startAt
-     * @param $maxResult
+     * @param string $jql
+     * @param int $startAt
+     * @param int $maxResult
      * @param string $fields
      *
-     * @return Result
+     * @return Result|false
      */
     public function search($jql, $startAt = 0, $maxResult = 20, $fields = '*navigable')
     {
@@ -427,20 +457,20 @@ class Api
     }
 
     /**
-     * create JIRA Version
+     * Create JIRA Version
      *
-     * @param $project_id
-     * @param $name
+     * @param string $projectId
+     * @param string $name
      * @param array $options
-     * @return mixed
+     * @return Result|false
      */
-    public function createVersion($project_id, $name, $options = array())
+    public function createVersion($projectId, $name, $options = array())
     {
         $options = array_merge(
             array(
                 'name' => $name,
                 'description' => '',
-                'project' => $project_id,
+                'project' => $projectId,
                 //"userReleaseDate" => "",
                 //"releaseDate"     => "",
                 'released' => false,
@@ -452,16 +482,15 @@ class Api
         return $this->api(self::REQUEST_POST, '/rest/api/2/version', $options);
     }
 
-
     /**
-     * create JIRA Attachment
+     * Create JIRA Attachment
      *
-     * @param $issue
-     * @param $filename
+     * @param string $issueKey
+     * @param string $filename
      * @param array $options
-     * @return mixed
+     * @return Result|false
      */
-    public function createAttachment($issue, $filename, $options = array())
+    public function createAttachment($issueKey, $filename, $options = array())
     {
         $options = array_merge(
             array(
@@ -469,21 +498,21 @@ class Api
             ),
             $options
         );
-        return $this->api(self::REQUEST_POST, '/rest/api/2/issue/' . $issue . '/attachments', $options, false, true);
+        return $this->api(self::REQUEST_POST, '/rest/api/2/issue/' . $issueKey . '/attachments', $options, false, true);
     }
 
     /**
-     * create a remote link
+     * Create a remote link
      *
-     * @param $issue
+     * @param string $issueKey
      * @param array $object
      * @param string $relationship
-     * @param string globalid
+     * @param string $globalid
      * @param array $application
-     * @return mixed
+     * @return array|false
      */
     public function createRemotelink(
-            $issue,
+            $issueKey,
             $object = array(),
             $relationship = null,
             $globalid = null,
@@ -499,19 +528,20 @@ class Api
             $options['application'] = $application;
         }
 
-        return $this->api(self::REQUEST_POST,
-                            "/rest/api/2/issue/" . $issue . "/remotelink",
-                            $options, true);
+        return $this->api(self::REQUEST_POST, "/rest/api/2/issue/" . $issueKey . "/remotelink", $options, true);
     }
 
     /**
-     * send request to specified host
+     * Send request to specified host
      *
      * @param string $method
-     * @param $url
+     * @param string $url
      * @param array $data
      * @param bool $return_as_json
-     * @return mixed
+     * @param bool $isfile
+     * @param bool $debug
+     *
+     * @return array|Result|false
      */
     public function api(
         $method = self::REQUEST_GET,
@@ -556,6 +586,11 @@ class Api
         }
     }
 
+    /**
+     * @param string $url
+     *
+     * @return array|string
+     */
     public function downloadAttachment($url)
     {
         $result = $this->client->sendRequest(
@@ -571,6 +606,11 @@ class Api
         return $result;
     }
 
+    /**
+     * @param array $issue
+     *
+     * @return array
+     */
     protected function automapFields($issue)
     {
         if (isset($issue['fields'])) {
@@ -589,11 +629,11 @@ class Api
     }
 
     /**
-     * set watchers in a ticket
+     * Set watchers in a ticket
      *
-     * @param $issueKey
-     * @param $watchers
-     * @return mixed
+     * @param string $issueKey
+     * @param array $watchers
+     * @return Result|false
      */
     public function setWatchers($issueKey, $watchers)
     {
@@ -605,22 +645,22 @@ class Api
     }
 
     /**
-     * close issue
+     * Close issue
      *
      * @param $issueKey
-     * @return mixed
+     * @return Result|array
      *
      * @TODO: should have parameters? (e.g comment)
      */
     public function closeIssue($issueKey)
     {
         $result = array();
-        //  get available transitions
+        // Get available transitions
         $tmp_transitions = $this->getTransitions($issueKey, array());
         $tmp_transitions_result = $tmp_transitions->getResult();
         $transitions = $tmp_transitions_result['transitions'];
 
-        //  search id for closing ticket
+        // Search id for closing ticket
         foreach ($transitions as $v) {
             //  Close ticket if required id was found
             if ($v['name'] == 'Close Issue') {
