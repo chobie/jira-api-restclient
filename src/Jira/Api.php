@@ -72,6 +72,9 @@ class Api
         AuthenticationInterface $authentication,
         ClientInterface $client = null
     ) {
+        //Regular expression to remove trailing slash
+        $endpoint = preg_replace('{/$}', '', $endpoint);
+        
         $this->setEndPoint($endpoint);
         $this->authentication = $authentication;
 
