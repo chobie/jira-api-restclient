@@ -72,9 +72,6 @@ class Api
         AuthenticationInterface $authentication,
         ClientInterface $client = null
     ) {
-        //Regular expression to remove trailing slash
-        $endpoint = preg_replace('{/$}', '', $endpoint);
-        
         $this->setEndPoint($endpoint);
         $this->authentication = $authentication;
 
@@ -101,13 +98,16 @@ class Api
     }
 
     /**
-     * set end point url.
+     * Set Endpoint URL
      *
-     * @param $url
+     * @param string $url
      */
     public function setEndPoint($url)
     {
         $this->fields = array();
+
+        // Remove trailing slash in the url
+        $url = rtrim($url, '/');
 
         $this->endpoint = $url;
     }
