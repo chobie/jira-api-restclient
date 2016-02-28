@@ -317,7 +317,7 @@ class Api
      *
      * @return mixed
      */
-    public function getPriorties()
+    public function getPriorities()
     {
         if (!count($this->priorities)) {
             $priorities = array();
