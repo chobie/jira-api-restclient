@@ -313,22 +313,36 @@ class Api
     }
 
     /**
-     * get available priorities
+     * Get available priorities
      *
-     * @return mixed
+     * @return array
      */
-    public function getPriorties()
+    public function getPriorities()
     {
         if (!count($this->priorities)) {
             $priorities = array();
-            $result = $this->api(self::REQUEST_GET, "/rest/api/2/priority", array());
+            $result = $this->api(self::REQUEST_GET, '/rest/api/2/priority', array());
             /* set hash key as custom field id */
             foreach ($result->getResult() as $k => $v) {
                 $priorities[$v['id']] = $v;
             }
             $this->priorities = $priorities;
         }
+
         return $this->priorities;
+    }
+
+    /**
+     * Get available priorities
+     *
+     * @return array
+     * @deprecated Please use getPriorities()
+     */
+    public function getPriorties()
+    {
+        trigger_error('Use getPriorities() instead', E_USER_DEPRECATED);
+
+        return $this->getPriorities();
     }
 
     /**
