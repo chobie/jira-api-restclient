@@ -450,7 +450,7 @@ class Api
     {
         $options = array_merge(
             array(
-                "file" => '@' . $filename,
+                "file" => '@' . $filename . ';filename=' . pathinfo($filename, PATHINFO_BASENAME),
             ),
             $options
         );
