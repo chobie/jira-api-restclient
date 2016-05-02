@@ -12,7 +12,7 @@ this API library will help your problems regarding JIRA. hope you enjoy it.
 composer.json
 
 ```
-composer require chobie/jira-api-restclient 2.0.*
+composer require chobie/jira-api-restclient 2.0@dev
 ```
 
 
