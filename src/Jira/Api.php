@@ -26,8 +26,8 @@ namespace chobie\Jira;
 
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Client\ClientInterface;
-use chobie\Jira\Api\Result;
 use chobie\Jira\Api\Client\CurlClient;
+use chobie\Jira\Api\Result;
 
 class Api
 {
@@ -222,6 +222,7 @@ class Api
      * @param $issuetypeIds array    Combined with issuetypeNames, lists the issue types with which to filter the results.
      *                               If null, all issue types are returned. Specifiying an issue type that does not exist is
      *                               not an error.
+     *
      * @param $issuetypeNames array  Combined with issuetypeIds, lists the issue types with which to filter the results.
      *                               If null, all issue types are returned. This parameter can be specified multiple times,
      *                               but is NOT interpreted as a comma-separated list. Specifiying an issue type that does
@@ -344,6 +345,33 @@ class Api
     public function getVersions($projectKey)
     {
         return $this->api(self::REQUEST_GET, "/rest/api/2/project/{$projectKey}/versions", array(), true);
+    }
+
+    /**
+     * Helper method to find a specific version based on the name of the version.
+     *
+     * @param string $projectKey Project Key
+     * @param string $name The version name to match on
+     *
+     * @return int|null VersionId on match or null when there is no match
+     */
+    public function findVersionByName($projectKey, $name)
+    {
+        // Fetch all versions of this project
+        $versions = $this->getVersions($projectKey);
+
+        // Filter results on the name
+        $matching_versions = array_filter($versions, function (array $version) use ($name) {
+            return $version['name'] == $name;
+        });
+
+        // Early out for no results
+        if (empty($matching_versions)) {
+            return null;
+        }
+
+        // Multiple results should not happen since name is unique
+        return reset($matching_versions);
     }
 
     /**
@@ -483,6 +511,47 @@ class Api
         );
 
         return $this->api(self::REQUEST_POST, '/rest/api/2/version', $options);
+    }
+
+    /**
+     * Update JIRA Version
+     *
+     * https://docs.atlassian.com/jira/REST/latest/#api/2/version-updateVersion
+     * 
+     * @param int $versionId Version identifier
+     * @param array $params Key->Value list to update the version with. 
+     *
+     * @return Result|false
+     */
+    public function updateVersion($versionId, $params = array())
+    {
+        return $this->api(self::REQUEST_PUT, sprintf('/rest/api/2/version/%d', $versionId), $params);
+    }
+
+    /**
+     * Shorthand to mark a version as Released
+     *
+     * @param int $versionId  Version identifier
+     * @param string|null $releaseDate Date in Y-m-d format. Defaults to today
+     * @param array $params Optionally extra parameters.
+     *
+     * @return Result|false
+     */
+    public function releaseVersion($versionId, $releaseDate = null, $params = array())
+    {
+        if(!$releaseDate) {
+            $releaseDate = date('Y-m-d');
+        }
+
+        $params = array_merge(
+            array(
+                'releaseDate' => $releaseDate,
+                'released' => true
+            ),
+            $params
+        );
+
+        return $this->updateVersion($versionId, $params);
     }
 
     /**
