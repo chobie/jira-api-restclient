@@ -68,9 +68,9 @@ class Result
 
     public function getIssues()
     {
-        if (isset($this->result['issues'])) {
+        if (isset($this->result['errors'])) {
             $result = array();
-            foreach ($this->result['issues'] as $issue) {
+            foreach ($this->result['errors'] as $issue) {
                 $result[] = new Issue($issue);
             }
             return $result;
