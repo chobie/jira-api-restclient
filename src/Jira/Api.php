@@ -282,6 +282,27 @@ class Api
         return $this->api(self::REQUEST_POST, sprintf('/rest/api/2/issue/%s/comment', $issueKey), $params);
     }
 
+     /**
+     * get comments from a ticket
+     *
+     * issue key should be YOURPROJ-221
+     *
+     * @param $issueKey
+     * @param $params
+     * @return mixed
+     */
+
+    public function getComments($issueKey, $params)
+    {
+        if (is_string($params)) {
+            // if $params is scalar string value -> wrapping it properly
+            $params = array(
+                'body' => $params
+            );
+        }
+        return $this->api(self::REQUEST_GET, sprintf("/rest/api/2/issue/%s/comment", $issueKey), $params);
+    }
+
     /**
      * Get all worklogs for an issue
      *
