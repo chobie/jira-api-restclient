@@ -78,6 +78,17 @@ class Result
 
         return array();
     }
+    
+    public function getErrors()
+    {
+    	if (isset($this->result['errors'])) {
+            $result = array();
+            foreach ($this->result['errors'] as $issue) {
+                $result[] = new Issue($issue);
+            }
+            return $result;
+        }
+    }
 
     public function getResult()
     {
