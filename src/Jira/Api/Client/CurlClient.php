@@ -95,8 +95,8 @@ class CurlClient implements ClientInterface
             } else {
                 curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
             }
-        } elseif ($method == 'PUT') {
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+        } elseif ($method == 'PUT' || $method == 'DELETE') {
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
             curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
         }
 
