@@ -30,17 +30,47 @@ use chobie\Jira\Issue;
 class Result
 {
 
+	/**
+	 * Expand.
+	 *
+	 * @var array
+	 */
 	protected $expand;
 
+	/**
+	 * Start at.
+	 *
+	 * @var integer
+	 */
 	protected $startAt;
 
+	/**
+	 * Max results.
+	 *
+	 * @var integer
+	 */
 	protected $maxResults;
 
+	/**
+	 * Total
+	 *
+	 * @var integer
+	 */
 	protected $total;
 
+	/**
+	 * Result.
+	 *
+	 * @var array
+	 */
 	protected $result;
 
-	public function __construct($result)
+	/**
+	 * Creates result instance.
+	 *
+	 * @param array $result Result.
+	 */
+	public function __construct(array $result)
 	{
 		if ( isset($result['expand']) ) {
 			$this->expand = explode(',', $result['expand']);
@@ -61,16 +91,31 @@ class Result
 		$this->result = $result;
 	}
 
+	/**
+	 * Returns total number of records.
+	 *
+	 * @return integer
+	 */
 	public function getTotal()
 	{
 		return $this->total;
 	}
 
+	/**
+	 * Returns issue count.
+	 *
+	 * @return integer
+	 */
 	public function getIssuesCount()
 	{
 		return count($this->getIssues());
 	}
 
+	/**
+	 * Returns issues.
+	 *
+	 * @return array
+	 */
 	public function getIssues()
 	{
 		if ( isset($this->result['issues']) ) {
@@ -86,6 +131,11 @@ class Result
 		return array();
 	}
 
+	/**
+	 * Returns raw result.
+	 *
+	 * @return array
+	 */
 	public function getResult()
 	{
 		return $this->result;

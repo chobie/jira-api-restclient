@@ -28,10 +28,25 @@ namespace chobie\Jira\Api\Authentication;
 interface AuthenticationInterface
 {
 
+	/**
+	 * Returns credential string.
+	 *
+	 * @return string
+	 */
 	public function getCredential();
 
+	/**
+	 * Returns user id.
+	 *
+	 * @return string
+	 */
 	public function getId();
 
+	/**
+	 * Returns password.
+	 *
+	 * @return string
+	 */
 	public function getPassword();
 
 }

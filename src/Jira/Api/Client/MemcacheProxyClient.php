@@ -30,28 +30,45 @@ use chobie\Jira\Api\Authentication\AuthenticationInterface;
 class MemcacheProxyClient implements ClientInterface
 {
 
-	protected $api;
+	/**
+	 * Client.
+	 *
+	 * @var ClientInterface
+	 */
+	protected $client;
 
+	/**
+	 * Memcache.
+	 *
+	 * @var \Memcached
+	 */
 	protected $mc;
 
 	/**
-	 * create a traditional php client
+	 * Create wrapper around other client.
+	 *
+	 * @param ClientInterface $client Client.
+	 * @param string          $server Server.
+	 * @param integer         $port   Port.
 	 */
-	public function __construct(ClientInterface $api, $server, $port)
+	public function __construct(ClientInterface $client, $server, $port)
 	{
-		$this->api = $api;
+		$this->client = $client;
+
 		$this->mc = new \Memcached();
 		$this->mc->addServer($server, $port);
 	}
 
 	/**
-	 * send request to the api server
+	 * Sends request to the API server.
 	 *
-	 * @param $method
-	 * @param $url
-	 * @param array      $data
-	 * @param $endpoint
-	 * @param $credential
+	 * @param string                  $method     Request method.
+	 * @param string                  $url        URL.
+	 * @param array                   $data       Request data.
+	 * @param string                  $endpoint   Endpoint.
+	 * @param AuthenticationInterface $credential Credential.
+	 * @param boolean                 $is_file    This is a file upload request.
+	 * @param boolean                 $debug      Debug this request.
 	 *
 	 * @return array|string
 	 */
@@ -71,7 +88,7 @@ class MemcacheProxyClient implements ClientInterface
 			}
 		}
 
-		$result = $this->api->sendRequest($method, $url, $data, $endpoint, $credential);
+		$result = $this->client->sendRequest($method, $url, $data, $endpoint, $credential);
 
 		if ( $method == 'GET' ) {
 			$this->setCache($url, $data, $endpoint, $result);
@@ -80,7 +97,16 @@ class MemcacheProxyClient implements ClientInterface
 		return $result;
 	}
 
-	protected function getFromCache($url, $data, $endpoint)
+	/**
+	 * Retrieves data from cache.
+	 *
+	 * @param string $url      URL.
+	 * @param array  $data     Data.
+	 * @param string $endpoint Endpoint.
+	 *
+	 * @return mixed
+	 */
+	protected function getFromCache($url, array $data, $endpoint)
 	{
 		$key = $endpoint . $url;
 		$key .= http_build_query($data);
@@ -89,7 +115,17 @@ class MemcacheProxyClient implements ClientInterface
 		return $this->mc->get('jira:cache:' . $key);
 	}
 
-	protected function setCache($url, $data, $endpoint, $result)
+	/**
+	 * Sets data into cache.
+	 *
+	 * @param string $url      URL.
+	 * @param array  $data     Data.
+	 * @param string $endpoint Endpoint.
+	 * @param mixed  $result   Result.
+	 *
+	 * @return boolean
+	 */
+	protected function setCache($url, array $data, $endpoint, $result)
 	{
 		$key = $endpoint . $url;
 		$key .= http_build_query($data);

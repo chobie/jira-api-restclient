@@ -39,33 +39,61 @@ class Api
 
 	const AUTOMAP_FIELDS = 0x01;
 
-	/** @var string $endpoint */
+	/**
+	 * Endpoint URL.
+	 *
+	 * @var string
+	 */
 	protected $endpoint;
 
-	/** @var ClientInterface */
+	/**
+	 * Client.
+	 *
+	 * @var ClientInterface
+	 */
 	protected $client;
 
-	/** @var AuthenticationInterface */
+	/**
+	 * Authentication.
+	 *
+	 * @var AuthenticationInterface
+	 */
 	protected $authentication;
 
-	/** @var int $options */
+	/**
+	 * Options.
+	 *
+	 * @var integer
+	 */
 	protected $options = self::AUTOMAP_FIELDS;
 
-	/** @var array $fields */
+	/**
+	 * Fields.
+	 *
+	 * @var array
+	 */
 	protected $fields;
 
-	/** @var array $priority */
+	/**
+	 * Priorities.
+	 *
+	 * @var array
+	 */
 	protected $priorities;
 
-	/** @var array $status */
+	/**
+	 * Statuses.
+	 *
+	 * @var array
+	 */
 	protected $statuses;
 
 	/**
 	 * Create a JIRA API client.
 	 *
-	 * @param string                  $endpoint       URL
-	 * @param AuthenticationInterface $authentication
-	 * @param ClientInterface         $client
+	 * @param string                  $endpoint       Endpoint URL.
+	 * @param AuthenticationInterface $authentication Authentication.
+	 * @param ClientInterface         $client         Client.
 	 */
 	public function __construct(
 		$endpoint,
@@ -83,7 +111,11 @@ class Api
 	}
 
 	/**
-	 * @param integer $options
+	 * Sets options.
+	 *
+	 * @param integer $options Options.
+	 *
+	 * @return void
 	 */
 	public function setOptions($options)
 	{
@@ -91,7 +123,7 @@ class Api
 	}
 
 	/**
-	 * Get Endpoint URL
+	 * Get Endpoint URL.
 	 *
 	 * @return string
 	 */
@@ -101,15 +133,17 @@ class Api
 	}
 
 	/**
-	 * Set Endpoint URL
+	 * Set Endpoint URL.
 	 *
-	 * @param string $url
+	 * @param string $url Endpoint URL.
+	 *
+	 * @return void
 	 */
 	public function setEndpoint($url)
 	{
 		$this->fields = array();
 
-		// Remove trailing slash in the url
+		// Remove trailing slash in the url.
 		$url = rtrim($url, '/');
 
 		$this->endpoint = $url;
@@ -140,8 +174,8 @@ class Api
 	/**
 	 * Get specified issue.
 	 *
-	 * @param string $issue_key Issue key should be YOURPROJ-221
-	 * @param string $expand
+	 * @param string $issue_key Issue key should be "YOURPROJ-221".
+	 * @param string $expand    Expand.
 	 *
 	 * @return Result|false
 	 */
@@ -151,28 +185,33 @@ class Api
 	}
 
 	/**
-	 * @param string $issue_key
-	 * @param array  $params
-
+	 * Edits the issue.
+	 *
+	 * @param string $issue_key Issue key.
+	 * @param array  $params    Params.
 	 *
 	 * @return Result|false
 	 */
-	public function editIssue($issue_key, $params)
+	public function editIssue($issue_key, array $params)
 	{
 		return $this->api(self::REQUEST_PUT, sprintf('/rest/api/2/issue/%s', $issue_key), $params);
 	}
 
 	/**
-	 * @param string $attachment_id
+	 * Gets attachment.
+	 *
+	 * @param string $attachment_id Attachment ID.
 	 *
 	 * @return array|false
 	 */
 	public function getAttachment($attachment_id)
 	{
-		return $this->api(self::REQUEST_GET, '/rest/api/2/attachment/' . $attachment_id, array(), true);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/attachment/%s', $attachment_id), array(), true);
 	}
 
 	/**
+	 * Returns all projects.
+	 *
 	 * @return Result|false
 	 */
 	public function getProjects()
@@ -181,56 +220,70 @@ class Api
 	}
 
 	/**
-	 * @param string $project_key
+	 * Returns one project.
+	 *
+	 * @param string $project_key Project key.
 	 *
 	 * @return array|false
 	 */
 	public function getProject($project_key)
 	{
-		return $this->api(self::REQUEST_GET, "/rest/api/2/project/{$project_key}", array(), true);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s', $project_key), array(), true);
 	}
 
 	/**
-	 * @param string $project_key
+	 * Returns all roles of a project.
+	 *
+	 * @param string $project_key Project key.
 	 *
 	 * @return array|false
 	 */
 	public function getRoles($project_key)
 	{
-		return $this->api(self::REQUEST_GET, "/rest/api/2/project/{$project_key}/roles", array(), true);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/roles', $project_key), array(), true);
 	}
 
 	/**
-	 * @param string $project_key
-	 * @param string $role_id
+	 * Returns role details.
+	 *
+	 * @param string $project_key Project key.
+	 * @param string $role_id     Role ID.
 	 *
 	 * @return array|false
 	 */
 	public function getRoleDetails($project_key, $role_id)
 	{
-		return $this->api(self::REQUEST_GET, "/rest/api/2/project/{$project_key}/role/{$role_id}", array(), true);
+		return $this->api(
+			self::REQUEST_GET,
+			sprintf('/rest/api/2/project/%s/role/%s', $project_key, $role_id),
+			array(),
+			true
+		);
 	}
 
 	/**
-	 * Returns the meta data for creating issues. This includes the available projects, issue types
+	 * Returns the meta data for creating issues.
+	 * This includes the available projects, issue types
 	 * and fields, including field types and whether or not those fields are required.
 	 * Projects will not be returned if the user does not have permission to create issues in that project.
 	 * Fields will only be returned if "projects.issuetypes.fields" is added as expand parameter.
 	 *
-	 * @param $project_ids      array  Combined with the projectKeys param, lists the projects with which to filter the results.
-	 *                                 If absent, all projects are returned. Specifiying a project that does not exist (or that
-	 *                                 you cannot create issues in) is not an error, but it will not be in the results.
-	 * @param $project_keys     array  Combined with the projectIds param, lists the projects with which to filter the
-	 *                                 results. If null, all projects are returned. Specifiying a project that does not exist (or
-	 *                                 that you cannot create issues in) is not an error, but it will not be in the results.
-	 * @param $issue_type_ids   array  Combined with issuetypeNames, lists the issue types with which to filter the results.
-	 *                                 If null, all issue types are returned. Specifiying an issue type that does not exist is
-	 *                                 not an error.
-	 * @param $issue_type_names array  Combined with issuetypeIds, lists the issue types with which to filter the results.
-	 *                                 If null, all issue types are returned. This parameter can be specified multiple times,
-	 *                                 but is NOT interpreted as a comma-separated list. Specifiying an issue type that does
-	 *                                 not exist is not an error.
-	 * @param $expand           array  Optional list of entities to expand in the response.
+	 * @param array $project_ids      Combined with the projectKeys param, lists the projects with which to filter the
+	 *                                results. If absent, all projects are returned. Specifying a project that does not
+	 *                                exist (or that you cannot create issues in) is not an error, but it will not be
+	 *                                in the results.
+	 * @param array $project_keys     Combined with the projectIds param, lists the projects with which to filter the
+	 *                                results. If null, all projects are returned. Specifying a project that does not
+	 *                                exist (or that you cannot create issues in) is not an error, but it will not be
+	 *                                in the results.
+	 * @param array $issue_type_ids   Combined with issuetypeNames, lists the issue types with which to filter the
+	 *                                results. If null, all issue types are returned. Specifying an issue type that
+	 *                                does not exist is not an error.
+	 * @param array $issue_type_names Combined with issuetypeIds, lists the issue types with which to filter the
+	 *                                results. If null, all issue types are returned. This parameter can be specified
+	 *                                multiple times, but is NOT interpreted as a comma-separated list. Specifying
+	 *                                an issue type that does not exist is not an error.
+	 * @param array $expand           Optional list of entities to expand in the response.
 	 *
 	 * @return array|false
 	 */
@@ -241,7 +294,7 @@ class Api
 		array $issue_type_names = null,
 		array $expand = null
 	) {
-		// Create comma separated query parameters for the supplied filters
+		// Create comma separated query parameters for the supplied filters.
 		$data = array();
 
 		if ( $project_ids !== null ) {
@@ -260,7 +313,7 @@ class Api
 			$data['issuetypeNames'] = implode(',', $issue_type_names);
 		}
 
-		if( $expand !== null ) {
+		if ( $expand !== null ) {
 			$data['expand'] = implode(',', $expand);
 		}
 
@@ -268,17 +321,17 @@ class Api
 	}
 
 	/**
-	 * Add a comment to a ticket
+	 * Add a comment to a ticket.
 	 *
-	 * @param string $issue_key Issue key should be YOURPROJ-221
-	 * @param array  $params
+	 * @param string       $issue_key Issue key should be "YOURPROJ-221".
+	 * @param array|string $params    Params.
 	 *
 	 * @return Result|false
 	 */
 	public function addComment($issue_key, $params)
 	{
 		if ( is_string($params) ) {
-			// if $params is scalar string value -> wrapping it properly
+			// If $params is scalar string value -> wrapping it properly.
 			$params = array(
 				'body' => $params,
 			);
@@ -288,46 +341,46 @@ class Api
 	}
 
 	/**
-	 * Get all worklogs for an issue
+	 * Get all worklogs for an issue.
 	 *
-	 * @param $issue_key Issue key should be YOURPROJ-22
-	 * @param $params
+	 * @param string $issue_key Issue key should be "YOURPROJ-22".
+	 * @param array  $params    Params.
 	 *
 	 * @return Result|false
 	 */
-	public function getWorklogs($issue_key, $params)
+	public function getWorklogs($issue_key, array $params)
 	{
 		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/issue/%s/worklog', $issue_key), $params);
 	}
 
 	/**
-	 * Get available transitions for a ticket
+	 * Get available transitions for a ticket.
 	 *
-	 * @param string $issue_key Issue key should be YOURPROJ-22
-	 * @param array  $params
+	 * @param string $issue_key Issue key should be "YOURPROJ-22".
+	 * @param array  $params    Params.
 	 *
 	 * @return Result|false
 	 */
-	public function getTransitions($issue_key, $params)
+	public function getTransitions($issue_key, array $params)
 	{
 		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/issue/%s/transitions', $issue_key), $params);
 	}
 
 	/**
-	 * Transition a ticket
+	 * Transition a ticket.
 	 *
-	 * @param string $issue_key Issue key should be YOURPROJ-22
-	 * @param array  $params
+	 * @param string $issue_key Issue key should be "YOURPROJ-22".
+	 * @param array  $params    Params.
 	 *
 	 * @return Result|false
 	 */
-	public function transition($issue_key, $params)
+	public function transition($issue_key, array $params)
 	{
 		return $this->api(self::REQUEST_POST, sprintf('/rest/api/2/issue/%s/transitions', $issue_key), $params);
 	}
 
 	/**
-	 * Get available issue types
+	 * Get available issue types.
 	 *
 	 * @return IssueType[]
 	 */
@@ -344,46 +397,46 @@ class Api
 	}
 
 	/**
-	 * Get available versions
+	 * Get versions of a project.
 	 *
-	 * @param string $project_key
+	 * @param string $project_key Project key.
 	 *
 	 * @return array|false
 	 */
 	public function getVersions($project_key)
 	{
-		return $this->api(self::REQUEST_GET, "/rest/api/2/project/{$project_key}/versions", array(), true);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/versions', $project_key), array(), true);
 	}
 
 	/**
 	 * Helper method to find a specific version based on the name of the version.
 	 *
-	 * @param string $project_key Project Key
-	 * @param string $name        The version name to match on
+	 * @param string $project_key Project Key.
+	 * @param string $name        The version name to match on.
 	 *
-	 * @return integer|null VersionId on match or null when there is no match
+	 * @return integer|null VersionId on match or null when there is no match.
 	 */
 	public function findVersionByName($project_key, $name)
 	{
-		// Fetch all versions of this project
+		// Fetch all versions of this project.
 		$versions = $this->getVersions($project_key);
 
-		// Filter results on the name
+		// Filter results on the name.
 		$matching_versions = array_filter($versions, function (array $version) use ($name) {
 			return $version['name'] == $name;
 		});
 
-		// Early out for no results
+		// Early out for no results.
 		if ( empty($matching_versions) ) {
 			return null;
 		}
 
-		// Multiple results should not happen since name is unique
+		// Multiple results should not happen since name is unique.
 		return reset($matching_versions);
 	}
 
 	/**
-	 * Get available priorities
+	 * Get available priorities.
 	 *
 	 * @return array
 	 */
@@ -405,7 +458,7 @@ class Api
 	}
 
 	/**
-	 * Get available priorities
+	 * Get available priorities.
 	 *
 	 * @return     array
 	 * @deprecated Please use getPriorities()
@@ -418,7 +471,7 @@ class Api
 	}
 
 	/**
-	 * Get available statuses
+	 * Get available statuses.
 	 *
 	 * @return array
 	 */
@@ -440,16 +493,16 @@ class Api
 	}
 
 	/**
-	 * Create an issue.
+	 * Creates an issue.
 	 *
-	 * @param string $project_key
-	 * @param string $summary
-	 * @param string $issue_type
-	 * @param array  $options
+	 * @param string $project_key Project key.
+	 * @param string $summary     Summary.
+	 * @param string $issue_type  Issue type.
+	 * @param array  $options     Options.
 	 *
 	 * @return Result|false
 	 */
-	public function createIssue($project_key, $summary, $issue_type, $options = array())
+	public function createIssue($project_key, $summary, $issue_type, array $options = array())
 	{
 		$default = array(
 			'project' => array(
@@ -463,28 +516,20 @@ class Api
 
 		$default = array_merge($default, $options);
 
-		$result = $this->api(
-			self::REQUEST_POST,
-			'/rest/api/2/issue/',
-			array(
-				'fields' => $default,
-			)
-		);
-
-		return $result;
+		return $this->api(self::REQUEST_POST, '/rest/api/2/issue/', array('fields' => $default));
 	}
 
 	/**
-	 * Query issues
+	 * Query issues.
 	 *
-	 * @param string  $jql
-	 * @param integer $start_at
-	 * @param integer $max_result
-	 * @param string  $fields
+	 * @param string  $jql         JQL.
+	 * @param integer $start_at    Start at.
+	 * @param integer $max_results Max results.
+	 * @param string  $fields      Fields.
 	 *
 	 * @return Result|false
 	 */
-	public function search($jql, $start_at = 0, $max_result = 20, $fields = '*navigable')
+	public function search($jql, $start_at = 0, $max_results = 20, $fields = '*navigable')
 	{
 		$result = $this->api(
 			self::REQUEST_GET,
@@ -492,7 +537,7 @@ class Api
 			array(
 				'jql' => $jql,
 				'startAt' => $start_at,
-				'maxResults' => $max_result,
+				'maxResults' => $max_results,
 				'fields' => $fields,
 			)
 		);
@@ -501,23 +546,23 @@ class Api
 	}
 
 	/**
-	 * Create JIRA Version
+	 * Creates new version.
 	 *
-	 * @param string $project_id
-	 * @param string $name
-	 * @param array  $options
+	 * @param string $project_key Project key.
+	 * @param string $version     Version.
+	 * @param array  $options     Options.
 	 *
 	 * @return Result|false
 	 */
-	public function createVersion($project_id, $name, $options = array())
+	public function createVersion($project_key, $version, array $options = array())
 	{
 		$options = array_merge(
 			array(
-				'name' => $name,
+				'name' => $version,
 				'description' => '',
-				'project' => $project_id,
-				// "userReleaseDate" => "",
-				// "releaseDate"     => "",
+				'project' => $project_key,
+				// 'userReleaseDate' => '',
+				// 'releaseDate' => '',
 				'released' => false,
 				'archived' => false,
 			),
@@ -528,32 +573,31 @@ class Api
 	}
 
 	/**
-	 * Update JIRA Version
-
-	 * https://docs.atlassian.com/jira/REST/latest/#api/2/version-updateVersion
+	 * Updates version.
 	 *
-	 * @param integer $version_id Version identifier
+	 * @param integer $version_id Version ID.
 	 * @param array   $params     Key->Value list to update the version with.
 	 *
 	 * @return Result|false
+	 * @link   https://docs.atlassian.com/jira/REST/latest/#api/2/version-updateVersion
 	 */
-	public function updateVersion($version_id, $params = array())
+	public function updateVersion($version_id, array $params = array())
 	{
 		return $this->api(self::REQUEST_PUT, sprintf('/rest/api/2/version/%d', $version_id), $params);
 	}
 
 	/**
-	 * Shorthand to mark a version as Released
+	 * Shorthand to mark a version as Released.
 	 *
-	 * @param integer     $version_id   Version identifier
-	 * @param string|null $release_date Date in Y-m-d format. Defaults to today
+	 * @param integer     $version_id   Version ID.
+	 * @param string|null $release_date Date in Y-m-d format (defaults to today).
 	 * @param array       $params       Optionally extra parameters.
 	 *
 	 * @return Result|false
 	 */
-	public function releaseVersion($version_id, $release_date = null, $params = array())
+	public function releaseVersion($version_id, $release_date = null, array $params = array())
 	{
-		if( !$release_date ) {
+		if ( !$release_date ) {
 			$release_date = date('Y-m-d');
 		}
 
@@ -569,15 +613,15 @@ class Api
 	}
 
 	/**
-	 * Create JIRA Attachment
+	 * Create attachment.
 	 *
-	 * @param string $issue_key
-	 * @param string $filename
-	 * @param array  $options
+	 * @param string $issue_key Issue key.
+	 * @param string $filename  Filename.
+	 * @param array  $options   Options.
 	 *
 	 * @return Result|false
 	 */
-	public function createAttachment($issue_key, $filename, $options = array())
+	public function createAttachment($issue_key, $filename, array $options = array())
 	{
 		$options = array_merge(
 			array(
@@ -585,26 +629,33 @@ class Api
 			),
 			$options
 		);
-		return $this->api(self::REQUEST_POST, '/rest/api/2/issue/' . $issue_key . '/attachments', $options, false, true);
+
+		return $this->api(
+			self::REQUEST_POST,
+			sprintf('/rest/api/2/issue/%s/attachments', $issue_key),
+			$options,
+			false,
+			true
+		);
 	}
 
 	/**
-	 * Create a remote link
+	 * Creates a remote link.
 	 *
-	 * @param string $issue_key
-	 * @param array  $object
-	 * @param string $relationship
-	 * @param string $global_id
-	 * @param array  $application
+	 * @param string $issue_key    Issue key.
+	 * @param array  $object       Object.
+	 * @param string $relationship Relationship.
+	 * @param string $global_id    Global ID.
+	 * @param array  $application  Application.
 	 *
 	 * @return array|false
 	 */
 	public function createRemotelink(
 		$issue_key,
-		$object = array(),
+		array $object = array(),
 		$relationship = null,
 		$global_id = null,
-		$application = null
+		array $application = null
 	) {
 		$options = array(
 						'globalid' => $global_id,
@@ -616,27 +667,27 @@ class Api
 			$options['application'] = $application;
 		}
 
-		return $this->api(self::REQUEST_POST, '/rest/api/2/issue/' . $issue_key . '/remotelink', $options, true);
+		return $this->api(self::REQUEST_POST, sprintf('/rest/api/2/issue/%s/remotelink', $issue_key), $options, true);
 	}
 
 	/**
-	 * Send request to specified host
+	 * Send request to specified host.
 	 *
-	 * @param string  $method
-	 * @param string  $url
-	 * @param array   $data
-	 * @param boolean $return_as_json
-	 * @param boolean $isfile
-	 * @param boolean $debug
+	 * @param string  $method         Request method.
+	 * @param string  $url            URL.
+	 * @param array   $data           Data.
+	 * @param boolean $return_as_json Return results as JSON.
+	 * @param boolean $is_file        Is file-related request.
+	 * @param boolean $debug          Debug this request.
 	 *
 	 * @return array|Result|false
 	 */
 	public function api(
 		$method = self::REQUEST_GET,
 		$url,
-		$data = array(),
+		array $data = array(),
 		$return_as_json = false,
-		$isfile = false,
+		$is_file = false,
 		$debug = false
 	) {
 		$result = $this->client->sendRequest(
@@ -645,7 +696,7 @@ class Api
 			$data,
 			$this->getEndpoint(),
 			$this->authentication,
-			$isfile,
+			$is_file,
 			$debug
 		);
 
@@ -677,7 +728,9 @@ class Api
 	}
 
 	/**
-	 * @param string $url
+	 * Downloads attachment.
+	 *
+	 * @param string $url URL.
 	 *
 	 * @return array|string
 	 */
@@ -697,11 +750,13 @@ class Api
 	}
 
 	/**
-	 * @param array $issue
+	 * Automaps issue fields.
+	 *
+	 * @param array $issue Issue.
 	 *
 	 * @return array
 	 */
-	protected function automapFields($issue)
+	protected function automapFields(array $issue)
 	{
 		if ( isset($issue['fields']) ) {
 			$x = array();
@@ -722,28 +777,28 @@ class Api
 	}
 
 	/**
-	 * Set watchers in a ticket
+	 * Set issue watchers.
 	 *
-	 * @param string $issue_key
-	 * @param array  $watchers
+	 * @param string $issue_key Issue key.
+	 * @param array  $watchers  Watchers.
 	 *
 	 * @return Result|false
 	 */
-	public function setWatchers($issue_key, $watchers)
+	public function setWatchers($issue_key, array $watchers)
 	{
 		$result = array();
 
-		foreach ( $watchers as $w ) {
-			$result[] = $this->api(self::REQUEST_POST, sprintf('/rest/api/2/issue/%s/watchers', $issue_key), $w);
+		foreach ( $watchers as $watcher ) {
+			$result[] = $this->api(self::REQUEST_POST, sprintf('/rest/api/2/issue/%s/watchers', $issue_key), $watcher);
 		}
 
 		return $result;
 	}
 
 	/**
-	 * Close issue
+	 * Closes issue.
 	 *
-	 * @param $issue_key
+	 * @param string $issue_key Issue key.
 	 *
 	 * @return Result|array
 	 * @TODO:  Should have parameters? (e.g comment)
@@ -751,21 +806,20 @@ class Api
 	public function closeIssue($issue_key)
 	{
 		$result = array();
-		// Get available transitions
+
+		// Get available transitions.
 		$tmp_transitions = $this->getTransitions($issue_key, array());
 		$tmp_transitions_result = $tmp_transitions->getResult();
 		$transitions = $tmp_transitions_result['transitions'];
 
-		// Search id for closing ticket
+		// Look for "Close Issue" transition in issue transitions.
 		foreach ( $transitions as $v ) {
-			// Close ticket if required id was found
+			// Close issue if required id was found.
 			if ( $v['name'] == 'Close Issue' ) {
 				$result = $this->transition(
 					$issue_key,
 					array(
-						'transition' => array(
-							'id' => $v['id'],
-						),
+						'transition' => array('id' => $v['id']),
 					)
 				);
 				break;

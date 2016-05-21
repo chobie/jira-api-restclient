@@ -28,28 +28,54 @@ namespace chobie\Jira;
 class Issue
 {
 
-	/* @var array $expand */
+	/**
+	 * Expand.
+	 *
+	 * @var array
+	 */
 	protected $expand;
 
-	/* @var string $id */
+	/**
+	 * ID.
+	 *
+	 * @var string
+	 */
 	protected $id;
 
-	/* @var string $self */
+	/**
+	 * Self.
+	 *
+	 * @var string
+	 */
 	protected $self;
 
-	/* @var string $key */
+	/**
+	 * Key.
+	 *
+	 * @var string
+	 */
 	protected $key;
 
-	/* @var array $fields */
+	/**
+	 * Fields.
+	 *
+	 * @var array
+	 */
 	protected $fields;
 
-	/* @var array $expandedInformation */
+	/**
+	 * Expand information.
+	 *
+	 * @var array
+	 */
 	protected $expandedInformation;
 
 	/**
-	 * @param array $issue
+	 * Creates issue instance.
+	 *
+	 * @param array $issue Issue.
 	 */
-	public function __construct($issue = array())
+	public function __construct(array $issue = array())
 	{
 		if ( isset($issue['expand']) ) {
 			$this->expand = explode(',', $issue['expand']);
@@ -80,7 +106,7 @@ class Issue
 	}
 
 	/**
-	 * get issue key (YOURPROJ-123)
+	 * Gets issue key (YOURPROJ-123).
 	 *
 	 * @return string
 	 */
@@ -90,7 +116,7 @@ class Issue
 	}
 
 	/**
-	 * get jira's internal issue id
+	 * Gets jira's internal issue id.
 	 *
 	 * @return string
 	 */
@@ -100,7 +126,7 @@ class Issue
 	}
 
 	/**
-	 * get this issue api url
+	 * Get this issue api url.
 	 *
 	 * @return string
 	 */
@@ -110,7 +136,7 @@ class Issue
 	}
 
 	/**
-	 * get current fields
+	 * Get current fields.
 	 *
 	 * @return array
 	 */
@@ -120,7 +146,7 @@ class Issue
 	}
 
 	/**
-	 * get issue summary
+	 * Get issue summary.
 	 *
 	 * @return mixed
 	 */
@@ -130,7 +156,7 @@ class Issue
 	}
 
 	/**
-	 * get issue type
+	 * Get issue type.
 	 *
 	 * @return mixed
 	 */
@@ -140,7 +166,7 @@ class Issue
 	}
 
 	/**
-	 * get issue reporter
+	 * Get issue reporter.
 	 *
 	 * @return mixed
 	 */
@@ -150,7 +176,7 @@ class Issue
 	}
 
 	/**
-	 * get issue created time
+	 * Get issue created time.
 	 *
 	 * @return mixed
 	 */
@@ -160,18 +186,17 @@ class Issue
 	}
 
 	/**
-	 * get the current assignee
+	 * Get the current assignee.
 	 *
 	 * @return mixed
 	 */
-
 	public function getAssignee()
 	{
 		return $this->get('Assignee');
 	}
 
 	/**
-	 * get issue updated time
+	 * Get issue updated time.
 	 *
 	 * @return mixed
 	 */
@@ -181,7 +206,7 @@ class Issue
 	}
 
 	/**
-	 * get priority
+	 * Get priority.
 	 *
 	 * @return mixed
 	 */
@@ -191,7 +216,7 @@ class Issue
 	}
 
 	/**
-	 * get description
+	 * Get description.
 	 *
 	 * @return mixed
 	 */
@@ -201,7 +226,7 @@ class Issue
 	}
 
 	/**
-	 * get issue status
+	 * Get issue status.
 	 *
 	 * @return mixed
 	 */
@@ -211,7 +236,7 @@ class Issue
 	}
 
 	/**
-	 * get labels
+	 * Get labels.
 	 *
 	 * @return mixed
 	 */
@@ -221,7 +246,7 @@ class Issue
 	}
 
 	/**
-	 * get project info
+	 * Get project info.
 	 *
 	 * @return mixed
 	 */
@@ -231,7 +256,7 @@ class Issue
 	}
 
 	/**
-	 * get fix versions.
+	 * Get fix versions.
 	 *
 	 * @return mixed
 	 */
@@ -241,7 +266,7 @@ class Issue
 	}
 
 	/**
-	 * get resolutions
+	 * Get resolutions.
 	 *
 	 * @return mixed
 	 */
@@ -251,11 +276,10 @@ class Issue
 	}
 
 	/**
-	 * Is the field exists? Maybe there should be 'Planned End'?
-	 *
-	 * get resolution date
+	 * Get resolution date.
 	 *
 	 * @return mixed
+	 * @todo   Is the field exists? Maybe there should be 'Planned End'?
 	 */
 	public function getResolutionDate()
 	{
@@ -263,7 +287,7 @@ class Issue
 	}
 
 	/**
-	 * get watches
+	 * Get watches.
 	 *
 	 * @return mixed
 	 */
@@ -273,7 +297,7 @@ class Issue
 	}
 
 	/**
-	 * get due date
+	 * Get due date.
 	 *
 	 * @return mixed
 	 */
@@ -283,7 +307,7 @@ class Issue
 	}
 
 	/**
-	 * get information represented in call output due to expand=... suffix
+	 * Get information represented in call output due to expand=... suffix.
 	 *
 	 * @return array
 	 * @see    https://docs.atlassian.com/jira/REST/latest/
@@ -294,14 +318,16 @@ class Issue
 	}
 
 	/**
-	 * @param $key
+	 * Gets field by name.
+	 *
+	 * @param string $field_key Field key.
 	 *
 	 * @return array
 	 */
-	public function get($key)
+	public function get($field_key)
 	{
-		if ( isset($this->fields[$key]) ) {
-			return $this->fields[$key];
+		if ( isset($this->fields[$field_key]) ) {
+			return $this->fields[$field_key];
 		}
 
 		return null;

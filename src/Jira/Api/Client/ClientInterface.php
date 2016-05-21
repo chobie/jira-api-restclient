@@ -31,16 +31,17 @@ interface ClientInterface
 {
 
 	/**
-	 * send request to the api server
+	 * Sends request to the API server.
 	 *
-	 * @param $method
-	 * @param $url
-	 * @param array      $data
-	 * @param $endpoint
-	 * @param $credential
+	 * @param string                  $method     Request method.
+	 * @param string                  $url        URL.
+	 * @param array                   $data       Request data.
+	 * @param string                  $endpoint   Endpoint.
+	 * @param AuthenticationInterface $credential Credential.
+	 * @param boolean                 $is_file    This is a file upload request.
+	 * @param boolean                 $debug      Debug this request.
 	 *
 	 * @return array|string
-	 * @throws \Exception
 	 */
 	public function sendRequest(
 		$method,

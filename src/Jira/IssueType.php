@@ -28,20 +28,60 @@ namespace chobie\Jira;
 class IssueType
 {
 
+	/**
+	 * Self.
+	 *
+	 * @var string
+	 */
 	protected $self;
 
+	/**
+	 * ID.
+	 *
+	 * @var string
+	 */
 	protected $id;
 
+	/**
+	 * Description.
+	 *
+	 * @var string
+	 */
 	protected $description;
 
+	/**
+	 * Icon URL.
+	 *
+	 * @var string
+	 */
 	protected $iconUrl;
 
+	/**
+	 * Name.
+	 *
+	 * @var string
+	 */
 	protected $name;
 
+	/**
+	 * Sub-task.
+	 *
+	 * @var string
+	 */
 	protected $subTask;
 
+	/**
+	 * Avatar ID.
+	 *
+	 * @var string
+	 */
 	protected $avatarId;
 
+	/**
+	 * Acceptable keys.
+	 *
+	 * @var array
+	 */
 	private $_acceptableKeys = array(
 		'self',
 		'id',
@@ -52,43 +92,80 @@ class IssueType
 		'avatarId',
 	);
 
-	public function __construct($types)
+	/**
+	 * Creates issue instance.
+	 *
+	 * @param array $types Types.
+	 *
+	 * @throws \Exception When unknown type is given.
+	 */
+	public function __construct(array $types)
 	{
 		foreach ( $types as $key => $value ) {
 			if ( in_array($key, $this->_acceptableKeys) ) {
 				$this->$key = $value;
 			}
 			else {
-				throw new \Exception("the key {$key} does not support");
+				throw new \Exception('the key ' . $key . ' does not support');
 			}
 		}
 	}
 
+	/**
+	 * Gets name.
+	 *
+	 * @return string
+	 */
 	public function getName()
 	{
 		return $this->name;
 	}
 
+	/**
+	 * Gets sub-task.
+	 *
+	 * @return string
+	 */
 	public function isSubtask()
 	{
 		return $this->subTask;
 	}
 
+	/**
+	 * Gets ID.
+	 *
+	 * @return string
+	 */
 	public function getId()
 	{
 		return $this->id;
 	}
 
+	/**
+	 * Gets description.
+	 *
+	 * @return string
+	 */
 	public function getDescription()
 	{
 		return $this->description;
 	}
 
+	/**
+	 * Gets icon url.
+	 *
+	 * @return string
+	 */
 	public function getIconUrl()
 	{
 		return $this->iconUrl;
 	}
 
+	/**
+	 * Gets avatar id.
+	 *
+	 * @return string
+	 */
 	public function getAvatarId()
 	{
 		return $this->avatarId;

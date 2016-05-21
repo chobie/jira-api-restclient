@@ -30,51 +30,116 @@ use chobie\Jira\Api;
 class Walker implements \Iterator
 {
 
-	/* @var Api $jira */
-	protected $jira;
+	/**
+	 * API.
+	 *
+	 * @var Api
+	 */
+	protected $api;
 
+	/**
+	 * JQL.
+	 *
+	 * @var string
+	 */
 	protected $jql = null;
 
+	/**
+	 * Offset.
+	 *
+	 * @var integer
+	 */
 	protected $offset = 0;
 
+	/**
+	 * Current record index.
+	 *
+	 * @var integer
+	 */
 	protected $current = 0;
 
+	/**
+	 * Total issue count.
+	 *
+	 * @var integer
+	 */
 	protected $total = 0;
 
+	/**
+	 * Issue count on current page.
+	 *
+	 * @var integer
+	 */
 	protected $max = 0;
 
-	protected $start_at = 0;
+	/**
+	 * Index of issue in issue list (across all issue pages).
+	 *
+	 * @var integer
+	 */
+	protected $startAt = 0;
 
-	protected $per_page = 50;
+	/**
+	 * Issues per page.
+	 *
+	 * @var integer
+	 */
+	protected $perPage = 50;
 
+	/**
+	 * Was JQL executed.
+	 *
+	 * @var boolean
+	 */
 	protected $executed = false;
 
-	protected $result = array();
+	/**
+	 * Result.
+	 *
+	 * @var array
+	 */
+	protected $issues = array();
 
-	protected $navigable = null;
+	/**
+	 * List of fields to query.
+	 *
+	 * @var string|array|null
+	 */
+	protected $fields = null;
 
+	/**
+	 * Callback.
+	 *
+	 * @var callable
+	 */
 	protected $callback;
 
+	/**
+	 * Creates walker instance.
+	 *
+	 * @param Api $api API.
+	 */
 	public function __construct(Api $api)
 	{
-		$this->jira = $api;
+		$this->api = $api;
 	}
 
 	/**
-	 * push jql
+	 * Pushes JQL.
 	 *
-	 * @param $jql
-	 * @param null $navigable
+	 * @param string            $jql    JQL.
+	 * @param string|array|null $fields Fields.
+	 *
+	 * @return void
 	 */
-	public function push($jql, $navigable = null)
+	public function push($jql, $fields = null)
 	{
 		$this->jql = $jql;
-		$this->navigable = $navigable;
+		$this->fields = $fields;
 	}
 
 	/**
-	 * (PHP 5 &gt;= 5.0.0)<br/>
-	 * Return the current element
+	 * Return the current element.
 	 *
 	 * @return mixed Can return any type.
 	 * @link   http://php.net/manual/en/iterator.current.php
@@ -82,19 +147,18 @@ class Walker implements \Iterator
 	public function current()
 	{
 		if ( is_callable($this->callback) ) {
-			$tmp = $this->result[$this->offset];
+			$tmp = $this->issues[$this->offset];
 			$callback = $this->callback;
 
 			return $callback($tmp);
 		}
 		else {
-			return $this->result[$this->offset];
+			return $this->issues[$this->offset];
 		}
 	}
 
 	/**
-	 * (PHP 5 &gt;= 5.0.0)<br/>
-	 * Move forward to next element
+	 * Move forward to next element.
 	 *
 	 * @return void Any returned value is ignored.
 	 * @link   http://php.net/manual/en/iterator.next.php
@@ -105,16 +169,15 @@ class Walker implements \Iterator
 	}
 
 	/**
-	 * (PHP 5 &gt;= 5.0.0)<br/>
-	 * Return the key of the current element
+	 * Return the key of the current element.
 	 *
 	 * @return mixed scalar on success, or null on failure.
 	 * @link   http://php.net/manual/en/iterator.key.php
 	 */
 	public function key()
 	{
-		if ( $this->start_at > 0 ) {
-			return $this->offset + (($this->start_at - 1) * $this->per_page);
+		if ( $this->startAt > 0 ) {
+			return $this->offset + (($this->startAt - 1) * $this->perPage);
 		}
 		else {
 			return 0;
@@ -122,21 +185,23 @@ class Walker implements \Iterator
 	}
 
 	/**
-	 * (PHP 5 &gt;= 5.0.0)<br/>
-	 * Checks if current position is valid
+	 * Checks if current position is valid.
 	 *
-	 * @return boolean The return value will be casted to boolean and then evaluated. Returns true on success or false on failure.
+	 * @return boolean The return value will be casted to boolean and then evaluated.
+	 *                 Returns true on success or false on failure.
+	 * @throws \Exception When "Walker::push" method wasn't called.
+	 * @throws Api\UnauthorizedException When it happens.
 	 * @link   http://php.net/manual/en/iterator.valid.php
 	 */
 	public function valid()
 	{
 		if ( is_null($this->jql) ) {
-			throw new \Exception('you have to call Jira_Walker::push($jql, $navigable) at first');
+			throw new \Exception('you have to call Jira_Walker::push($jql, $fields) at first');
 		}
 
 		if ( !$this->executed ) {
 			try {
-				$result = $this->jira->search($this->getQuery(), $this->key(), $this->per_page, $this->navigable);
+				$result = $this->api->search($this->getQuery(), $this->key(), $this->perPage, $this->fields);
 
 				$this->setResult($result);
 				$this->executed = true;
@@ -159,7 +224,7 @@ class Walker implements \Iterator
 		else {
 			if ( $this->offset >= $this->max && $this->key() < $this->total ) {
 				try {
-					$result = $this->jira->search($this->getQuery(), $this->key(), $this->per_page, $this->navigable);
+					$result = $this->api->search($this->getQuery(), $this->key(), $this->perPage, $this->fields);
 					$this->setResult($result);
 
 					return true;
@@ -174,7 +239,7 @@ class Walker implements \Iterator
 				}
 			}
 			else {
-				if ( ($this->start_at - 1) * $this->per_page + $this->offset < $this->total ) {
+				if ( ($this->startAt - 1) * $this->perPage + $this->offset < $this->total ) {
 					return true;
 				}
 				else {
@@ -185,8 +250,7 @@ class Walker implements \Iterator
 	}
 
 	/**
-	 * (PHP 5 &gt;= 5.0.0)<br/>
-	 * Rewind the Iterator to the first element
+	 * Rewind the Iterator to the first element.
 	 *
 	 * @return void Any returned value is ignored.
 	 * @link   http://php.net/manual/en/iterator.rewind.php
@@ -194,18 +258,21 @@ class Walker implements \Iterator
 	public function rewind()
 	{
 		$this->offset = 0;
-		$this->start_at = 0;
+		$this->startAt = 0;
 		$this->current = 0;
 		$this->max = 0;
 		$this->total = 0;
 		$this->executed = false;
-		$this->result = array();
+		$this->issues = array();
 	}
 
 	/**
-	 * @param $callable
+	 * Sets callable.
 	 *
-	 * @throws \Exception
+	 * @param callable $callable Callable.
+	 *
+	 * @return void
+	 * @throws \Exception When not a callable passed.
 	 */
 	public function setDelegate($callable)
 	{
@@ -218,19 +285,25 @@ class Walker implements \Iterator
 	}
 
 	/**
-	 * @param $result
+	 * Sets result.
+	 *
+	 * @param Api\Result $result Result.
+	 *
+	 * @return void
 	 */
 	protected function setResult(Api\Result $result)
 	{
 		$this->total = $result->getTotal();
 		$this->offset = 0;
 		$this->max = $result->getIssuesCount();
-		$this->result = $result->getIssues();
-		$this->start_at++;
+		$this->issues = $result->getIssues();
+		$this->startAt++;
 	}
 
 	/**
-	 * @return mixed
+	 * Returns JQL.
+	 *
+	 * @return string
 	 */
 	protected function getQuery()
 	{

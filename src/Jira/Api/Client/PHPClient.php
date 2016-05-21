@@ -28,14 +28,20 @@ namespace chobie\Jira\Api\Client;
 use chobie\Jira\Api\Authentication\Anonymous;
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Authentication\Basic;
+use chobie\Jira\Api\Exception;
 
 class PHPClient implements ClientInterface
 {
 
+	/**
+	 * HTTPS support enabled.
+	 *
+	 * @var boolean
+	 */
 	protected $httpsSupport = false;
 
 	/**
-	 * create a traditional php client
+	 * Create a traditional php client.
 	 */
 	public function __construct()
 	{
@@ -47,22 +53,29 @@ class PHPClient implements ClientInterface
 
 	}
 
-	protected function isSupportHttps()
+	/**
+	 * Returns status of HTTP support.
+	 *
+	 * @return boolean
+	 */
+	protected function isHttpsSupported()
 	{
 		return $this->httpsSupport;
 	}
 
 	/**
-	 * send request to the api server
+	 * Sends request to the API server.
 	 *
-	 * @param $method
-	 * @param $url
-	 * @param array      $data
-	 * @param $endpoint
-	 * @param $credential
+	 * @param string                  $method     Request method.
+	 * @param string                  $url        URL.
+	 * @param array                   $data       Request data.
+	 * @param string                  $endpoint   Endpoint.
+	 * @param AuthenticationInterface $credential Credential.
+	 * @param boolean                 $is_file    This is a file upload request.
+	 * @param boolean                 $debug      Debug this request.
 	 *
 	 * @return array|string
-	 * @throws \Exception
+	 * @throws \Exception When non-supported implementation of AuthenticationInterface is given.
 	 */
 	public function sendRequest(
 		$method,
@@ -120,7 +133,7 @@ class PHPClient implements ClientInterface
 			$url .= '?' . http_build_query($data);
 		}
 
-		if ( strpos($endpoint, 'https://') === 0 && !$this->isSupportHttps() ) {
+		if ( strpos($endpoint, 'https://') === 0 && !$this->isHttpsSupported() ) {
 			throw new \Exception('does not support https wrapper. please enable openssl extension');
 		}
 
@@ -140,10 +153,13 @@ class PHPClient implements ClientInterface
 	}
 
 	/**
-	 * @param $errno
-	 * @param $errstr
+	 * Throws exception on error.
 	 *
-	 * @throws \Exception
+	 * @param integer $errno  Error number.
+	 * @param string  $errstr Error message.
+	 *
+	 * @return void
+	 * @throws \Exception Always.
 	 */
 	public function errorHandler($errno, $errstr)
 	{

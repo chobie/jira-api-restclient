@@ -42,16 +42,21 @@ class CurlClient implements ClientInterface
 	}
 
 	/**
-	 * send request to the api server
+	 * Sends request to the API server.
 	 *
-	 * @param $method
-	 * @param $url
-	 * @param array      $data
-	 * @param $endpoint
-	 * @param $credential
+	 * @param string                  $method     Request method.
+	 * @param string                  $url        URL.
+	 * @param array                   $data       Request data.
+	 * @param string                  $endpoint   Endpoint.
+	 * @param AuthenticationInterface $credential Credential.
+	 * @param boolean                 $is_file    This is a file upload request.
+	 * @param boolean                 $debug      Debug this request.
 	 *
 	 * @return array|string
-	 * @throws Exception
+	 * @throws \Exception When non-supported implementation of AuthenticationInterface is given.
+	 * @throws Exception When request failed due CURL error.
+	 * @throws UnauthorizedException When request failed, because user can't be authorized properly.
+	 * @throws Exception When there was empty response instead of needed data.
 	 */
 	public function sendRequest(
 		$method,
@@ -122,12 +127,14 @@ class CurlClient implements ClientInterface
 			);
 		}
 
-		// if empty result and status != "204 No Content"
-		if ( curl_getinfo($curl, CURLINFO_HTTP_CODE) == 401 ) {
+		$http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+		// If empty result and status != "204 No Content".
+		if ( $http_code == 401 ) {
 			throw new UnauthorizedException('Unauthorized');
 		}
 
-		if ( $data === '' && !in_array(curl_getinfo($curl, CURLINFO_HTTP_CODE), array(201, 204)) ) {
+		if ( $data === '' && !in_array($http_code, array(201, 204)) ) {
 			throw new Exception('JIRA Rest server returns unexpected result.');
 		}
 
