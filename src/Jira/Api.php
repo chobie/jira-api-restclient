@@ -468,10 +468,11 @@ class Api
      * @param int $startAt
      * @param int $maxResult
      * @param string $fields
+     * @param string $expand
      *
      * @return Result|false
      */
-    public function search($jql, $startAt = 0, $maxResult = 20, $fields = '*navigable')
+    public function search($jql, $startAt = 0, $maxResult = 20, $fields = '*navigable', $expand = null)
     {
         $result = $this->api(
             self::REQUEST_GET,
@@ -481,6 +482,7 @@ class Api
                 'startAt' => $startAt,
                 'maxResults' => $maxResult,
                 'fields' => $fields,
+                'expand' => $expand,
             )
         );
 
