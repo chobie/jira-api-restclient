@@ -99,7 +99,7 @@ class PHPClient implements ClientInterface
 		$context = array(
 			'http' => array(
 				'method' => $method,
-				'header' => join("\r\n", $header),
+				'header' => implode("\r\n", $header),
 			),
 		);
 
@@ -126,7 +126,7 @@ class PHPClient implements ClientInterface
 
 			$header[] = sprintf('Content-Length: %d', strlen($__data));
 
-			$context['http']['header'] = join("\r\n", $header);
+			$context['http']['header'] = implode("\r\n", $header);
 			$context['http']['content'] = $__data;
 		}
 		else {

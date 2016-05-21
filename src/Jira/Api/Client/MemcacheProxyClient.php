@@ -82,7 +82,9 @@ class MemcacheProxyClient implements ClientInterface
 		$debug = false
 	) {
 		if ( $method == 'GET' ) {
-			if ( $result = $this->getFromCache($url, $data, $endpoint) ) {
+			$result = $this->getFromCache($url, $data, $endpoint);
+
+			if ( $result ) {
 				// $this->setCache($url, $data, $endpoint, $result);
 				return $result;
 			}
