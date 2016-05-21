@@ -61,7 +61,7 @@ class MemcacheProxyClient implements ClientInterface
 		$data = array(),
 		$endpoint,
 		AuthenticationInterface $credential,
-		$isFile = false,
+		$is_file = false,
 		$debug = false
 	) {
 		if ( $method == 'GET' ) {

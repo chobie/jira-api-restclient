@@ -38,11 +38,11 @@ class IssueType
 
 	protected $name;
 
-	protected $subtask;
+	protected $subTask;
 
 	protected $avatarId;
 
-	private $acceptable_keys = array(
+	private $_acceptableKeys = array(
 		'self',
 		'id',
 		'description',
@@ -55,7 +55,7 @@ class IssueType
 	public function __construct($types)
 	{
 		foreach ( $types as $key => $value ) {
-			if ( in_array($key, $this->acceptable_keys) ) {
+			if ( in_array($key, $this->_acceptableKeys) ) {
 				$this->$key = $value;
 			}
 			else {
@@ -71,7 +71,7 @@ class IssueType
 
 	public function isSubtask()
 	{
-		return $this->subtask;
+		return $this->subTask;
 	}
 
 	public function getId()

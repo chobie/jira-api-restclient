@@ -48,7 +48,7 @@ interface ClientInterface
 		$data = array(),
 		$endpoint,
 		AuthenticationInterface $credential,
-		$isFile = false,
+		$is_file = false,
 		$debug = false
 	);
 

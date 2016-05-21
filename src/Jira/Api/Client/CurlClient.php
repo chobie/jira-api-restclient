@@ -59,7 +59,7 @@ class CurlClient implements ClientInterface
 		$data = array(),
 		$endpoint,
 		AuthenticationInterface $credential,
-		$isFile = false,
+		$is_file = false,
 		$debug = false
 	) {
 		if ( !($credential instanceof Basic) && !($credential instanceof Anonymous) ) {
@@ -85,7 +85,7 @@ class CurlClient implements ClientInterface
 		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
 		curl_setopt($curl, CURLOPT_VERBOSE, $debug);
 
-		if ( $isFile ) {
+		if ( $is_file ) {
 			if ( defined('CURLOPT_SAFE_UPLOAD') ) {
 				curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
 			}
@@ -99,7 +99,7 @@ class CurlClient implements ClientInterface
 		if ( $method == 'POST' ) {
 			curl_setopt($curl, CURLOPT_POST, 1);
 
-			if ( $isFile ) {
+			if ( $is_file ) {
 				$data['file'] = $this->getCurlValue($data['file']);
 				curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 			}
@@ -114,11 +114,11 @@ class CurlClient implements ClientInterface
 
 		$data = curl_exec($curl);
 
-		$errorNumber = curl_errno($curl);
+		$error_number = curl_errno($curl);
 
-		if ( $errorNumber > 0 ) {
+		if ( $error_number > 0 ) {
 			throw new Exception(
-				sprintf('Jira request failed: code = %s, "%s"', $errorNumber, curl_error($curl))
+				sprintf('Jira request failed: code = %s, "%s"', $error_number, curl_error($curl))
 			);
 		}
 
@@ -141,17 +141,17 @@ class CurlClient implements ClientInterface
 	/**
 	 * If necessary, replace curl file @ string with a CURLFile object (for PHP 5.5 and up)
 	 *
-	 * @param string $fileString The string in @-format as it is used on PHP 5.4 and older.
+	 * @param string $file_string The string in @-format as it is used on PHP 5.4 and older.
 	 *
 	 * @return \CURLFile|string
 	 */
-	protected function getCurlValue($fileString)
+	protected function getCurlValue($file_string)
 	{
 		if ( !function_exists('curl_file_create') ) {
-			return $fileString . '; filename=' . basename($fileString);
+			return $file_string . '; filename=' . basename($file_string);
 		}
 
-		return curl_file_create(substr($fileString, 1), null, basename($fileString));
+		return curl_file_create(substr($file_string, 1), null, basename($file_string));
 	}
 
 }

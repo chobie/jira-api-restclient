@@ -32,7 +32,7 @@ use chobie\Jira\Api\Authentication\Basic;
 class PHPClient implements ClientInterface
 {
 
-	protected $https_support = false;
+	protected $httpsSupport = false;
 
 	/**
 	 * create a traditional php client
@@ -42,14 +42,14 @@ class PHPClient implements ClientInterface
 		$wrappers = stream_get_wrappers();
 
 		if ( in_array('https', $wrappers) ) {
-			$this->https_support = true;
+			$this->httpsSupport = true;
 		}
 
 	}
 
 	protected function isSupportHttps()
 	{
-		return $this->https_support;
+		return $this->httpsSupport;
 	}
 
 	/**
@@ -70,7 +70,7 @@ class PHPClient implements ClientInterface
 		$data = array(),
 		$endpoint,
 		AuthenticationInterface $credential,
-		$isFile = false,
+		$is_file = false,
 		$debug = false
 	) {
 		if ( !($credential instanceof Basic) && !($credential instanceof Anonymous) ) {
@@ -90,12 +90,12 @@ class PHPClient implements ClientInterface
 			),
 		);
 
-		if ( !$isFile ) {
+		if ( !$is_file ) {
 			$header[] = 'Content-Type: application/json;charset=UTF-8';
 		}
 
 		if ( $method == 'POST' || $method == 'PUT' ) {
-			if ( $isFile ) {
+			if ( $is_file ) {
 				$filename = preg_replace('/^@/', '', $data['file']);
 				$boundary = '--------------------------' . microtime(true);
 				$header[] = 'X-Atlassian-Token: nocheck';
