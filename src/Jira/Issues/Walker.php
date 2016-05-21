@@ -149,7 +149,8 @@ class Walker implements \Iterator
 			}
 			catch ( Api\UnauthorizedException $e ) {
 				throw $e;
-			} catch ( \Exception $e ) {
+			}
+			catch ( \Exception $e ) {
 				error_log($e->getMessage());
 
 				return false;
@@ -165,7 +166,8 @@ class Walker implements \Iterator
 				}
 				catch ( Api\UnauthorizedException $e ) {
 					throw $e;
-				} catch ( \Exception $e ) {
+				}
+				catch ( \Exception $e ) {
 					error_log($e->getMessage());
 
 					return false;
