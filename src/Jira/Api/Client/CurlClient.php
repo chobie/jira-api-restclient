@@ -133,9 +133,9 @@ class CurlClient implements ClientInterface
     protected function getCurlValue($fileString)
     {
         if (!function_exists('curl_file_create')) {
-            return $fileString;
+            return $fileString . '; filename=' . basename($fileString);
         }
 
-        return curl_file_create(substr($fileString, 1));
+        return curl_file_create(substr($fileString, 1), null, basename($fileString));
     }
 }
