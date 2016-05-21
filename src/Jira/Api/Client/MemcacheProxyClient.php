@@ -24,72 +24,78 @@
  */
 namespace chobie\Jira\Api\Client;
 
+
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 
 class MemcacheProxyClient implements ClientInterface
 {
-    protected $api;
-    protected $mc;
 
-    /**
-     * create a traditional php client
-     */
-    public function __construct(ClientInterface $api, $server, $port)
-    {
-        $this->api = $api;
-        $this->mc = new \Memcached();
-        $this->mc->addServer($server, $port);
-    }
+	protected $api;
 
-    /**
-     * send request to the api server
-     *
-     * @param $method
-     * @param $url
-     * @param array $data
-     * @param $endpoint
-     * @param $credential
-     * @return array|string
-     * @throws \Exception
-     */
-    public function sendRequest(
-        $method,
-        $url,
-        $data = array(),
-        $endpoint,
-        AuthenticationInterface $credential,
-        $isFile = false,
-        $debug = false
-    ) {
-        if ($method == 'GET') {
-            if ($result = $this->getFromCache($url, $data, $endpoint)) {
-                //$this->setCache($url, $data, $endpoint, $result);
-                return $result;
-            }
-        }
-        $result = $this->api->sendRequest($method, $url, $data, $endpoint, $credential);
+	protected $mc;
 
-        if ($method == 'GET') {
-            $this->setCache($url, $data, $endpoint, $result);
-        }
-        return $result;
-    }
+	/**
+	 * create a traditional php client
+	 */
+	public function __construct(ClientInterface $api, $server, $port)
+	{
+		$this->api = $api;
+		$this->mc = new \Memcached();
+		$this->mc->addServer($server, $port);
+	}
 
-    protected function getFromCache($url, $data, $endpoint)
-    {
-        $key = $endpoint . $url;
-        $key .= http_build_query($data);
-        $key = sha1($key);
+	/**
+	 * send request to the api server
+	 *
+	 * @param $method
+	 * @param $url
+	 * @param array      $data
+	 * @param $endpoint
+	 * @param $credential
+	 *
+	 * @return array|string
+	 */
+	public function sendRequest(
+		$method,
+		$url,
+		$data = array(),
+		$endpoint,
+		AuthenticationInterface $credential,
+		$isFile = false,
+		$debug = false
+	) {
+		if ( $method == 'GET' ) {
+			if ( $result = $this->getFromCache($url, $data, $endpoint) ) {
+				// $this->setCache($url, $data, $endpoint, $result);
+				return $result;
+			}
+		}
 
-        return $this->mc->get('jira:cache:' . $key);
-    }
+		$result = $this->api->sendRequest($method, $url, $data, $endpoint, $credential);
 
-    protected function setCache($url, $data, $endpoint, $result)
-    {
-        $key = $endpoint . $url;
-        $key .= http_build_query($data);
-        $key = sha1($key);
+		if ( $method == 'GET' ) {
+			$this->setCache($url, $data, $endpoint, $result);
+		}
 
-        return $this->mc->set('jira:cache:' . $key, $result, 86400);
-    }
+		return $result;
+	}
+
+	protected function getFromCache($url, $data, $endpoint)
+	{
+		$key = $endpoint . $url;
+		$key .= http_build_query($data);
+		$key = sha1($key);
+
+		return $this->mc->get('jira:cache:' . $key);
+	}
+
+	protected function setCache($url, $data, $endpoint, $result)
+	{
+		$key = $endpoint . $url;
+		$key .= http_build_query($data);
+		$key = sha1($key);
+
+		return $this->mc->set('jira:cache:' . $key, $result, 86400);
+	}
+
 }

@@ -24,63 +24,71 @@
  */
 namespace chobie\Jira\Api;
 
+
 use chobie\Jira\Issue;
 
 class Result
 {
-    protected $expand;
-    protected $startAt;
-    protected $maxResults;
-    protected $total;
 
-    protected $result;
+	protected $expand;
 
-    public function __construct($result)
-    {
-        if (isset($result['expand'])) {
-            $this->expand = explode(',', $result['expand']);
-        }
+	protected $startAt;
 
-        if (isset($result['startAt'])) {
-            $this->startAt = $result['startAt'];
-        }
+	protected $maxResults;
 
-        if (isset($result['maxResults'])) {
-            $this->maxResults = $result['maxResults'];
-        }
+	protected $total;
 
-        if (isset($result['total'])) {
-            $this->total = $result['total'];
-        }
+	protected $result;
 
-        $this->result = $result;
-    }
+	public function __construct($result)
+	{
+		if ( isset($result['expand']) ) {
+			$this->expand = explode(',', $result['expand']);
+		}
 
-    public function getTotal()
-    {
-        return $this->total;
-    }
+		if ( isset($result['startAt']) ) {
+			$this->startAt = $result['startAt'];
+		}
 
-    public function getIssuesCount()
-    {
-        return count($this->getIssues());
-    }
+		if ( isset($result['maxResults']) ) {
+			$this->maxResults = $result['maxResults'];
+		}
 
-    public function getIssues()
-    {
-        if (isset($this->result['issues'])) {
-            $result = array();
-            foreach ($this->result['issues'] as $issue) {
-                $result[] = new Issue($issue);
-            }
-            return $result;
-        }
+		if ( isset($result['total']) ) {
+			$this->total = $result['total'];
+		}
 
-        return array();
-    }
+		$this->result = $result;
+	}
 
-    public function getResult()
-    {
-        return $this->result;
-    }
+	public function getTotal()
+	{
+		return $this->total;
+	}
+
+	public function getIssuesCount()
+	{
+		return count($this->getIssues());
+	}
+
+	public function getIssues()
+	{
+		if ( isset($this->result['issues']) ) {
+			$result = array();
+
+			foreach ( $this->result['issues'] as $issue ) {
+				$result[] = new Issue($issue);
+			}
+
+			return $result;
+		}
+
+		return array();
+	}
+
+	public function getResult()
+	{
+		return $this->result;
+	}
+
 }

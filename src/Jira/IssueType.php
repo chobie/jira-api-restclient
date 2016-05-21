@@ -24,70 +24,74 @@
  */
 namespace chobie\Jira;
 
+
 class IssueType
 {
-    protected $self;
 
-    protected $id;
+	protected $self;
 
-    protected $description;
+	protected $id;
 
-    protected $iconUrl;
+	protected $description;
 
-    protected $name;
+	protected $iconUrl;
 
-    protected $subtask;
+	protected $name;
 
-    protected $avatarId;
+	protected $subtask;
 
-    private $acceptable_keys = array(
-        'self',
-        'id',
-        'description',
-        'iconUrl',
-        'name',
-        'subtask',
-        'avatarId',
-    );
+	protected $avatarId;
 
-    public function __construct($types)
-    {
-        foreach ($types as $key => $value) {
-            if (in_array($key, $this->acceptable_keys)) {
-                $this->$key = $value;
-            } else {
-                throw new \Exception("the key {$key} does not support");
-            }
-        }
-    }
+	private $acceptable_keys = array(
+		'self',
+		'id',
+		'description',
+		'iconUrl',
+		'name',
+		'subtask',
+		'avatarId',
+	);
 
-    public function getName()
-    {
-        return $this->name;
-    }
+	public function __construct($types)
+	{
+		foreach ( $types as $key => $value ) {
+			if ( in_array($key, $this->acceptable_keys) ) {
+				$this->$key = $value;
+			}
+			else {
+				throw new \Exception("the key {$key} does not support");
+			}
+		}
+	}
 
-    public function isSubtask()
-    {
-        return $this->subtask;
-    }
+	public function getName()
+	{
+		return $this->name;
+	}
 
-    public function getId()
-    {
-        return $this->id;
-    }
+	public function isSubtask()
+	{
+		return $this->subtask;
+	}
 
-    public function getDescription()
-    {
-        return $this->description;
-    }
+	public function getId()
+	{
+		return $this->id;
+	}
 
-    public function getIconUrl()
-    {
-        return $this->iconUrl;
-    }
+	public function getDescription()
+	{
+		return $this->description;
+	}
 
-    public function getAvatarId()
-    {
-        return $this->avatarId;
-    }
+	public function getIconUrl()
+	{
+		return $this->iconUrl;
+	}
+
+	public function getAvatarId()
+	{
+		return $this->avatarId;
+	}
+
 }

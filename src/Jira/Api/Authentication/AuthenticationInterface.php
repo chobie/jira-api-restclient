@@ -24,11 +24,14 @@
  */
 namespace chobie\Jira\Api\Authentication;
 
+
 interface AuthenticationInterface
 {
-    public function getCredential();
 
-    public function getId();
+	public function getCredential();
 
-    public function getPassword();
+	public function getId();
+
+	public function getPassword();
+
 }
