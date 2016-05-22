@@ -24,29 +24,33 @@
  */
 namespace chobie\Jira\Api\Client;
 
+
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 
 interface ClientInterface
 {
-    /**
-     * send request to the api server
-     *
-     * @param $method
-     * @param $url
-     * @param array $data
-     * @param $endpoint
-     * @param $credential
-     * @return array|string
-     *
-     * @throws \Exception
-     */
-    public function sendRequest(
-        $method,
-        $url,
-        $data = array(),
-        $endpoint,
-        AuthenticationInterface $credential,
-        $isFile = false,
-        $debug = false
-    );
+
+	/**
+	 * Sends request to the API server.
+	 *
+	 * @param string                  $method     Request method.
+	 * @param string                  $url        URL.
+	 * @param array                   $data       Request data.
+	 * @param string                  $endpoint   Endpoint.
+	 * @param AuthenticationInterface $credential Credential.
+	 * @param boolean                 $is_file    This is a file upload request.
+	 * @param boolean                 $debug      Debug this request.
+	 *
+	 * @return array|string
+	 */
+	public function sendRequest(
+		$method,
+		$url,
+		$data = array(),
+		$endpoint,
+		AuthenticationInterface $credential,
+		$is_file = false,
+		$debug = false
+	);
+
 }

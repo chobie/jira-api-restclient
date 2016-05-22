@@ -24,6 +24,7 @@
  */
 namespace chobie\Jira\Api;
 
+
 class UnauthorizedException extends Exception
 {
 }

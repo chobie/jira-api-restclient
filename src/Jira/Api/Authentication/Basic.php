@@ -24,29 +24,64 @@
  */
 namespace chobie\Jira\Api\Authentication;
 
+
 class Basic implements AuthenticationInterface
 {
-    private $user_id;
-    private $password;
 
-    public function __construct($user_id, $password)
-    {
-        $this->user_id = $user_id;
-        $this->password = $password;
-    }
+	/**
+	 * User ID.
+	 *
+	 * @var string
+	 */
+	private $_userId;
 
-    public function getCredential()
-    {
-        return base64_encode($this->user_id . ':' . $this->password);
-    }
+	/**
+	 * Password.
+	 *
+	 * @var string
+	 */
+	private $_password;
 
-    public function getId()
-    {
-        return $this->user_id;
-    }
+	/**
+	 * Creates class instance.
+	 *
+	 * @param string $user_id  User ID.
+	 * @param string $password Password.
+	 */
+	public function __construct($user_id, $password)
+	{
+		$this->_userId = $user_id;
+		$this->_password = $password;
+	}
 
-    public function getPassword()
-    {
-        return $this->password;
-    }
+	/**
+	 * Returns credential string.
+	 *
+	 * @return string
+	 */
+	public function getCredential()
+	{
+		return base64_encode($this->_userId . ':' . $this->_password);
+	}
+
+	/**
+	 * Returns user id.
+	 *
+	 * @return string
+	 */
+	public function getId()
+	{
+		return $this->_userId;
+	}
+
+	/**
+	 * Returns password.
+	 *
+	 * @return string
+	 */
+	public function getPassword()
+	{
+		return $this->_password;
+	}
+
 }

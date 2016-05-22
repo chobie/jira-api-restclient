@@ -24,63 +24,121 @@
  */
 namespace chobie\Jira\Api;
 
+
 use chobie\Jira\Issue;
 
 class Result
 {
-    protected $expand;
-    protected $startAt;
-    protected $maxResults;
-    protected $total;
 
-    protected $result;
+	/**
+	 * Expand.
+	 *
+	 * @var array
+	 */
+	protected $expand;
 
-    public function __construct($result)
-    {
-        if (isset($result['expand'])) {
-            $this->expand = explode(',', $result['expand']);
-        }
+	/**
+	 * Start at.
+	 *
+	 * @var integer
+	 */
+	protected $startAt;
 
-        if (isset($result['startAt'])) {
-            $this->startAt = $result['startAt'];
-        }
+	/**
+	 * Max results.
+	 *
+	 * @var integer
+	 */
+	protected $maxResults;
 
-        if (isset($result['maxResults'])) {
-            $this->maxResults = $result['maxResults'];
-        }
+	/**
+	 * Total
+	 *
+	 * @var integer
+	 */
+	protected $total;
 
-        if (isset($result['total'])) {
-            $this->total = $result['total'];
-        }
+	/**
+	 * Result.
+	 *
+	 * @var array
+	 */
+	protected $result;
 
-        $this->result = $result;
-    }
+	/**
+	 * Creates result instance.
+	 *
+	 * @param array $result Result.
+	 */
+	public function __construct(array $result)
+	{
+		if ( isset($result['expand']) ) {
+			$this->expand = explode(',', $result['expand']);
+		}
 
-    public function getTotal()
-    {
-        return $this->total;
-    }
+		if ( isset($result['startAt']) ) {
+			$this->startAt = $result['startAt'];
+		}
 
-    public function getIssuesCount()
-    {
-        return count($this->getIssues());
-    }
+		if ( isset($result['maxResults']) ) {
+			$this->maxResults = $result['maxResults'];
+		}
 
-    public function getIssues()
-    {
-        if (isset($this->result['issues'])) {
-            $result = array();
-            foreach ($this->result['issues'] as $issue) {
-                $result[] = new Issue($issue);
-            }
-            return $result;
-        }
+		if ( isset($result['total']) ) {
+			$this->total = $result['total'];
+		}
 
-        return array();
-    }
+		$this->result = $result;
+	}
 
-    public function getResult()
-    {
-        return $this->result;
-    }
+	/**
+	 * Returns total number of records.
+	 *
+	 * @return integer
+	 */
+	public function getTotal()
+	{
+		return $this->total;
+	}
+
+	/**
+	 * Returns issue count.
+	 *
+	 * @return integer
+	 */
+	public function getIssuesCount()
+	{
+		return count($this->getIssues());
+	}
+
+	/**
+	 * Returns issues.
+	 *
+	 * @return array
+	 */
+	public function getIssues()
+	{
+		if ( isset($this->result['issues']) ) {
+			$result = array();
+
+			foreach ( $this->result['issues'] as $issue ) {
+				$result[] = new Issue($issue);
+			}
+
+			return $result;
+		}
+
+		return array();
+	}
+
+	/**
+	 * Returns raw result.
+	 *
+	 * @return array
+	 */
+	public function getResult()
+	{
+		return $this->result;
+	}
+
 }

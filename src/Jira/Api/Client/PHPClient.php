@@ -24,122 +24,146 @@
  */
 namespace chobie\Jira\Api\Client;
 
+
 use chobie\Jira\Api\Authentication\Anonymous;
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Authentication\Basic;
+use chobie\Jira\Api\Exception;
 
 class PHPClient implements ClientInterface
 {
-    protected $https_support = false;
 
-    /**
-     * create a traditional php client
-     */
-    public function __construct()
-    {
-        $wrappers = stream_get_wrappers();
-        if (in_array('https', $wrappers)) {
-            $this->https_support = true;
-        }
+	/**
+	 * HTTPS support enabled.
+	 *
+	 * @var boolean
+	 */
+	protected $httpsSupport = false;
 
-    }
+	/**
+	 * Create a traditional php client.
+	 */
+	public function __construct()
+	{
+		$wrappers = stream_get_wrappers();
 
-    protected function isSupportHttps()
-    {
-        return $this->https_support;
-    }
+		if ( in_array('https', $wrappers) ) {
+			$this->httpsSupport = true;
+		}
 
-    /**
-     * send request to the api server
-     *
-     * @param $method
-     * @param $url
-     * @param array $data
-     * @param $endpoint
-     * @param $credential
-     * @return array|string
-     * @throws \Exception
-     */
-    public function sendRequest(
-        $method,
-        $url,
-        $data = array(),
-        $endpoint,
-        AuthenticationInterface $credential,
-        $isFile = false,
-        $debug = false
-    ) {
-        if (!($credential instanceof Basic) && !($credential instanceof Anonymous)) {
-            throw new \Exception(sprintf('PHPClient does not support %s authentication.', get_class($credential)));
-        }
+	}
 
-        $header = array();
-        if (!($credential instanceof Anonymous)) {
-            $header[] = 'Authorization: Basic ' . $credential->getCredential();
-        }
+	/**
+	 * Returns status of HTTP support.
+	 *
+	 * @return boolean
+	 */
+	protected function isHttpsSupported()
+	{
+		return $this->httpsSupport;
+	}
 
-        $context = array(
-            'http' => array(
-                'method' => $method,
-                'header' => join("\r\n", $header),
-            )
-        );
+	/**
+	 * Sends request to the API server.
+	 *
+	 * @param string                  $method     Request method.
+	 * @param string                  $url        URL.
+	 * @param array                   $data       Request data.
+	 * @param string                  $endpoint   Endpoint.
+	 * @param AuthenticationInterface $credential Credential.
+	 * @param boolean                 $is_file    This is a file upload request.
+	 * @param boolean                 $debug      Debug this request.
+	 *
+	 * @return array|string
+	 * @throws \Exception When non-supported implementation of AuthenticationInterface is given.
+	 */
+	public function sendRequest(
+		$method,
+		$url,
+		$data = array(),
+		$endpoint,
+		AuthenticationInterface $credential,
+		$is_file = false,
+		$debug = false
+	) {
+		if ( !($credential instanceof Basic) && !($credential instanceof Anonymous) ) {
+			throw new \Exception(sprintf('PHPClient does not support %s authentication.', get_class($credential)));
+		}
 
+		$header = array();
 
-        if (!$isFile) {
-            $header[] = 'Content-Type: application/json;charset=UTF-8';
-        }
+		if ( !($credential instanceof Anonymous) ) {
+			$header[] = 'Authorization: Basic ' . $credential->getCredential();
+		}
 
-        if ($method == 'POST' || $method == 'PUT') {
-            if ($isFile) {
-                $filename = preg_replace('/^@/', '', $data['file']);
-                $boundary = '--------------------------' . microtime(true);
-                $header[] = 'X-Atlassian-Token: nocheck';
-                $header[] = 'Content-Type: multipart/form-data; boundary=' . $boundary;
+		$context = array(
+			'http' => array(
+				'method' => $method,
+				'header' => implode("\r\n", $header),
+			),
+		);
 
-                $__data = '--' . $boundary . "\r\n" .
-                    'Content-Disposition: form-data; name="file"; filename="' . basename($filename) . "\"\r\n" .
-                    "Content-Type: application/octet-stream\r\n\r\n" .
-                    file_get_contents($filename) . "\r\n";
-                $__data .= '--' . $boundary . "--\r\n";
-            } else {
-                $__data = json_encode($data);
-            }
-            $header[] = sprintf('Content-Length: %d', strlen($__data));
+		if ( !$is_file ) {
+			$header[] = 'Content-Type: application/json;charset=UTF-8';
+		}
 
-            $context['http']['header'] = join("\r\n", $header);
-            $context['http']['content'] = $__data;
-        } else {
-            $url .= '?' . http_build_query($data);
-        }
+		if ( $method == 'POST' || $method == 'PUT' ) {
+			if ( $is_file ) {
+				$filename = preg_replace('/^@/', '', $data['file']);
+				$boundary = '--------------------------' . microtime(true);
+				$header[] = 'X-Atlassian-Token: nocheck';
+				$header[] = 'Content-Type: multipart/form-data; boundary=' . $boundary;
 
-        if (strpos($endpoint, 'https://') === 0 && !$this->isSupportHttps()) {
-            throw new \Exception('does not support https wrapper. please enable openssl extension');
-        }
+				$__data = '--' . $boundary . "\r\n" .
+					'Content-Disposition: form-data; name="file"; filename="' . basename($filename) . "\"\r\n" .
+					"Content-Type: application/octet-stream\r\n\r\n" .
+					file_get_contents($filename) . "\r\n";
+				$__data .= '--' . $boundary . "--\r\n";
+			}
+			else {
+				$__data = json_encode($data);
+			}
 
+			$header[] = sprintf('Content-Length: %d', strlen($__data));
 
-        set_error_handler(array($this, 'errorHandler'));
-        $data = file_get_contents(
-            $endpoint . $url,
-            false,
-            stream_context_create($context)
-        );
-        restore_error_handler();
+			$context['http']['header'] = implode("\r\n", $header);
+			$context['http']['content'] = $__data;
+		}
+		else {
+			$url .= '?' . http_build_query($data);
+		}
 
-        if (is_null($data)) {
-            throw new \Exception('JIRA Rest server returns unexpected result.');
-        }
+		if ( strpos($endpoint, 'https://') === 0 && !$this->isHttpsSupported() ) {
+			throw new \Exception('does not support https wrapper. please enable openssl extension');
+		}
 
-        return $data;
-    }
+		set_error_handler(array($this, 'errorHandler'));
+		$data = file_get_contents(
+			$endpoint . $url,
+			false,
+			stream_context_create($context)
+		);
+		restore_error_handler();
 
-    /**
-     * @param $errno
-     * @param $errstr
-     * @throws \Exception
-     */
-    public function errorHandler($errno, $errstr)
-    {
-        throw new \Exception($errstr);
-    }
+		if ( is_null($data) ) {
+			throw new \Exception('JIRA Rest server returns unexpected result.');
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Throws exception on error.
+	 *
+	 * @param integer $errno  Error number.
+	 * @param string  $errstr Error message.
+	 *
+	 * @return void
+	 * @throws \Exception Always.
+	 */
+	public function errorHandler($errno, $errstr)
+	{
+		throw new \Exception($errstr);
+	}
+
 }

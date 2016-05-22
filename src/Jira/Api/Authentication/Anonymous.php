@@ -23,24 +23,45 @@
  */
 namespace chobie\Jira\Api\Authentication;
 
+
 class Anonymous implements AuthenticationInterface
 {
-    public function __construct()
-    {
-    }
 
-    public function getCredential()
-    {
-        return null;
-    }
+	/**
+	 * Creates class instance.
+	 */
+	public function __construct()
+	{
+	}
 
-    public function getId()
-    {
-        return null;
-    }
+	/**
+	 * Returns credential string.
+	 *
+	 * @return string
+	 */
+	public function getCredential()
+	{
+		return null;
+	}
 
-    public function getPassword()
-    {
-        return null;
-    }
+	/**
+	 * Returns user id.
+	 *
+	 * @return string
+	 */
+	public function getId()
+	{
+		return null;
+	}
+
+	/**
+	 * Returns password.
+	 *
+	 * @return string
+	 */
+	public function getPassword()
+	{
+		return null;
+	}
+
 }
