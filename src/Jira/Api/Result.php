@@ -83,11 +83,13 @@ class Result
     {
     	if (isset($this->result['errors'])) {
             $result = array();
-            foreach ($this->result['errors'] as $issue) {
-                $result[] = new Issue($issue);
+            foreach ($this->result['errors'] as $error) {
+                $result[] = $error;
             }
             return $result;
         }
+        
+        return array();
     }
 
     public function getResult()
