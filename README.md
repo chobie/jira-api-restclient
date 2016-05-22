@@ -1,40 +1,47 @@
-# Jira Api Rest Client
+# JIRA REST API Client
 
 [![Build Status](https://secure.travis-ci.org/chobie/jira-api-restclient.png)](http://travis-ci.org/chobie/jira-api-restclient)
 
+You all know that JIRA supports REST API, right? It can be very useful, for example, during automation job creation and notification sending.
 
-you know JIRA supports REST API. this is very useful to make some custom notifications and automated jobs.
-(JIRA also supports email notification, but it's too much to custom templates, notification timing. unfortunately it requires Administration permission.)
-this API library will help your problems regarding JIRA. hope you enjoy it.
+This library will ensure unforgettable expirience when working with JIRA through REST API. Hope you'll enjoy it.
 
-# Usage
+## Usage
 
-composer.json
+* JIRA Rest API Documents: https://docs.atlassian.com/jira/REST/latest/
 
-```
-composer require chobie/jira-api-restclient 2.0@dev
-```
-
-
-````php
+```php
 <?php
-$api = new \chobie\Jira\Api(
-    "https://your-jira-project.net",
-    new \chobie\Jira\Api\Authentication\Basic("yourname", "password")
+use chobie\Jira\Api;
+use chobie\Jira\Api\Authentication\Basic;
+use chobie\Jira\Issues\Walker;
+
+$api = new Api(
+    'https://your-jira-project.net',
+    new Basic('yourname', 'password')
 );
 
-$walker = new \chobie\Jira\Issues\Walker($api);
-$walker->push("project = YOURPROJECT AND (status != closed and status != resolved) ORDER BY priority DESC");
-foreach ($walker as $issue) {
+$walker = new Walker($api);
+$walker->push(
+	'project = "YOURPROJECT" AND (status != "closed" AND status != "resolved") ORDER BY priority DESC'
+);
+
+foreach ( $walker as $issue ) {
     var_dump($issue);
-    // send custom notification here.
+    // Send custom notification here.
 }
-````
+```
 
-# License
+## Installation
 
-MIT License
+```
+php composer.phar require chobie/jira-api-restclient 2.0@dev
+```
 
-# JIRA Rest API Documents
+## Requirements
 
-https://docs.atlassian.com/jira/REST/latest/
+* [Composer](https://getcomposer.org/download/)
+
+## License
+
+JIRA REST API Client is released under the MIT License. See the bundled [LICENSE](LICENSE) file for details.
