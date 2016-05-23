@@ -347,6 +347,7 @@ class Api
 	 * @param array  $params    Params.
 	 *
 	 * @return Result|false
+	 * @since  2.0.0
 	 */
 	public function getWorklogs($issue_key, array $params)
 	{
@@ -415,6 +416,7 @@ class Api
 	 * @param string $name        The version name to match on.
 	 *
 	 * @return integer|null VersionId on match or null when there is no match.
+	 * @since  2.0.0
 	 */
 	public function findVersionByName($project_key, $name)
 	{
@@ -439,6 +441,7 @@ class Api
 	 * Get available priorities.
 	 *
 	 * @return array
+	 * @since  2.0.0
 	 */
 	public function getPriorities()
 	{
@@ -579,6 +582,7 @@ class Api
 	 * @param array   $params     Key->Value list to update the version with.
 	 *
 	 * @return Result|false
+	 * @since  2.0.0
 	 * @link   https://docs.atlassian.com/jira/REST/latest/#api/2/version-updateVersion
 	 */
 	public function updateVersion($version_id, array $params = array())
@@ -594,6 +598,7 @@ class Api
 	 * @param array       $params       Optionally extra parameters.
 	 *
 	 * @return Result|false
+	 * @since  2.0.0
 	 */
 	public function releaseVersion($version_id, $release_date = null, array $params = array())
 	{
@@ -649,6 +654,7 @@ class Api
 	 * @param array  $application  Application.
 	 *
 	 * @return array|false
+	 * @since  2.0.0
 	 */
 	public function createRemotelink(
 		$issue_key,
