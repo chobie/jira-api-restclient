@@ -240,7 +240,7 @@ class Api
 	 */
 	public function getRoles($project_key)
 	{
-		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/roles', $project_key), array(), true);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/role', $project_key), array(), true);
 	}
 
 	/**
