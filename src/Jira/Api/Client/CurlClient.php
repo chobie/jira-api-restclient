@@ -57,6 +57,7 @@ class CurlClient implements ClientInterface
 	 * @throws Exception When request failed due CURL error.
 	 * @throws UnauthorizedException When request failed, because user can't be authorized properly.
 	 * @throws Exception When there was empty response instead of needed data.
+	 * @throws \InvalidArgumentException When data is not an array and http method is GET.
 	 */
 	public function sendRequest(
 		$method,
