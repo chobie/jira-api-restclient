@@ -679,19 +679,19 @@ class Api
 	/**
 	 * Send request to specified host.
 	 *
-	 * @param string  $method         Request method.
-	 * @param string  $url            URL.
-	 * @param array   $data           Data.
-	 * @param boolean $return_as_json Return results as JSON.
-	 * @param boolean $is_file        Is file-related request.
-	 * @param boolean $debug          Debug this request.
+	 * @param string       $method         Request method.
+	 * @param string       $url            URL.
+	 * @param array|string $data           Data.
+	 * @param boolean      $return_as_json Return results as JSON.
+	 * @param boolean      $is_file        Is file-related request.
+	 * @param boolean      $debug          Debug this request.
 	 *
 	 * @return array|Result|false
 	 */
 	public function api(
 		$method = self::REQUEST_GET,
 		$url,
-		array $data = array(),
+		$data = array(),
 		$return_as_json = false,
 		$is_file = false,
 		$debug = false
