@@ -691,7 +691,7 @@ class Api
 	public function api(
 		$method = self::REQUEST_GET,
 		$url,
-		array $data = array(),
+		$data = array(),
 		$return_as_json = false,
 		$is_file = false,
 		$debug = false
