@@ -46,7 +46,7 @@ class CurlClient implements ClientInterface
 	 *
 	 * @param string                  $method     Request method.
 	 * @param string                  $url        URL.
-	 * @param array                   $data       Request data.
+	 * @param array|string            $data       Request data.
 	 * @param string                  $endpoint   Endpoint.
 	 * @param AuthenticationInterface $credential Credential.
 	 * @param boolean                 $is_file    This is a file upload request.
@@ -75,6 +75,10 @@ class CurlClient implements ClientInterface
 
 		if ( $method == 'GET' ) {
 			$url .= '?' . http_build_query($data);
+
+			if ( !is_array($data) ) {
+				throw new \InvalidArgumentException('Data must be an array.');
+			}
 		}
 
 		curl_setopt($curl, CURLOPT_URL, $endpoint . $url);

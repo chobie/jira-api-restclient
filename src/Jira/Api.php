@@ -681,7 +681,7 @@ class Api
 	 *
 	 * @param string  $method         Request method.
 	 * @param string  $url            URL.
-	 * @param array   $data           Data.
+	 * @param array|string   $data           Data.
 	 * @param boolean $return_as_json Return results as JSON.
 	 * @param boolean $is_file        Is file-related request.
 	 * @param boolean $debug          Debug this request.
