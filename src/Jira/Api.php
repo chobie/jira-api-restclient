@@ -205,7 +205,7 @@ class Api
 	 */
 	public function getAttachmentsMetaInformation()
 	{
-		return $this->api(self::REQUEST_GET, '/rest/api/2/attachment/meta', array());
+		return $this->api(self::REQUEST_GET, '/rest/api/2/attachment/meta');
 	}
 
 	/**
