@@ -202,7 +202,6 @@ class Api
 	 *
 	 * @return array
 	 */
-	public function getAttachmentUploadLimit()
 	{
 		return $this->api(self::REQUEST_GET, '/rest/api/2/attachment/meta', array());
 	}
