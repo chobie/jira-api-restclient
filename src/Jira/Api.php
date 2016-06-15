@@ -198,6 +198,16 @@ class Api
 	}
 
 	/**
+	 * Gets attachment upload limit.
+	 *
+	 * @return array
+	 */
+	public function getAttachmentUploadLimit()
+	{
+		return $this->api(self::REQUEST_GET, '/rest/api/2/attachment/meta', array());
+	}
+
+	/**
 	 * Gets attachment.
 	 *
 	 * @param string $attachment_id Attachment ID.
