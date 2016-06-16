@@ -198,6 +198,17 @@ class Api
 	}
 
 	/**
+	 * Gets attachments meta information.
+	 *
+	 * @return array
+	 * @since  2.0.0
+	 */
+	public function getAttachmentsMetaInformation()
+	{
+		return $this->api(self::REQUEST_GET, '/rest/api/2/attachment/meta');
+	}
+
+	/**
 	 * Gets attachment.
 	 *
 	 * @param string $attachment_id Attachment ID.
