@@ -846,7 +846,7 @@ class Api
 		return $result;
 	}
 
-	/**
+	 /**
 	 * Returns project components.
 	 *
 	 * @param string $project_key Project key.
@@ -859,7 +859,7 @@ class Api
 		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/components', $project_key), array(), true);
 	}
 
-	/**
+	 /**
 	 * Get all issue types with valid status values for a project.
 	 *
 	 * @param string $project_key Project key.
@@ -868,20 +868,20 @@ class Api
 	 * @since  2.0.0
 	 */
 	public function getAllIssueTypes($project_key) 
-    {
-       return $this->api(self::REQUEST_GET, "/rest/api/2/project/{$project_key}/statuses", array(), true);
-    }
+	{
+		return $this->api(self::REQUEST_GET, "/rest/api/2/project/{$project_key}/statuses", array(), true);
+	}
 
-    /**
-	 * Returns a list of all resolutions.
+	 /**
+	 * Returns a list of all resolutions.	
 	 *
 	 * @param string $project_key Project key.
 	 *
 	 * @return array|false
 	 * @since  2.0.0
 	 */
-    public function getResolutions() 
-    {
-       return $this->api(self::REQUEST_GET, "/rest/api/2/resolution", array(), true);
-    }
+	public function getResolutions() 
+	{
+		return $this->api(self::REQUEST_GET, "/rest/api/2/resolution", array(), true);
+	}
 }
