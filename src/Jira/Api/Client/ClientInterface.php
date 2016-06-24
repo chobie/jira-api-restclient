@@ -22,35 +22,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-namespace chobie\Jira\Api\Client;
 
+namespace Chobie\JiraApiRestClient\Jira\Api\Client;
 
-use chobie\Jira\Api\Authentication\AuthenticationInterface;
+use Chobie\JiraApiRestClient\Jira\Api\Authentication\AuthenticationInterface;
 
 interface ClientInterface
 {
-
-	/**
-	 * Sends request to the API server.
-	 *
-	 * @param string                  $method     Request method.
-	 * @param string                  $url        URL.
-	 * @param array|string            $data       Request data.
-	 * @param string                  $endpoint   Endpoint.
-	 * @param AuthenticationInterface $credential Credential.
-	 * @param boolean                 $is_file    This is a file upload request.
-	 * @param boolean                 $debug      Debug this request.
-	 *
-	 * @return array|string
-	 */
-	public function sendRequest(
-		$method,
-		$url,
-		$data = array(),
-		$endpoint,
-		AuthenticationInterface $credential,
-		$is_file = false,
-		$debug = false
-	);
-
+    /**
+     * Sends request to the API server.
+     *
+     * @param string                  $method     Request method.
+     * @param string                  $url        URL.
+     * @param array|string            $data       Request data.
+     * @param string                  $endpoint   Endpoint.
+     * @param AuthenticationInterface $credential Credential.
+     * @param bool                    $is_file    This is a file upload request.
+     * @param bool                    $debug      Debug this request.
+     *
+     * @return array|string
+     */
+    public function sendRequest(
+        $method,
+        $url,
+        $data = array(),
+        $endpoint,
+        AuthenticationInterface $credential,
+        $is_file = false,
+        $debug = false
+    );
 }

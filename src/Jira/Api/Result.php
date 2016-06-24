@@ -22,123 +22,121 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-namespace chobie\Jira\Api;
 
+namespace Chobie\JiraApiRestClient\Jira\Api;
 
-use chobie\Jira\Issue;
+use Chobie\JiraApiRestClient\Jira\Issue;
 
 class Result
 {
+    /**
+     * Expand.
+     *
+     * @var array
+     */
+    protected $expand;
 
-	/**
-	 * Expand.
-	 *
-	 * @var array
-	 */
-	protected $expand;
+    /**
+     * Start at.
+     *
+     * @var int
+     */
+    protected $startAt;
 
-	/**
-	 * Start at.
-	 *
-	 * @var integer
-	 */
-	protected $startAt;
+    /**
+     * Max results.
+     *
+     * @var int
+     */
+    protected $maxResults;
 
-	/**
-	 * Max results.
-	 *
-	 * @var integer
-	 */
-	protected $maxResults;
+    /**
+     * Total.
+     *
+     * @var int
+     */
+    protected $total;
 
-	/**
-	 * Total
-	 *
-	 * @var integer
-	 */
-	protected $total;
+    /**
+     * Result.
+     *
+     * @var array
+     */
+    protected $result;
 
-	/**
-	 * Result.
-	 *
-	 * @var array
-	 */
-	protected $result;
+    /**
+     * Creates result instance.
+     *
+     * @param array $result Result.
+     */
+    public function __construct(array $result)
+    {
+        if (isset($result['expand'])) {
+            $this->expand = explode(',', $result['expand']);
+        }
 
-	/**
-	 * Creates result instance.
-	 *
-	 * @param array $result Result.
-	 */
-	public function __construct(array $result)
-	{
-		if ( isset($result['expand']) ) {
-			$this->expand = explode(',', $result['expand']);
-		}
+        if (isset($result['startAt'])) {
+            $this->startAt = $result['startAt'];
+        }
 
-		if ( isset($result['startAt']) ) {
-			$this->startAt = $result['startAt'];
-		}
+        if (isset($result['maxResults'])) {
+            $this->maxResults = $result['maxResults'];
+        }
 
-		if ( isset($result['maxResults']) ) {
-			$this->maxResults = $result['maxResults'];
-		}
+        if (isset($result['total'])) {
+            $this->total = $result['total'];
+        }
 
-		if ( isset($result['total']) ) {
-			$this->total = $result['total'];
-		}
+        $this->result = $result;
+    }
 
-		$this->result = $result;
-	}
+    /**
+     * Returns total number of records.
+     *
+     * @return int
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
 
-	/**
-	 * Returns total number of records.
-	 *
-	 * @return integer
-	 */
-	public function getTotal()
-	{
-		return $this->total;
-	}
+    /**
+     * Returns issue count.
+     *
+     * @return int
+     */
+    public function getIssuesCount()
+    {
+        return count($this->getIssues());
+    }
 
-	/**
-	 * Returns issue count.
-	 *
-	 * @return integer
-	 */
-	public function getIssuesCount()
-	{
-		return count($this->getIssues());
-	}
+    /**
+     * Returns issues.
+     *
+     * @return array
+     */
+    public function getIssues()
+    {
+        if (isset($this->result['issues'])) {
+            $result = array();
 
-	/**
-	 * Returns issues.
-	 *
-	 * @return array
-	 */
-	public function getIssues()
-	{
-		if ( isset($this->result['issues']) ) {
-			$result = array();
+            foreach ($this->result['issues'] as $issue) {
+                $result[] = new Issue($issue);
+            }
 
-			foreach ( $this->result['issues'] as $issue ) {
-				$result[] = new Issue($issue);
-			}
+            return $result;
+        }
 
-			return $result;
-		}
+        return array();
+    }
 
-		return array();
-	}
-
-	/**
-	 * Returns raw result.
-	 *
-	 * @return array
-	 */
-	public function getResult()
-	{
-		return $this->result;
-	}
-
+    /**
+     * Returns raw result.
+     *
+     * @return array
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
 }

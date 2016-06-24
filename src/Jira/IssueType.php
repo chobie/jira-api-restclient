@@ -22,153 +22,150 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-namespace chobie\Jira;
 
+namespace Chobie\JiraApiRestClient\Jira;
 
 class IssueType
 {
+    /**
+     * Self.
+     *
+     * @var string
+     */
+    protected $self;
 
-	/**
-	 * Self.
-	 *
-	 * @var string
-	 */
-	protected $self;
+    /**
+     * ID.
+     *
+     * @var string
+     */
+    protected $id;
 
-	/**
-	 * ID.
-	 *
-	 * @var string
-	 */
-	protected $id;
+    /**
+     * Description.
+     *
+     * @var string
+     */
+    protected $description;
 
-	/**
-	 * Description.
-	 *
-	 * @var string
-	 */
-	protected $description;
+    /**
+     * Icon URL.
+     *
+     * @var string
+     */
+    protected $iconUrl;
 
-	/**
-	 * Icon URL.
-	 *
-	 * @var string
-	 */
-	protected $iconUrl;
+    /**
+     * Name.
+     *
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * Name.
-	 *
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * Sub-task.
+     *
+     * @var string
+     */
+    protected $subTask;
 
-	/**
-	 * Sub-task.
-	 *
-	 * @var string
-	 */
-	protected $subTask;
+    /**
+     * Avatar ID.
+     *
+     * @var string
+     */
+    protected $avatarId;
 
-	/**
-	 * Avatar ID.
-	 *
-	 * @var string
-	 */
-	protected $avatarId;
+    /**
+     * Acceptable keys.
+     *
+     * @var array
+     */
+    private $_acceptableKeys = array(
+        'self',
+        'id',
+        'description',
+        'iconUrl',
+        'name',
+        'subtask',
+        'avatarId',
+    );
 
-	/**
-	 * Acceptable keys.
-	 *
-	 * @var array
-	 */
-	private $_acceptableKeys = array(
-		'self',
-		'id',
-		'description',
-		'iconUrl',
-		'name',
-		'subtask',
-		'avatarId',
-	);
+    /**
+     * Creates issue instance.
+     *
+     * @param array $types Types.
+     *
+     * @throws \Exception When unknown type is given.
+     */
+    public function __construct(array $types)
+    {
+        foreach ($types as $key => $value) {
+            if (in_array($key, $this->_acceptableKeys)) {
+                $this->$key = $value;
+            } else {
+                throw new \Exception('the key '.$key.' does not support');
+            }
+        }
+    }
 
-	/**
-	 * Creates issue instance.
-	 *
-	 * @param array $types Types.
-	 *
-	 * @throws \Exception When unknown type is given.
-	 */
-	public function __construct(array $types)
-	{
-		foreach ( $types as $key => $value ) {
-			if ( in_array($key, $this->_acceptableKeys) ) {
-				$this->$key = $value;
-			}
-			else {
-				throw new \Exception('the key ' . $key . ' does not support');
-			}
-		}
-	}
+    /**
+     * Gets name.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * Gets name.
-	 *
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->name;
-	}
+    /**
+     * Gets sub-task.
+     *
+     * @return string
+     */
+    public function isSubtask()
+    {
+        return $this->subTask;
+    }
 
-	/**
-	 * Gets sub-task.
-	 *
-	 * @return string
-	 */
-	public function isSubtask()
-	{
-		return $this->subTask;
-	}
+    /**
+     * Gets ID.
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/**
-	 * Gets ID.
-	 *
-	 * @return string
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * Gets description.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
 
-	/**
-	 * Gets description.
-	 *
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		return $this->description;
-	}
+    /**
+     * Gets icon url.
+     *
+     * @return string
+     */
+    public function getIconUrl()
+    {
+        return $this->iconUrl;
+    }
 
-	/**
-	 * Gets icon url.
-	 *
-	 * @return string
-	 */
-	public function getIconUrl()
-	{
-		return $this->iconUrl;
-	}
-
-	/**
-	 * Gets avatar id.
-	 *
-	 * @return string
-	 */
-	public function getAvatarId()
-	{
-		return $this->avatarId;
-	}
-
+    /**
+     * Gets avatar id.
+     *
+     * @return string
+     */
+    public function getAvatarId()
+    {
+        return $this->avatarId;
+    }
 }

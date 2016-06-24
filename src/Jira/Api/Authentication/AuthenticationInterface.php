@@ -22,31 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-namespace chobie\Jira\Api\Authentication;
 
+namespace Chobie\JiraApiRestClient\Jira\Api\Authentication;
 
 interface AuthenticationInterface
 {
+    /**
+     * Returns credential string.
+     *
+     * @return string
+     */
+    public function getCredential();
 
-	/**
-	 * Returns credential string.
-	 *
-	 * @return string
-	 */
-	public function getCredential();
+    /**
+     * Returns user id.
+     *
+     * @return string
+     */
+    public function getId();
 
-	/**
-	 * Returns user id.
-	 *
-	 * @return string
-	 */
-	public function getId();
-
-	/**
-	 * Returns password.
-	 *
-	 * @return string
-	 */
-	public function getPassword();
-
+    /**
+     * Returns password.
+     *
+     * @return string
+     */
+    public function getPassword();
 }

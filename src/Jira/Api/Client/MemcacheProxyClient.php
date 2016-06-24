@@ -22,118 +22,116 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-namespace chobie\Jira\Api\Client;
 
+namespace Chobie\JiraApiRestClient\Jira\Api\Client;
 
-use chobie\Jira\Api\Authentication\AuthenticationInterface;
+use Chobie\JiraApiRestClient\Jira\Api\Authentication\AuthenticationInterface;
 
 class MemcacheProxyClient implements ClientInterface
 {
+    /**
+     * Client.
+     *
+     * @var ClientInterface
+     */
+    protected $client;
 
-	/**
-	 * Client.
-	 *
-	 * @var ClientInterface
-	 */
-	protected $client;
+    /**
+     * Memcache.
+     *
+     * @var \Memcached
+     */
+    protected $mc;
 
-	/**
-	 * Memcache.
-	 *
-	 * @var \Memcached
-	 */
-	protected $mc;
+    /**
+     * Create wrapper around other client.
+     *
+     * @param ClientInterface $client Client.
+     * @param string          $server Server.
+     * @param int             $port   Port.
+     */
+    public function __construct(ClientInterface $client, $server, $port)
+    {
+        $this->client = $client;
 
-	/**
-	 * Create wrapper around other client.
-	 *
-	 * @param ClientInterface $client Client.
-	 * @param string          $server Server.
-	 * @param integer         $port   Port.
-	 */
-	public function __construct(ClientInterface $client, $server, $port)
-	{
-		$this->client = $client;
+        $this->mc = new \Memcached();
+        $this->mc->addServer($server, $port);
+    }
 
-		$this->mc = new \Memcached();
-		$this->mc->addServer($server, $port);
-	}
+    /**
+     * Sends request to the API server.
+     *
+     * @param string                  $method     Request method.
+     * @param string                  $url        URL.
+     * @param array                   $data       Request data.
+     * @param string                  $endpoint   Endpoint.
+     * @param AuthenticationInterface $credential Credential.
+     * @param bool                    $is_file    This is a file upload request.
+     * @param bool                    $debug      Debug this request.
+     *
+     * @return array|string
+     */
+    public function sendRequest(
+        $method,
+        $url,
+        $data = array(),
+        $endpoint,
+        AuthenticationInterface $credential,
+        $is_file = false,
+        $debug = false
+    ) {
+        if ($method == 'GET') {
+            $result = $this->getFromCache($url, $data, $endpoint);
 
-	/**
-	 * Sends request to the API server.
-	 *
-	 * @param string                  $method     Request method.
-	 * @param string                  $url        URL.
-	 * @param array                   $data       Request data.
-	 * @param string                  $endpoint   Endpoint.
-	 * @param AuthenticationInterface $credential Credential.
-	 * @param boolean                 $is_file    This is a file upload request.
-	 * @param boolean                 $debug      Debug this request.
-	 *
-	 * @return array|string
-	 */
-	public function sendRequest(
-		$method,
-		$url,
-		$data = array(),
-		$endpoint,
-		AuthenticationInterface $credential,
-		$is_file = false,
-		$debug = false
-	) {
-		if ( $method == 'GET' ) {
-			$result = $this->getFromCache($url, $data, $endpoint);
+            if ($result) {
+                // $this->setCache($url, $data, $endpoint, $result);
+                return $result;
+            }
+        }
 
-			if ( $result ) {
-				// $this->setCache($url, $data, $endpoint, $result);
-				return $result;
-			}
-		}
+        $result = $this->client->sendRequest($method, $url, $data, $endpoint, $credential);
 
-		$result = $this->client->sendRequest($method, $url, $data, $endpoint, $credential);
+        if ($method == 'GET') {
+            $this->setCache($url, $data, $endpoint, $result);
+        }
 
-		if ( $method == 'GET' ) {
-			$this->setCache($url, $data, $endpoint, $result);
-		}
+        return $result;
+    }
 
-		return $result;
-	}
+    /**
+     * Retrieves data from cache.
+     *
+     * @param string $url      URL.
+     * @param array  $data     Data.
+     * @param string $endpoint Endpoint.
+     *
+     * @return mixed
+     */
+    protected function getFromCache($url, array $data, $endpoint)
+    {
+        $key = $endpoint.$url;
+        $key .= http_build_query($data);
+        $key = sha1($key);
 
-	/**
-	 * Retrieves data from cache.
-	 *
-	 * @param string $url      URL.
-	 * @param array  $data     Data.
-	 * @param string $endpoint Endpoint.
-	 *
-	 * @return mixed
-	 */
-	protected function getFromCache($url, array $data, $endpoint)
-	{
-		$key = $endpoint . $url;
-		$key .= http_build_query($data);
-		$key = sha1($key);
+        return $this->mc->get('jira:cache:'.$key);
+    }
 
-		return $this->mc->get('jira:cache:' . $key);
-	}
+    /**
+     * Sets data into cache.
+     *
+     * @param string $url      URL.
+     * @param array  $data     Data.
+     * @param string $endpoint Endpoint.
+     * @param mixed  $result   Result.
+     *
+     * @return bool
+     */
+    protected function setCache($url, array $data, $endpoint, $result)
+    {
+        $key = $endpoint.$url;
+        $key .= http_build_query($data);
+        $key = sha1($key);
 
-	/**
-	 * Sets data into cache.
-	 *
-	 * @param string $url      URL.
-	 * @param array  $data     Data.
-	 * @param string $endpoint Endpoint.
-	 * @param mixed  $result   Result.
-	 *
-	 * @return boolean
-	 */
-	protected function setCache($url, array $data, $endpoint, $result)
-	{
-		$key = $endpoint . $url;
-		$key .= http_build_query($data);
-		$key = sha1($key);
-
-		return $this->mc->set('jira:cache:' . $key, $result, 86400);
-	}
-
+        return $this->mc->set('jira:cache:'.$key, $result, 86400);
+    }
 }
