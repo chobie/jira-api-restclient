@@ -1,25 +1,29 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<phpunit backupGlobals="true"
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
          backupStaticAttributes="false"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutOutputDuringTests="true"
+         bootstrap="vendor/autoload.php"
          colors="true"
          convertErrorsToExceptions="true"
-         convertNoticesToExceptions="false"
-         convertWarningsToExceptions="false"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         failOnRisky="true"
+         failOnWarning="true"
          processIsolation="false"
          stopOnError="false"
          stopOnFailure="false"
-         stopOnIncomplete="false"
-         stopOnSkipped="false"
-         syntaxCheck="true"
-         strict="true"
-         verbose="true">
-    <php>
-        <ini name="date.timezone" value="Asia/Tokyo" />
-    </php>
+         verbose="true"
+>
     <testsuites>
-        <testsuite name="Jira_Api Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Jira PHP Client Test Suite">
+            <directory suffix="Test.php">./tests</directory>
+            <exclude>./tests/output</exclude>
         </testsuite>
     </testsuites>
-
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
 </phpunit>

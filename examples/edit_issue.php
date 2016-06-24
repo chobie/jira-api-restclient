@@ -1,15 +1,16 @@
 <?php
-require dirname(__FILE__) ."/common.php";
+
+require dirname(__FILE__).'/common.php';
 
 $api = getApiClient();
 
 $updObj = new stdClass();
 $updObj->customfield_10401 = [
-    ['set' => 'Value here']
+    ['set' => 'Value here'],
 ];
 
 $r = $api->editIssue($key, [
-    "update" => $updObj
+    'update' => $updObj,
 ]);
 
 /*        

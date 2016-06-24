@@ -21,47 +21,45 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  */
-namespace chobie\Jira\Api\Authentication;
 
+namespace Chobie\JiraApiRestClient\Jira\Api\Authentication;
 
 class Anonymous implements AuthenticationInterface
 {
+    /**
+     * Creates class instance.
+     */
+    public function __construct()
+    {
+    }
 
-	/**
-	 * Creates class instance.
-	 */
-	public function __construct()
-	{
-	}
+    /**
+     * Returns credential string.
+     *
+     * @return string
+     */
+    public function getCredential()
+    {
+        return;
+    }
 
-	/**
-	 * Returns credential string.
-	 *
-	 * @return string
-	 */
-	public function getCredential()
-	{
-		return null;
-	}
+    /**
+     * Returns user id.
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return;
+    }
 
-	/**
-	 * Returns user id.
-	 *
-	 * @return string
-	 */
-	public function getId()
-	{
-		return null;
-	}
-
-	/**
-	 * Returns password.
-	 *
-	 * @return string
-	 */
-	public function getPassword()
-	{
-		return null;
-	}
-
+    /**
+     * Returns password.
+     *
+     * @return string
+     */
+    public function getPassword()
+    {
+        return;
+    }
 }

@@ -22,148 +22,144 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-namespace chobie\Jira\Api\Client;
 
+namespace Chobie\JiraApiRestClient\Jira\Api\Client;
 
-use chobie\Jira\Api\Authentication\AuthenticationInterface;
-use chobie\Jira\Api\Authentication\Basic;
-use chobie\Jira\Api\Authentication\Anonymous;
-use chobie\Jira\Api\Exception;
-use chobie\Jira\Api\UnauthorizedException;
+use Chobie\JiraApiRestClient\Jira\Api\Authentication\AuthenticationInterface;
+use Chobie\JiraApiRestClient\Jira\Api\Authentication\Basic;
+use Chobie\JiraApiRestClient\Jira\Api\Authentication\Anonymous;
+use Chobie\JiraApiRestClient\Jira\Api\Exception;
+use Chobie\JiraApiRestClient\Jira\Api\UnauthorizedException;
 
 class CurlClient implements ClientInterface
 {
+    /**
+     * create a traditional php client.
+     */
+    public function __construct()
+    {
+    }
 
-	/**
-	 * create a traditional php client
-	 */
-	public function __construct()
-	{
-	}
+    /**
+     * Sends request to the API server.
+     *
+     * @param string                  $method     Request method.
+     * @param string                  $url        URL.
+     * @param array|string            $data       Request data.
+     * @param string                  $endpoint   Endpoint.
+     * @param AuthenticationInterface $credential Credential.
+     * @param bool                    $is_file    This is a file upload request.
+     * @param bool                    $debug      Debug this request.
+     *
+     * @return array|string
+     *
+     * @throws \Exception                When non-supported implementation of AuthenticationInterface is given.
+     * @throws Exception                 When request failed due CURL error.
+     * @throws UnauthorizedException     When request failed, because user can't be authorized properly.
+     * @throws Exception                 When there was empty response instead of needed data.
+     * @throws \InvalidArgumentException When data is not an array and http method is GET.
+     */
+    public function sendRequest(
+        $method,
+        $url,
+        $data = array(),
+        $endpoint,
+        AuthenticationInterface $credential,
+        $is_file = false,
+        $debug = false
+    ) {
+        if (!($credential instanceof Basic) && !($credential instanceof Anonymous)) {
+            throw new \Exception(sprintf('CurlClient does not support %s authentication.', get_class($credential)));
+        }
 
-	/**
-	 * Sends request to the API server.
-	 *
-	 * @param string                  $method     Request method.
-	 * @param string                  $url        URL.
-	 * @param array|string            $data       Request data.
-	 * @param string                  $endpoint   Endpoint.
-	 * @param AuthenticationInterface $credential Credential.
-	 * @param boolean                 $is_file    This is a file upload request.
-	 * @param boolean                 $debug      Debug this request.
-	 *
-	 * @return array|string
-	 * @throws \Exception When non-supported implementation of AuthenticationInterface is given.
-	 * @throws Exception When request failed due CURL error.
-	 * @throws UnauthorizedException When request failed, because user can't be authorized properly.
-	 * @throws Exception When there was empty response instead of needed data.
-	 * @throws \InvalidArgumentException When data is not an array and http method is GET.
-	 */
-	public function sendRequest(
-		$method,
-		$url,
-		$data = array(),
-		$endpoint,
-		AuthenticationInterface $credential,
-		$is_file = false,
-		$debug = false
-	) {
-		if ( !($credential instanceof Basic) && !($credential instanceof Anonymous) ) {
-			throw new \Exception(sprintf('CurlClient does not support %s authentication.', get_class($credential)));
-		}
+        $curl = curl_init();
 
-		$curl = curl_init();
+        if ($method == 'GET') {
+            $url .= '?'.http_build_query($data);
 
-		if ( $method == 'GET' ) {
-			$url .= '?' . http_build_query($data);
+            if (!is_array($data)) {
+                throw new \InvalidArgumentException('Data must be an array.');
+            }
+        }
 
-			if ( !is_array($data) ) {
-				throw new \InvalidArgumentException('Data must be an array.');
-			}
-		}
+        curl_setopt($curl, CURLOPT_URL, $endpoint.$url);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-		curl_setopt($curl, CURLOPT_URL, $endpoint . $url);
-		curl_setopt($curl, CURLOPT_HEADER, 0);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        if (!($credential instanceof Anonymous)) {
+            curl_setopt($curl, CURLOPT_USERPWD, sprintf('%s:%s', $credential->getId(), $credential->getPassword()));
+        }
 
-		if ( !($credential instanceof Anonymous) ) {
-			curl_setopt($curl, CURLOPT_USERPWD, sprintf('%s:%s', $credential->getId(), $credential->getPassword()));
-		}
+        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($curl, CURLOPT_VERBOSE, $debug);
 
-		curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-		curl_setopt($curl, CURLOPT_VERBOSE, $debug);
+        if ($is_file) {
+            if (defined('CURLOPT_SAFE_UPLOAD')) {
+                curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
+            }
 
-		if ( $is_file ) {
-			if ( defined('CURLOPT_SAFE_UPLOAD') ) {
-				curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
-			}
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-Atlassian-Token: nocheck'));
+        } else {
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json;charset=UTF-8'));
+        }
 
-			curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-Atlassian-Token: nocheck'));
-		}
-		else {
-			curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json;charset=UTF-8'));
-		}
+        if ($method == 'POST') {
+            curl_setopt($curl, CURLOPT_POST, 1);
 
-		if ( $method == 'POST' ) {
-			curl_setopt($curl, CURLOPT_POST, 1);
+            if ($is_file) {
+                $data['file'] = $this->getCurlValue($data['file']);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+            } else {
+                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+            }
+        } elseif ($method == 'PUT') {
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+        }
 
-			if ( $is_file ) {
-				$data['file'] = $this->getCurlValue($data['file']);
-				curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-			}
-			else {
-				curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-			}
-		}
-		elseif ( $method == 'PUT' ) {
-			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
-			curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-		}
+        $data = curl_exec($curl);
 
-		$data = curl_exec($curl);
+        $error_number = curl_errno($curl);
 
-		$error_number = curl_errno($curl);
+        if ($error_number > 0) {
+            throw new Exception(
+                sprintf('Jira request failed: code = %s, "%s"', $error_number, curl_error($curl))
+            );
+        }
 
-		if ( $error_number > 0 ) {
-			throw new Exception(
-				sprintf('Jira request failed: code = %s, "%s"', $error_number, curl_error($curl))
-			);
-		}
+        $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-		$http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        // If empty result and status != "204 No Content".
+        if ($http_code == 401) {
+            throw new UnauthorizedException('Unauthorized');
+        }
 
-		// If empty result and status != "204 No Content".
-		if ( $http_code == 401 ) {
-			throw new UnauthorizedException('Unauthorized');
-		}
+        if ($data === '' && !in_array($http_code, array(201, 204))) {
+            throw new Exception('JIRA Rest server returns unexpected result.');
+        }
 
-		if ( $data === '' && !in_array($http_code, array(201, 204)) ) {
-			throw new Exception('JIRA Rest server returns unexpected result.');
-		}
+        if (is_null($data)) {
+            throw new Exception('JIRA Rest server returns unexpected result.');
+        }
 
-		if ( is_null($data) ) {
-			throw new Exception('JIRA Rest server returns unexpected result.');
-		}
+        return $data;
+    }
 
-		return $data;
-	}
+    /**
+     * If necessary, replace curl file @ string with a CURLFile object (for PHP 5.5 and up).
+     *
+     * @param string $file_string The string in @-format as it is used on PHP 5.4 and older.
+     *
+     * @return \CURLFile|string
+     */
+    protected function getCurlValue($file_string)
+    {
+        if (!function_exists('curl_file_create')) {
+            return $file_string.'; filename='.basename($file_string);
+        }
 
-	/**
-	 * If necessary, replace curl file @ string with a CURLFile object (for PHP 5.5 and up)
-	 *
-	 * @param string $file_string The string in @-format as it is used on PHP 5.4 and older.
-	 *
-	 * @return \CURLFile|string
-	 */
-	protected function getCurlValue($file_string)
-	{
-		if ( !function_exists('curl_file_create') ) {
-			return $file_string . '; filename=' . basename($file_string);
-		}
-
-		return curl_file_create(substr($file_string, 1), null, basename($file_string));
-	}
-
+        return curl_file_create(substr($file_string, 1), null, basename($file_string));
+    }
 }
