@@ -58,7 +58,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         // Stub the api method and keep the rest intact
         /** @var Api|\PHPUnit_Framework_MockObject_MockObject $api */
-        $api = $this->getMockBuilder(Api::class)->setMethods(array('api'))->disableOriginalConstructor()->getMock();
+        $api = $this->getMockBuilder('Chobie\JiraApiRestClient\Jira\Api')->setMethods(array('api'))->disableOriginalConstructor()->getMock();
         $api->expects($this->once())->method('api')->with(
             $this->equalTo(Api::REQUEST_PUT),
             $this->equalTo('/rest/api/2/version/111000'),
@@ -83,7 +83,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         // Stub the api method and keep the rest intact
         /** @var Api|\PHPUnit_Framework_MockObject_MockObject $api */
-        $api = $this->getMockBuilder(Api::class)->setMethods(array('api'))->disableOriginalConstructor()->getMock();
+        $api = $this->getMockBuilder('Chobie\JiraApiRestClient\Jira\Api')->setMethods(array('api'))->disableOriginalConstructor()->getMock();
         $api->expects($this->once())->method('api')->with(
             $this->equalTo(Api::REQUEST_PUT),
             $this->equalTo('/rest/api/2/version/111000'),
@@ -110,7 +110,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         // Stub the getVersions method and keep the rest intact
         /** @var Api|\PHPUnit_Framework_MockObject_MockObject $api */
-        $api = $this->getMockBuilder(Api::class)->setMethods(array('getVersions'))->disableOriginalConstructor()->getMock();
+        $api = $this->getMockBuilder('Chobie\JiraApiRestClient\Jira\Api')->setMethods(array('getVersions'))->disableOriginalConstructor()->getMock();
         $api->expects($this->exactly(2))->method('getVersions')->with(
             $this->equalTo($projectKey)
         )->willReturn($versions);
