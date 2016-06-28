@@ -1,11 +1,18 @@
 language: php
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 php:
   - 5.3
   - 5.4
   - 5.5
 
 install:
-  - composer install --no-interaction
+  - composer install --prefer-dist
 
 script:
   - ./vendor/bin/phpunit
