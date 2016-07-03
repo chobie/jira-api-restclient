@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<phpunit backupGlobals="true"
+<phpunit bootstrap="vendor/autoload.php"
+         backupGlobals="true"
          backupStaticAttributes="false"
          colors="true"
          convertErrorsToExceptions="true"
@@ -13,13 +14,17 @@
          syntaxCheck="true"
          strict="true"
          verbose="true">
-    <php>
-        <ini name="date.timezone" value="Asia/Tokyo" />
-    </php>
+
     <testsuites>
         <testsuite name="Jira_Api Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+
+    <!--
+        <php>
+            <server name="REPO_URL" value="http://localhost/"/>
+        </php>
+    -->
 
 </phpunit>

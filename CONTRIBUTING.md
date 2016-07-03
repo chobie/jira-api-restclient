@@ -15,6 +15,15 @@ JIRA REST API Client is an open source, community-driven project. If you'd like 
 7. Create Pull Request.
 
 ## Running the Tests
+
+To be able to run integration tests locally (optional) please follow these steps once:
+
+1. make sure repository is located in web server document root (or it's sub-folder)
+2. copy `phpunit.xml.dist` file into `phpunit.xml` file
+3. in the `phpunit.xml` file:
+ * uncomment part, where `REPO_URL` environment variable is defined
+ * set `REPO_URL` environment variable value to URL, from where repository can be accessed (e.g. `http://localhost/path/to/repository/`)
+
 Make sure that you don't break anything with your changes by running:
 
 ```bash

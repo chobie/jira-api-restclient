@@ -53,11 +53,11 @@ class CurlClient implements ClientInterface
 	 * @param boolean                 $debug      Debug this request.
 	 *
 	 * @return array|string
-	 * @throws \Exception When non-supported implementation of AuthenticationInterface is given.
-	 * @throws Exception When request failed due CURL error.
+	 * @throws \InvalidArgumentException When non-supported implementation of AuthenticationInterface is given.
+	 * @throws \InvalidArgumentException When data is not an array and http method is GET.
+	 * @throws Exception When request failed due communication error.
 	 * @throws UnauthorizedException When request failed, because user can't be authorized properly.
 	 * @throws Exception When there was empty response instead of needed data.
-	 * @throws \InvalidArgumentException When data is not an array and http method is GET.
 	 */
 	public function sendRequest(
 		$method,
@@ -69,17 +69,20 @@ class CurlClient implements ClientInterface
 		$debug = false
 	) {
 		if ( !($credential instanceof Basic) && !($credential instanceof Anonymous) ) {
-			throw new \Exception(sprintf('CurlClient does not support %s authentication.', get_class($credential)));
+			throw new \InvalidArgumentException(sprintf(
+				'CurlClient does not support %s authentication.',
+				get_class($credential)
+			));
 		}
 
 		$curl = curl_init();
 
 		if ( $method == 'GET' ) {
-			$url .= '?' . http_build_query($data);
-
 			if ( !is_array($data) ) {
 				throw new \InvalidArgumentException('Data must be an array.');
 			}
+
+			$url .= '?' . http_build_query($data);
 		}
 
 		curl_setopt($curl, CURLOPT_URL, $endpoint . $url);
@@ -96,7 +99,7 @@ class CurlClient implements ClientInterface
 		curl_setopt($curl, CURLOPT_VERBOSE, $debug);
 
 		if ( $is_file ) {
-			if ( defined('CURLOPT_SAFE_UPLOAD') ) {
+			if ( defined('CURLOPT_SAFE_UPLOAD') && PHP_VERSION_ID < 70000 ) {
 				curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
 			}
 
@@ -122,7 +125,7 @@ class CurlClient implements ClientInterface
 			curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
 		}
 
-		$data = curl_exec($curl);
+		$response = curl_exec($curl);
 
 		$error_number = curl_errno($curl);
 
@@ -139,15 +142,17 @@ class CurlClient implements ClientInterface
 			throw new UnauthorizedException('Unauthorized');
 		}
 
-		if ( $data === '' && !in_array($http_code, array(201, 204)) ) {
+		if ( $response === '' && !in_array($http_code, array(201, 204)) ) {
 			throw new Exception('JIRA Rest server returns unexpected result.');
 		}
 
-		if ( is_null($data) ) {
+		// @codeCoverageIgnoreStart
+		if ( is_null($response) ) {
 			throw new Exception('JIRA Rest server returns unexpected result.');
 		}
+		// @codeCoverageIgnoreEnd
 
-		return $data;
+		return $response;
 	}
 
 	/**
@@ -160,10 +165,10 @@ class CurlClient implements ClientInterface
 	protected function getCurlValue($file_string)
 	{
 		if ( !function_exists('curl_file_create') ) {
-			return $file_string . '; filename=' . basename($file_string);
+			return $file_string . ';filename=' . basename($file_string);
 		}
 
-		return curl_file_create(substr($file_string, 1), null, basename($file_string));
+		return curl_file_create(substr($file_string, 1), '', basename($file_string));
 	}
 
 }

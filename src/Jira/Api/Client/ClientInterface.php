@@ -26,6 +26,8 @@ namespace chobie\Jira\Api\Client;
 
 
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
+use chobie\Jira\Api\Exception;
+use chobie\Jira\Api\UnauthorizedException;
 
 interface ClientInterface
 {
@@ -42,6 +44,11 @@ interface ClientInterface
 	 * @param boolean                 $debug      Debug this request.
 	 *
 	 * @return array|string
+	 * @throws \InvalidArgumentException When non-supported implementation of AuthenticationInterface is given.
+	 * @throws \InvalidArgumentException When data is not an array and http method is GET.
+	 * @throws Exception When request failed due communication error.
+	 * @throws UnauthorizedException When request failed, because user can't be authorized properly.
+	 * @throws Exception When there was empty response instead of needed data.
 	 */
 	public function sendRequest(
 		$method,
