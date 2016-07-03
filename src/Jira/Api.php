@@ -426,7 +426,7 @@ class Api
 	 * @param string $project_key Project Key.
 	 * @param string $name        The version name to match on.
 	 *
-	 * @return integer|null VersionId on match or null when there is no match.
+	 * @return array|null Version data on match or null when there is no match.
 	 * @since  2.0.0
 	 */
 	public function findVersionByName($project_key, $name)
@@ -592,7 +592,7 @@ class Api
 	 * @param integer $version_id Version ID.
 	 * @param array   $params     Key->Value list to update the version with.
 	 *
-	 * @return Result|false
+	 * @return false
 	 * @since  2.0.0
 	 * @link   https://docs.atlassian.com/jira/REST/latest/#api/2/version-updateVersion
 	 */
@@ -608,7 +608,7 @@ class Api
 	 * @param string|null $release_date Date in Y-m-d format (defaults to today).
 	 * @param array       $params       Optionally extra parameters.
 	 *
-	 * @return Result|false
+	 * @return false
 	 * @since  2.0.0
 	 */
 	public function releaseVersion($version_id, $release_date = null, array $params = array())
@@ -858,7 +858,7 @@ class Api
 	{
 		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/components', $project_key), array(), true);
 	}
-        
+
 	/**
 	 * Get all issue types with valid status values for a project.
 	 *
@@ -867,11 +867,11 @@ class Api
 	 * @return array
 	 * @since  2.0.0
 	 */
-	public function getProjectIssueTypes($project_key) 
+	public function getProjectIssueTypes($project_key)
 	{
 		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/statuses', $project_key), array(), true);
 	}
-        
+
 	/**
 	 * Returns a list of all resolutions.
 	 *
@@ -880,7 +880,7 @@ class Api
 	 * @return array|false
 	 * @since  2.0.0
 	 */
-	public function getResolutions() 
+	public function getResolutions()
 	{
 		return $this->api(self::REQUEST_GET, '/rest/api/2/resolution', array(), true);
 	}
