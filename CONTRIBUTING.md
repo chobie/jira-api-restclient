@@ -8,11 +8,12 @@ JIRA REST API Client is an open source, community-driven project. If you'd like 
 ## Working with Pull Requests
 1. Create your feature addition or a bug fix branch based on __`master`__ branch in your repository's fork.
 2. Make necessary changes, but __don't mix__ code reformatting with code changes on topic.
-3. Add tests for those changes (please look into `tests/` folder for some examples). This is important so we don't break it in a future version unintentionally.
-4. Check your code using "Coding Standard" (see below).
-5. Commit your code.
-6. Squash your commits by topic to preserve a clean and readable log.
-7. Create Pull Request.
+3. Add entry in `CHANGELOG.md` file following http://keepachangelog.com/ format (if applicable).
+4. Add tests for those changes (please look into `tests/` folder for some examples). This is important so we don't break it in a future version unintentionally.
+5. Check your code using "Coding Standard" (see below).
+6. Commit your code.
+7. Squash your commits by topic to preserve a clean and readable log.
+8. Create Pull Request.
 
 ## Running the Tests
 
