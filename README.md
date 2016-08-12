@@ -35,7 +35,7 @@ foreach ( $walker as $issue ) {
 ## Installation
 
 ```
-php composer.phar require chobie/jira-api-restclient 2.0@dev
+php composer.phar require chobie/jira-api-restclient ^2.0@dev
 ```
 
 ## Requirements
