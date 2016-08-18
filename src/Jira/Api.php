@@ -151,7 +151,7 @@ class Api
 		// Remove trailing slash in the url.
 		$url = rtrim($url, '/');
 
-		if ( $url != $this->endpoint ) {
+		if ( $url !== $this->endpoint ) {
 			$this->endpoint = $url;
 			$this->clearLocalCaches();
 		}

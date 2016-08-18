@@ -209,12 +209,12 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
 		$this->expectClientCall(
 			Api::REQUEST_GET,
-			'/rest/api/2/resolution',
+			'/rest/api/2/status',
 			array(),
 			$response
 		);
 
-		$actual = $this->api->getResolutions();
+		$actual = $this->api->getStatuses();
 
 		$response_decoded = json_decode($response, true);
 
@@ -225,9 +225,9 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $actual);
 
 		// Second time we call the method the results should be cached and not trigger an API Request.
-		$this->client->sendRequest(Api::REQUEST_GET, '/rest/api/2/resolution', array(), self::ENDPOINT, $this->credential)
+		$this->client->sendRequest(Api::REQUEST_GET, '/rest/api/2/status', array(), self::ENDPOINT, $this->credential)
 			->shouldNotBeCalled();
-		$this->assertEquals($expected, $this->api->getResolutions(), 'Calling twice did not yield the same results');
+		$this->assertEquals($expected, $this->api->getStatuses(), 'Calling twice did not yield the same results');
 	}
 
 	public function testGetPriorities()
