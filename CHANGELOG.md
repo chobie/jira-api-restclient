@@ -21,6 +21,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Minimal supported PHP version changed from 5.2 to 5.3 by [@chobie].
 - The `Api::getPriorties` renamed into `Api::getPriorities` (former method kept for BC reasons) by [@josevh].
 - Remove trailing slash from endpoint url by [@Procta].
+- Clearing local caches (statuses, priorities, fields and resolutions) on endpoint change [@jpastoor].
+- Added local cache to getResolutions [@jpastoor].
 
 ### Removed
 ...
