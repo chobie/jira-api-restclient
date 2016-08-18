@@ -11,11 +11,6 @@
             "email": "chobieeee@php.net"
         }
     ],
-    "config": {
-        "platform": {
-            "php": "5.3.29"
-        }
-    },
     "require": {
         "php": ">=5.3.0"
     },
