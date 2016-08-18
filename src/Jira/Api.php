@@ -68,25 +68,32 @@ class Api
 	protected $options = self::AUTOMAP_FIELDS;
 
 	/**
-	 * Fields.
+	 * Client-side cache of fields. List of fields when loaded, null when nothing is fetched yet.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	protected $fields;
 
 	/**
-	 * Priorities.
+	 * Client-side cache of priorities. List of priorities when loaded, null when nothing is fetched yet.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	protected $priorities;
 
 	/**
-	 * Statuses.
+	 * Client-side cache of statuses. List of statuses when loaded, null when nothing is fetched yet.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	protected $statuses;
+
+	/**
+	 * Client-side cache of resolutions. List of resolutions when loaded, null when nothing is fetched yet.
+	 *
+	 * @var array|null
+	 */
+	protected $resolutions;
 
 	/**
 	 * Create a JIRA API client.
@@ -141,12 +148,26 @@ class Api
 	 */
 	public function setEndpoint($url)
 	{
-		$this->fields = array();
-
 		// Remove trailing slash in the url.
 		$url = rtrim($url, '/');
 
-		$this->endpoint = $url;
+		if ( $url !== $this->endpoint ) {
+			$this->endpoint = $url;
+			$this->clearLocalCaches();
+		}
+	}
+
+	/**
+	 * Helper method to clear the local caches. Is called when switching endpoints
+	 *
+	 * @return void
+	 */
+	protected function clearLocalCaches()
+	{
+		$this->fields = null;
+		$this->priorities = null;
+		$this->statuses = null;
+		$this->resolutions = null;
 	}
 
 	/**
@@ -156,13 +177,14 @@ class Api
 	 */
 	public function getFields()
 	{
-		if ( !count($this->fields) ) {
+		// Fetch fields when the method is called for the first time.
+		if ( $this->fields === null ) {
 			$fields = array();
-			$_fields = $this->api(self::REQUEST_GET, '/rest/api/2/field', array());
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/field', array(), true);
 
 			/* set hash key as custom field id */
-			foreach ( $_fields->getResult() as $k => $v ) {
-				$fields[$v['id']] = $v;
+			foreach ( $result as $field ) {
+				$fields[$field['id']] = $field;
 			}
 
 			$this->fields = $fields;
@@ -456,13 +478,14 @@ class Api
 	 */
 	public function getPriorities()
 	{
-		if ( !count($this->priorities) ) {
+		// Fetch priorities when the method is called for the first time.
+		if ( $this->priorities === null ) {
 			$priorities = array();
-			$result = $this->api(self::REQUEST_GET, '/rest/api/2/priority', array());
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/priority', array(), true);
 
 			/* set hash key as custom field id */
-			foreach ( $result->getResult() as $k => $v ) {
-				$priorities[$v['id']] = $v;
+			foreach ( $result as $priority ) {
+				$priorities[$priority['id']] = $priority;
 			}
 
 			$this->priorities = $priorities;
@@ -478,13 +501,14 @@ class Api
 	 */
 	public function getStatuses()
 	{
-		if ( !count($this->statuses) ) {
+		// Fetch statuses when the method is called for the first time.
+		if ( $this->statuses === null ) {
 			$statuses = array();
-			$result = $this->api(self::REQUEST_GET, '/rest/api/2/status', array());
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/status', array(), true);
 
 			/* set hash key as custom field id */
-			foreach ( $result->getResult() as $k => $v ) {
-				$statuses[$v['id']] = $v;
+			foreach ( $result as $status ) {
+				$statuses[$status['id']] = $status;
 			}
 
 			$this->statuses = $statuses;
@@ -862,14 +886,24 @@ class Api
 	/**
 	 * Returns a list of all resolutions.
 	 *
-	 * @param string $project_key Project key.
-	 *
-	 * @return array|false
+	 * @return array
 	 * @since  2.0.0
 	 */
 	public function getResolutions()
 	{
-		return $this->api(self::REQUEST_GET, '/rest/api/2/resolution', array(), true);
+		// Fetch resolutions when the method is called for the first time.
+		if ( $this->resolutions === null ) {
+			$resolutions = array();
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/resolution', array(), true);
+
+			foreach ( $result as $resolution ) {
+				$resolutions[$resolution['id']] = $resolution;
+			}
+
+			$this->resolutions = $resolutions;
+		}
+
+		return $this->resolutions;
 	}
 
 }

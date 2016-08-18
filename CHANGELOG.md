@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Minimal supported PHP version changed from 5.2 to 5.3 by [@chobie].
 - The `Api::getPriorties` renamed into `Api::getPriorities` by [@josevh].
 - Remove trailing slash from endpoint url by [@Procta].
+- Added local cache to getResolutions [@jpastoor].
 
 ### Removed
 ...
@@ -34,6 +35,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Fixed PHP deprecation notice, when creating issue attachments via `CurlClient` on PHP 5.5+ by [@DerMika].
 - The `Api::getRoles` call was always retuning an error by [@aik099].
 - Attempt to make a `DELETE` API call using `CurlClient` wasn't working by [@aik099].
+- Clearing local caches (statuses, priorities, fields and resolutions) on endpoint change [@jpastoor].
 
 ## [1.0.0] - 2014-07-27
 ### Added

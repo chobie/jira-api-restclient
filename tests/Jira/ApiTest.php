@@ -149,6 +149,114 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 
+	public function testGetResolutions()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_resolution.json');
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/resolution',
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getResolutions();
+
+		$response_decoded = json_decode($response, true);
+
+		$expected = array(
+			'1' => $response_decoded[0],
+			'10000' => $response_decoded[1],
+		);
+		$this->assertEquals($expected, $actual);
+
+		// Second time we call the method the results should be cached and not trigger an API Request.
+		$this->client->sendRequest(Api::REQUEST_GET, '/rest/api/2/resolution', array(), self::ENDPOINT, $this->credential)
+			->shouldNotBeCalled();
+		$this->assertEquals($expected, $this->api->getResolutions(), 'Calling twice did not yield the same results');
+	}
+
+	public function testGetFields()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_field.json');
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/field',
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getFields();
+
+		$response_decoded = json_decode($response, true);
+
+		$expected = array(
+			'issuetype' => $response_decoded[0],
+			'timespent' => $response_decoded[1],
+		);
+		$this->assertEquals($expected, $actual);
+
+		// Second time we call the method the results should be cached and not trigger an API Request.
+		$this->client->sendRequest(Api::REQUEST_GET, '/rest/api/2/field', array(), self::ENDPOINT, $this->credential)
+			->shouldNotBeCalled();
+		$this->assertEquals($expected, $this->api->getFields(), 'Calling twice did not yield the same results');
+	}
+
+	public function testGetStatuses()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_status.json');
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/status',
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getStatuses();
+
+		$response_decoded = json_decode($response, true);
+
+		$expected = array(
+			'1' => $response_decoded[0],
+			'3' => $response_decoded[1],
+		);
+		$this->assertEquals($expected, $actual);
+
+		// Second time we call the method the results should be cached and not trigger an API Request.
+		$this->client->sendRequest(Api::REQUEST_GET, '/rest/api/2/status', array(), self::ENDPOINT, $this->credential)
+			->shouldNotBeCalled();
+		$this->assertEquals($expected, $this->api->getStatuses(), 'Calling twice did not yield the same results');
+	}
+
+	public function testGetPriorities()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_priority.json');
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/priority',
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getPriorities();
+
+		$response_decoded = json_decode($response, true);
+
+		$expected = array(
+			'1' => $response_decoded[0],
+			'5' => $response_decoded[1],
+		);
+		$this->assertEquals($expected, $actual);
+
+		// Second time we call the method the results should be cached and not trigger an API Request.
+		$this->client->sendRequest(Api::REQUEST_GET, '/rest/api/2/priority', array(), self::ENDPOINT, $this->credential)
+			->shouldNotBeCalled();
+		$this->assertEquals($expected, $this->api->getPriorities(), 'Calling twice did not yield the same results');
+	}
+
 	/**
 	 * Expects a particular client call.
 	 *
