@@ -70,28 +70,28 @@ class Api
 	/**
 	 * Client-side cache of Fields.
 	 *
-	 * @var array
+	 * @var array|null List of fields when loaded, null when nothing is fetched yet
 	 */
 	protected $fields;
 
 	/**
 	 * Client-side cache of Priorities.
 	 *
-	 * @var array
+	 * @var array|null List of priorities when loaded, null when nothing is fetched yet
 	 */
 	protected $priorities;
 
 	/**
 	 * Client-side cache of Statuses.
 	 *
-	 * @var array
+	 * @var array|null List of statuses when loaded, null when nothing is fetched yet
 	 */
 	protected $statuses;
 
 	/**
 	 * Client-side cache of Resolutions.
 	 *
-	 * @var array
+	 * @var array|null List of resolutions when loaded, null when nothing is fetched yet
 	 */
 	protected $resolutions;
 
@@ -148,12 +148,26 @@ class Api
 	 */
 	public function setEndpoint($url)
 	{
-		$this->fields = array();
-
 		// Remove trailing slash in the url.
 		$url = rtrim($url, '/');
 
-		$this->endpoint = $url;
+		if ( $url != $this->endpoint ) {
+			$this->endpoint = $url;
+			$this->clearLocalCaches();
+		}
+	}
+
+	/**
+	 * Helper method to clear the local caches. Is called when switching endpoints
+	 *
+	 * @return void
+	 */
+	protected function clearLocalCaches()
+	{
+		$this->fields = null;
+		$this->priorities = null;
+		$this->statuses = null;
+		$this->resolutions = null;
 	}
 
 	/**
@@ -163,13 +177,14 @@ class Api
 	 */
 	public function getFields()
 	{
-		if ( !count($this->fields) ) {
+		// Fetch fields when the method is called for the first time.
+		if ( $this->fields === null ) {
 			$fields = array();
-			$_fields = $this->api(self::REQUEST_GET, '/rest/api/2/field', array());
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/field', array(), true);
 
 			/* set hash key as custom field id */
-			foreach ( $_fields->getResult() as $k => $v ) {
-				$fields[$v['id']] = $v;
+			foreach ( $result as $field ) {
+				$fields[$field['id']] = $field;
 			}
 
 			$this->fields = $fields;
@@ -463,13 +478,14 @@ class Api
 	 */
 	public function getPriorities()
 	{
-		if ( !count($this->priorities) ) {
+		// Fetch priorities when the method is called for the first time.
+		if ( $this->priorities === null ) {
 			$priorities = array();
-			$result = $this->api(self::REQUEST_GET, '/rest/api/2/priority', array());
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/priority', array(), true);
 
 			/* set hash key as custom field id */
-			foreach ( $result->getResult() as $k => $v ) {
-				$priorities[$v['id']] = $v;
+			foreach ( $result as $priority ) {
+				$priorities[$priority['id']] = $priority;
 			}
 
 			$this->priorities = $priorities;
@@ -498,13 +514,14 @@ class Api
 	 */
 	public function getStatuses()
 	{
-		if ( !count($this->statuses) ) {
+		// Fetch statuses when the method is called for the first time.
+		if ( $this->statuses === null ) {
 			$statuses = array();
-			$result = $this->api(self::REQUEST_GET, '/rest/api/2/status', array());
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/status', array(), true);
 
 			/* set hash key as custom field id */
-			foreach ( $result->getResult() as $k => $v ) {
-				$statuses[$v['id']] = $v;
+			foreach ( $result as $status ) {
+				$statuses[$status['id']] = $status;
 			}
 
 			$this->statuses = $statuses;
@@ -887,12 +904,13 @@ class Api
 	 */
 	public function getResolutions()
 	{
-		if ( !count($this->resolutions) ) {
+		// Fetch resolutions when the method is called for the first time.
+		if ( $this->resolutions === null ) {
 			$resolutions = array();
-			$result = $this->api(self::REQUEST_GET, '/rest/api/2/resolution', array());
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/resolution', array(), true);
 
-			foreach ( $result->getResult() as $k => $v ) {
-				$resolutions[$v['id']] = $v;
+			foreach ( $result as $resolution ) {
+				$resolutions[$resolution['id']] = $resolution;
 			}
 
 			$this->resolutions = $resolutions;

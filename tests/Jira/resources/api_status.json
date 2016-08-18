@@ -1,0 +1,30 @@
+[
+  {
+    "self": "https://test.atlassian.net/rest/api/2/status/1",
+    "description": "The issue is open and ready for the assignee to start work on it.",
+    "iconUrl": "https://test.atlassian.net/images/icons/statuses/open.png",
+    "name": "Open",
+    "id": "1",
+    "statusCategory": {
+      "self": "https://test.atlassian.net/rest/api/2/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+    }
+  },
+  {
+    "self": "https://test.atlassian.net/rest/api/2/status/3",
+    "description": "This issue is being actively worked on at the moment by the assignee.",
+    "iconUrl": "https://test.atlassian.net/images/icons/statuses/inprogress.png",
+    "name": "In Progress",
+    "id": "3",
+    "statusCategory": {
+      "self": "https://test.atlassian.net/rest/api/2/statuscategory/4",
+      "id": 4,
+      "key": "indeterminate",
+      "colorName": "yellow",
+      "name": "In Progress"
+    }
+  }
+]
