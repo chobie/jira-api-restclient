@@ -472,19 +472,6 @@ class Api
 	}
 
 	/**
-	 * Get available priorities.
-	 *
-	 * @return     array
-	 * @deprecated Please use getPriorities()
-	 */
-	public function getPriorties()
-	{
-		trigger_error('Use getPriorities() instead', E_USER_DEPRECATED);
-
-		return $this->getPriorities();
-	}
-
-	/**
 	 * Get available statuses.
 	 *
 	 * @return array
