@@ -704,7 +704,7 @@ class Api
 	 * @param string       $method         Request method.
 	 * @param string       $url            URL.
 	 * @param array|string $data           Data.
-	 * @param boolean      $return_as_json Return results as JSON.
+	 * @param boolean      $return_as_array Return results as JSON.
 	 * @param boolean      $is_file        Is file-related request.
 	 * @param boolean      $debug          Debug this request.
 	 *
@@ -714,7 +714,7 @@ class Api
 		$method = self::REQUEST_GET,
 		$url,
 		$data = array(),
-		$return_as_json = false,
+		$return_as_array = false,
 		$is_file = false,
 		$debug = false
 	) {
@@ -743,7 +743,7 @@ class Api
 				}
 			}
 
-			if ( $return_as_json ) {
+			if ( $return_as_array ) {
 				return $json;
 			}
 			else {

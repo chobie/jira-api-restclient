@@ -22,6 +22,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - The `Api::getPriorties` renamed into `Api::getPriorities` by [@josevh].
 - Remove trailing slash from endpoint url by [@Procta].
 - Added local cache to getResolutions [@jpastoor].
+- Renamed Api::api() parameter $return_as_json to $return_as_array [@jpastoor].
 
 ### Removed
 ...
