@@ -255,38 +255,38 @@ class Api
 	/**
 	 * Returns one project.
 	 *
-	 * @param string $project_key Project key.
+	 * @param string $project_id_or_key Project ID or key.
 	 *
 	 * @return array|false
 	 */
-	public function getProject($project_key)
+	public function getProject($project_id_or_key)
 	{
-		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s', $project_key));
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s', $project_id_or_key));
 	}
 
 	/**
 	 * Returns all roles of a project.
 	 *
-	 * @param string $project_key Project key.
+	 * @param string $project_id_or_key Project ID or key.
 	 *
 	 * @return array|false
 	 */
-	public function getRoles($project_key)
+	public function getRoles($project_id_or_key)
 	{
-		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/role', $project_key));
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/role', $project_id_or_key));
 	}
 
 	/**
 	 * Returns role details.
 	 *
-	 * @param string $project_key Project key.
-	 * @param string $role_id     Role ID.
+	 * @param string $project_id_or_key Project ID or key.
+	 * @param string $role_id           Role ID.
 	 *
 	 * @return array|false
 	 */
-	public function getRoleDetails($project_key, $role_id)
+	public function getRoleDetails($project_id_or_key, $role_id)
 	{
-		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/role/%s', $project_key, $role_id));
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/role/%s', $project_id_or_key, $role_id));
 	}
 
 	/**
