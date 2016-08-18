@@ -19,7 +19,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Classes/interfaces were renamed to use namespaces by [@chobie].
 - Using PSR-4 autoloader from Composer by [@chobie].
 - Minimal supported PHP version changed from 5.2 to 5.3 by [@chobie].
-- The `Api::getPriorties` renamed into `Api::getPriorities` (former method kept for BC reasons) by [@josevh].
+- The `Api::getPriorties` renamed into `Api::getPriorities` by [@josevh].
 - Remove trailing slash from endpoint url by [@Procta].
 
 ### Removed
