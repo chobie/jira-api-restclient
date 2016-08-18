@@ -68,25 +68,32 @@ class Api
 	protected $options = self::AUTOMAP_FIELDS;
 
 	/**
-	 * Fields.
+	 * Client-side cache of Fields.
 	 *
 	 * @var array
 	 */
 	protected $fields;
 
 	/**
-	 * Priorities.
+	 * Client-side cache of Priorities.
 	 *
 	 * @var array
 	 */
 	protected $priorities;
 
 	/**
-	 * Statuses.
+	 * Client-side cache of Statuses.
 	 *
 	 * @var array
 	 */
 	protected $statuses;
+
+	/**
+	 * Client-side cache of Resolutions.
+	 *
+	 * @var array
+	 */
+	protected $resolutions;
 
 	/**
 	 * Create a JIRA API client.
@@ -875,14 +882,23 @@ class Api
 	/**
 	 * Returns a list of all resolutions.
 	 *
-	 * @param string $project_key Project key.
-	 *
-	 * @return array|false
+	 * @return array
 	 * @since  2.0.0
 	 */
 	public function getResolutions()
 	{
-		return $this->api(self::REQUEST_GET, '/rest/api/2/resolution', array(), true);
+		if ( !count($this->resolutions) ) {
+			$resolutions = array();
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/resolution', array());
+
+			foreach ( $result->getResult() as $k => $v ) {
+				$resolutions[$v['id']] = $v;
+			}
+
+			$this->resolutions = $resolutions;
+		}
+
+		return $this->resolutions;
 	}
 
 }

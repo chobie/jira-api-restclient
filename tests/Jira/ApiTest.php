@@ -149,6 +149,40 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 
+	public function testGetResolutions()
+	{
+		$response = '[{"self":"https://test.atlassian.net/rest/api/2/resolution/1","id":"1","description":"A fix for this issue is checked into the tree and tested.","name":"Fixed"},{"self":"https://test.atlassian.net/rest/api/2/resolution/10000","id":"10000","description":"This issue won\'t be actioned.","name":"Won\'t Do"}]';
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/resolution',
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getResolutions();
+
+		$this->assertEquals(array(
+			'1' => array(
+				'self' => 'https://test.atlassian.net/rest/api/2/resolution/1',
+				'id' => '1',
+				'description' => 'A fix for this issue is checked into the tree and tested.',
+				'name' => 'Fixed',
+			),
+			'10000' => array(
+				'self' => 'https://test.atlassian.net/rest/api/2/resolution/10000',
+				'id' => '10000',
+				'description' => 'This issue won\'t be actioned.',
+				'name' => 'Won\'t Do',
+			),
+		), $actual);
+
+		// Second time we call the method the results should be cached and not trigger an API Request.
+		$this->client->sendRequest(Api::REQUEST_GET, '/rest/api/2/resolution', array(), self::ENDPOINT, $this->credential)
+			->shouldNotBeCalled();
+		$this->api->getResolutions();
+	}
+
 	/**
 	 * Expects a particular client call.
 	 *
