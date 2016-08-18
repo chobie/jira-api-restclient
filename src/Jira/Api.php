@@ -68,28 +68,28 @@ class Api
 	protected $options = self::AUTOMAP_FIELDS;
 
 	/**
-	 * Client-side cache of Fields. List of fields when loaded, null when nothing is fetched yet.
+	 * Client-side cache of fields. List of fields when loaded, null when nothing is fetched yet.
 	 *
 	 * @var array|null
 	 */
 	protected $fields;
 
 	/**
-	 * Client-side cache of Priorities. List of priorities when loaded, null when nothing is fetched yet.
+	 * Client-side cache of priorities. List of priorities when loaded, null when nothing is fetched yet.
 	 *
 	 * @var array|null
 	 */
 	protected $priorities;
 
 	/**
-	 * Client-side cache of Statuses. List of statuses when loaded, null when nothing is fetched yet.
+	 * Client-side cache of statuses. List of statuses when loaded, null when nothing is fetched yet.
 	 *
 	 * @var array|null
 	 */
 	protected $statuses;
 
 	/**
-	 * Client-side cache of Resolutions. List of resolutions when loaded, null when nothing is fetched yet.
+	 * Client-side cache of resolutions. List of resolutions when loaded, null when nothing is fetched yet.
 	 *
 	 * @var array|null
 	 */
