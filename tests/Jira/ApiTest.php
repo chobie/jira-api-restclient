@@ -381,7 +381,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetRoleDetails()
 	{
-		$response = file_get_contents(__DIR__ . '/resources/api_get_roles_of_project_by_id.json');
+		$response = file_get_contents(__DIR__ . '/resources/api_get_role_of_project_by_id.json');
 		$project_id = '10500';
 		$role_id = '10200';
 
@@ -397,6 +397,46 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 		$expected = json_decode($response, true);
 		$this->assertEquals($expected, $actual);
 	}
+
+	public function testAddComment()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_add_comment.json');
+		$issue_key = 'POR-1';
+
+		// Testing the case where the description is provided directly instead of params
+		$description = 'testdesc';
+
+		$this->expectClientCall(
+			Api::REQUEST_POST,
+			'/rest/api/2/issue/' . $issue_key . '/comment',
+			array('body' => $description),
+			$response
+		);
+
+		$actual = $this->api->addComment($issue_key, $description);
+
+		$expected = json_decode($response, true);
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetWorklog()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_get_roles_of_project.json');
+		$issue_key = 'POR-1';
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/issue/' . $issue_key . '/worklog',
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getWorklogs($issue_key);
+
+		$expected = json_decode($response, true);
+		$this->assertEquals($expected, $actual);
+	}
+
 
 	/**
 	 * Expects a particular client call.
