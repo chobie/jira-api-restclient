@@ -701,12 +701,12 @@ class Api
 	/**
 	 * Send request to specified host.
 	 *
-	 * @param string       $method         Request method.
-	 * @param string       $url            URL.
-	 * @param array|string $data           Data.
-	 * @param boolean      $return_as_array Return results as JSON.
-	 * @param boolean      $is_file        Is file-related request.
-	 * @param boolean      $debug          Debug this request.
+	 * @param string       $method          Request method.
+	 * @param string       $url             URL.
+	 * @param array|string $data            Data.
+	 * @param boolean      $return_as_array Return results as associative array.
+	 * @param boolean      $is_file         Is file-related request.
+	 * @param boolean      $debug           Debug this request.
 	 *
 	 * @return array|Result|false
 	 */
