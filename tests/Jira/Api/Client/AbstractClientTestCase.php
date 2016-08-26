@@ -31,7 +31,7 @@ abstract class AbstractClientTestCase extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @dataProvider getRequestWithKnownHttpCode
+	 * @dataProvider getRequestWithKnownHttpCodeDataProvider
 	 */
 	public function testGetRequestWithKnownHttpCode($http_code)
 	{
@@ -43,7 +43,7 @@ abstract class AbstractClientTestCase extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($data, $trace_result['_GET']);
 	}
 
-	public function getRequestWithKnownHttpCode()
+	public function getRequestWithKnownHttpCodeDataProvider()
 	{
 		return array(
 			'http 200' => array(200),
