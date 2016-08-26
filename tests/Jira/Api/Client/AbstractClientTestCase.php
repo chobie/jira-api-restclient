@@ -36,7 +36,7 @@ abstract class AbstractClientTestCase extends \PHPUnit_Framework_TestCase
 	public function testGetRequestWithKnownHttpCode($http_code)
 	{
 		$data = array('param1' => 'value1', 'param2' => 'value2');
-		$trace_result = $this->traceRequest(Api::REQUEST_GET, array_merge(['http_code' => $http_code], $data));
+		$trace_result = $this->traceRequest(Api::REQUEST_GET, array_merge(array('http_code' => $http_code), $data));
 
 		$this->assertEquals('GET', $trace_result['_SERVER']['REQUEST_METHOD']);
 		$this->assertContentType('application/json;charset=UTF-8', $trace_result);
