@@ -23,6 +23,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Remove trailing slash from endpoint url by [@Procta].
 - Added local cache to getResolutions by [@jpastoor].
 - Renamed Api::api() parameter $return_as_json to $return_as_array by [@jpastoor].
+- ignore_errors flag added to HTTP context by [@betterphp].
 
 ### Removed
 ...
