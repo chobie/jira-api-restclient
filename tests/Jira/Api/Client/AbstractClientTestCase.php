@@ -185,6 +185,11 @@ abstract class AbstractClientTestCase extends \PHPUnit_Framework_TestCase
 		);
 	}
 
+	public function testErrorResponseValueReturned()
+	{
+		$this->traceRequest(Api::REQUEST_GET, array('http_code' => '403', 'response_mode' => 'trace'));
+	}
+
 	/**
 	 * Checks, that request contained specified content type.
 	 *
