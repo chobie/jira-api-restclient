@@ -122,6 +122,7 @@ class PHPClient implements ClientInterface
 			'http' => array(
 				'method' => $method,
 				'header' => implode("\r\n", $header),
+				'ignore_errors' => true,
 			),
 		);
 
