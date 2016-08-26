@@ -23,7 +23,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Remove trailing slash from endpoint url by [@Procta].
 - Added local cache to getResolutions by [@jpastoor].
 - Renamed Api::api() parameter $return_as_json to $return_as_array by [@jpastoor].
-- ignore_errors flag added to HTTP context by [@betterphp].
 
 ### Removed
 ...
@@ -38,6 +37,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - The `Api::getRoles` call was always retuning an error by [@aik099].
 - Attempt to make a `DELETE` API call using `CurlClient` wasn't working by [@aik099].
 - Clearing local caches (statuses, priorities, fields and resolutions) on endpoint change by [@jpastoor].
+- ignore_errors flag added to HTTP context by [@betterphp].
 
 ## [1.0.0] - 2014-07-27
 ### Added
@@ -60,3 +60,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [@digitalkaoz]: https://github.com/digitalkaoz
 [@DerMika]: https://github.com/DerMika
 [@aik099]: https://github.com/aik099
+[@betterphp]: https://github.com/betterphp
