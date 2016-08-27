@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added `Api::getProjectComponents` call for getting project components by [@N-M].
 - Added `Api::getProjectIssueTypes` call for getting project issue types and issue statuses connected to them by [@N-M].
 - Added `Api::getResolutions` call for getting available issue resolutions by [@N-M].
+- Allow configuring issues queried per page in `Walker` class by [@aik099].
 
 ### Changed
 - Classes/interfaces were renamed to use namespaces by [@chobie].
