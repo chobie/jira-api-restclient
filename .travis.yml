@@ -22,8 +22,9 @@ install:
   - composer install --prefer-dist
 
 before_script:
-  - ~/.phpenv/versions/5.6/bin/php -S localhost:8000 -t $(pwd) > /dev/null 2> /tmp/webserver_output.txt &
-  - export REPO_URL=http://localhost:8000/
+  - "~/.phpenv/versions/5.6/bin/php -S localhost:8000 -t $(pwd) > /dev/null 2> /tmp/webserver_output.txt &"
+  - "export REPO_URL=http://localhost:8000/"
+  - "while ! curl $REPO_URL >/dev/null 2>&1; do sleep 1; done"
 
 script:
   - ./vendor/bin/phpunit
