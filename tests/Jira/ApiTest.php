@@ -5,6 +5,7 @@ namespace Tests\chobie\Jira;
 
 use chobie\Jira\Api;
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
+use chobie\Jira\Api\Result;
 use Prophecy\Prophecy\ObjectProphecy;
 
 /**
@@ -63,6 +64,28 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 			'trailing slash removed' => array('https://test.test/', 'https://test.test'),
 			'nothing removed' => array('https://test.test', 'https://test.test'),
 		);
+	}
+
+	public function testSearch()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_search.json');
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/search',
+			array(
+				'jql' => 'test',
+				'startAt' => 0,
+				'maxResults' => 2,
+				'fields' => 'description',
+			),
+			$response
+		);
+
+		$response_decoded = json_decode($response, true);
+
+		$this->api->setOptions(0); // Don't auto-expand fields, because it makes another API call.
+		$this->assertEquals(new Result($response_decoded), $this->api->search('test', 0, 2, 'description'));
 	}
 
 	public function testUpdateVersion()

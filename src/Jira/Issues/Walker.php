@@ -117,11 +117,16 @@ class Walker implements \Iterator
 	/**
 	 * Creates walker instance.
 	 *
-	 * @param Api $api API.
+	 * @param Api          $api      API.
+	 * @param integer|null $per_page Per page.
 	 */
-	public function __construct(Api $api)
+	public function __construct(Api $api, $per_page = null)
 	{
 		$this->api = $api;
+
+		if ( is_numeric($per_page) ) {
+			$this->perPage = $per_page;
+		}
 	}
 
 	/**
