@@ -1,5 +1,5 @@
 <?php
-require dirname(__FILE__) ."/common.php";
+require dirname(__FILE__) . '/common.php';
 
 $api = getApiClient();
 /**
@@ -13,4 +13,4 @@ $api = getApiClient();
  *
  * this api will throw an Exceptions when passed invalid options, or already created.
  */
-$api->createVersion("YOURPRJOECT", "0.3.1", $options = array());
+$api->createVersion('YOURPRJOECT', '0.3.1', $options = array());
