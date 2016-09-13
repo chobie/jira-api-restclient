@@ -90,10 +90,14 @@ abstract class AbstractClientTestCase extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(json_encode($data), $trace_result['INPUT']);
 	}
 
-	public function testFileUpload()
+	/**
+	 * @dataProvider fileUploadDataProvider
+	 */
+	public function testFileUpload($filename, $name)
 	{
-		$upload_file = __FILE__;
-		$trace_result = $this->traceRequest(Api::REQUEST_POST, array('file' => '@' . $upload_file), null, true);
+		$upload_file = $filename;
+		$data = array('file' => '@' . $upload_file, 'name' => $name);
+		$trace_result = $this->traceRequest(Api::REQUEST_POST, $data, null, true);
 
 		$this->assertEquals('POST', $trace_result['_SERVER']['REQUEST_METHOD']);
 
@@ -111,9 +115,9 @@ abstract class AbstractClientTestCase extends \PHPUnit_Framework_TestCase
 			'File was uploaded under "file" field name'
 		);
 		$this->assertEquals(
-			basename($upload_file),
+			($name !== null) ? $name : basename($upload_file),
 			$trace_result['_FILES']['file']['name'],
-			'Basename is used as filename'
+			'Filename is as expected'
 		);
 		$this->assertNotEmpty($trace_result['_FILES']['file']['type']);
 		$this->assertEquals(
@@ -125,6 +129,14 @@ abstract class AbstractClientTestCase extends \PHPUnit_Framework_TestCase
 			0,
 			$trace_result['_FILES']['file']['size'],
 			'File is not empty'
+		);
+	}
+
+	public function fileUploadDataProvider()
+	{
+		return array(
+			'default name' => array('file' => __FILE__, 'name' => null),
+			'overridden name' => array('file' => __FILE__, 'name' => 'custom_name.php'),
 		);
 	}
 

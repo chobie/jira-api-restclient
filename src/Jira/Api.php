@@ -644,17 +644,15 @@ class Api
 	 *
 	 * @param string $issue_key Issue key.
 	 * @param string $filename  Filename.
-	 * @param array  $options   Options.
+	 * @param string $name      Name.
 	 *
 	 * @return Result|false
 	 */
-	public function createAttachment($issue_key, $filename, array $options = array())
+	public function createAttachment($issue_key, $filename, $name = null)
 	{
-		$options = array_merge(
-			array(
-				'file' => '@' . $filename,
-			),
-			$options
+		$options = array(
+			'file' => '@' . $filename,
+			'name' => $name,
 		);
 
 		return $this->api(

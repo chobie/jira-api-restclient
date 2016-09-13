@@ -113,7 +113,7 @@ class CurlClient implements ClientInterface
 			curl_setopt($curl, CURLOPT_POST, 1);
 
 			if ( $is_file ) {
-				$data['file'] = $this->getCurlValue($data['file']);
+				$data['file'] = $this->getCurlValue($data['file'], $data['name']);
 				curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 			}
 			else {
@@ -159,16 +159,21 @@ class CurlClient implements ClientInterface
 	 * If necessary, replace curl file @ string with a CURLFile object (for PHP 5.5 and up)
 	 *
 	 * @param string $file_string The string in @-format as it is used on PHP 5.4 and older.
+	 * @param string $name Optional override for the filename
 	 *
 	 * @return \CURLFile|string
 	 */
-	protected function getCurlValue($file_string)
+	protected function getCurlValue($file_string, $name)
 	{
-		if ( !function_exists('curl_file_create') ) {
-			return $file_string . ';filename=' . basename($file_string);
+		if ($name === null){
+			$name = basename($file_string);
 		}
 
-		return curl_file_create(substr($file_string, 1), '', basename($file_string));
+		if ( !function_exists('curl_file_create') ) {
+			return $file_string . ';filename=' . $name;
+		}
+
+		return curl_file_create(substr($file_string, 1), '', $name);
 	}
 
 }

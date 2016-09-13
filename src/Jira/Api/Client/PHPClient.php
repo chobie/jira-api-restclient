@@ -129,12 +129,13 @@ class PHPClient implements ClientInterface
 		if ( $method == 'POST' || $method == 'PUT' || $method == 'DELETE' ) {
 			if ( $is_file ) {
 				$filename = preg_replace('/^@/', '', $data['file']);
+				$name = ($data['name'] !== null) ? $data['name'] : basename($filename);
 				$boundary = '--------------------------' . microtime(true);
 				$header[] = 'X-Atlassian-Token: nocheck';
 				$header[] = 'Content-Type: multipart/form-data; boundary=' . $boundary;
 
 				$__data = '--' . $boundary . "\r\n" .
-					'Content-Disposition: form-data; name="file"; filename="' . basename($filename) . "\"\r\n" .
+					'Content-Disposition: form-data; name="file"; filename="' . $name . "\"\r\n" .
 					"Content-Type: application/octet-stream\r\n\r\n" .
 					file_get_contents($filename) . "\r\n";
 				$__data .= '--' . $boundary . "--\r\n";
