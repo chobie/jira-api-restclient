@@ -39,7 +39,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - The `Api::getRoles` call was always retuning an error by [@aik099].
 - Attempt to make a `DELETE` API call using `CurlClient` wasn't working by [@aik099].
 - Clearing local caches (statuses, priorities, fields and resolutions) on endpoint change by [@jpastoor].
-- Error details from failed API calls were not available back from Api::api method call by [@betterphp].
+- Error details from failed API calls were not available back from `Api::api method` call by [@betterphp].
 
 ## [1.0.0] - 2014-07-27
 ### Added

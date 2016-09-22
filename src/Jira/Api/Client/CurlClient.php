@@ -159,13 +159,13 @@ class CurlClient implements ClientInterface
 	 * If necessary, replace curl file @ string with a CURLFile object (for PHP 5.5 and up)
 	 *
 	 * @param string $file_string The string in @-format as it is used on PHP 5.4 and older.
-	 * @param string $name Optional override for the filename
+	 * @param string $name        Name of attachment (optional).
 	 *
 	 * @return \CURLFile|string
 	 */
-	protected function getCurlValue($file_string, $name)
+	protected function getCurlValue($file_string, $name = null)
 	{
-		if ($name === null){
+		if ( $name === null ) {
 			$name = basename($file_string);
 		}
 
