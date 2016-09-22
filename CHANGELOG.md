@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added `Api::getProjectIssueTypes` call for getting project issue types and issue statuses connected to them by [@N-M].
 - Added `Api::getResolutions` call for getting available issue resolutions by [@N-M].
 - Allow configuring issues queried per page in `Walker` class by [@aik099].
+- Added optional override for the filename in `Api::createAttachment` by [@betterphp]
 
 ### Changed
 - Classes/interfaces were renamed to use namespaces by [@chobie].
@@ -38,7 +39,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - The `Api::getRoles` call was always retuning an error by [@aik099].
 - Attempt to make a `DELETE` API call using `CurlClient` wasn't working by [@aik099].
 - Clearing local caches (statuses, priorities, fields and resolutions) on endpoint change by [@jpastoor].
-- Error details from failed API calls were not available back from Api::api method call by [@betterphp].
+- Error details from failed API calls were not available back from `Api::api method` call by [@betterphp].
 
 ## [1.0.0] - 2014-07-27
 ### Added
