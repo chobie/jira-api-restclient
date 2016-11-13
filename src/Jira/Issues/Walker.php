@@ -27,7 +27,7 @@ namespace chobie\Jira\Issues;
 
 use chobie\Jira\Api;
 
-class Walker implements \Iterator
+class Walker implements \Iterator, \Countable
 {
 
 	/**
@@ -63,7 +63,7 @@ class Walker implements \Iterator
 	 *
 	 * @var integer
 	 */
-	protected $total = 0;
+	protected $total = null;
 
 	/**
 	 * Issue count on current page.
@@ -266,9 +266,24 @@ class Walker implements \Iterator
 		$this->startAt = 0;
 		$this->current = 0;
 		$this->max = 0;
-		$this->total = 0;
+		$this->total = null;
 		$this->executed = false;
 		$this->issues = array();
+	}
+
+	/**
+	 * Count elements of an object.
+	 *
+	 * @return integer The custom count as an integer.
+	 * @link   http://php.net/manual/en/countable.count.php
+	 */
+	public function count()
+	{
+		if ( $this->total === null ) {
+			$this->valid();
+		}
+
+		return $this->total;
 	}
 
 	/**

@@ -238,6 +238,33 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 
+	public function testCounting()
+	{
+		// Full 1st page.
+		$search_response1 = $this->generateSearchResponse('PRJ1', 5, 7);
+		$this->api->search('test jql', 0, 5, 'description')->willReturn($search_response1);
+
+		// Incomplete 2nd page.
+		$search_response2 = $this->generateSearchResponse('PRJ2', 2, 7);
+		$this->api->search('test jql', 5, 5, 'description')->willReturn($search_response2);
+
+		$walker = $this->createWalker(5);
+		$walker->push('test jql', 'description');
+
+		$this->assertEquals(7, count($walker));
+
+		$found_issues = array();
+
+		foreach ( $walker as $issue ) {
+			$found_issues[] = $issue;
+		}
+
+		$this->assertEquals(
+			array_merge($search_response1->getIssues(), $search_response2->getIssues()),
+			$found_issues
+		);
+	}
+
 	/**
 	 * Generate search response.
 	 *
