@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added `Api::getResolutions` call for getting available issue resolutions by [@N-M].
 - Allow configuring issues queried per page in `Walker` class by [@aik099].
 - Added optional override for the filename in `Api::createAttachment` by [@betterphp]
+- Allow getting issue count back from `Walker` class by [@aik099].
 
 ### Changed
 - Classes/interfaces were renamed to use namespaces by [@chobie].
