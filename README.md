@@ -21,6 +21,7 @@ $api = new Api(
     new Basic('yourname', 'password')
 );
 
+// get issues from a JQL query
 $walker = new Walker($api);
 $walker->push(
 	'project = "YOURPROJECT" AND (status != "closed" AND status != "resolved") ORDER BY priority DESC'
@@ -29,6 +30,12 @@ $walker->push(
 foreach ( $walker as $issue ) {
     var_dump($issue);
     // Send custom notification here.
+}
+
+// generic API call
+$response = $api->api(Api::REQUEST_GET, '/rest/api/2/worklog/updated', ['since' => 1501076518]); // will return a chobie\Jira\Api\Result instance
+foreach ($response->getResult() as $worklogs) {
+    var_dump($worklogs);
 }
 ```
 
