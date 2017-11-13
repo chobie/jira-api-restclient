@@ -33,6 +33,12 @@ use chobie\Jira\Api\UnauthorizedException;
 
 class CurlClient implements ClientInterface
 {
+	/**
+	 * Default timeout for CURL requests
+	 *
+	 * @var int seconds
+	 */
+	protected $timeout = 10;
 
 	/**
 	 * create a traditional php client
@@ -93,7 +99,9 @@ class CurlClient implements ClientInterface
 			curl_setopt($curl, CURLOPT_USERPWD, sprintf('%s:%s', $credential->getId(), $credential->getPassword()));
 		}
 
-		curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+		if (is_numeric($this->timeout)) {
+			curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
+		}
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
 		curl_setopt($curl, CURLOPT_VERBOSE, $debug);
