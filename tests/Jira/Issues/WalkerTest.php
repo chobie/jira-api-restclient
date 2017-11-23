@@ -64,7 +64,7 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @expectedException \Exception
-	 * @expectedExceptionMessage you have to call Jira_Walker::push($jql, $fields) at first
+	 * @expectedExceptionMessage you have to call Jira_Walker::push($jql, $fields, $expanded) at first
 	 */
 	public function testErrorWithoutJQL()
 	{
@@ -76,7 +76,7 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 	public function testFoundNoIssues()
 	{
 		$search_response = $this->generateSearchResponse('PRJ', 0);
-		$this->api->search('test jql', 0, 5, 'description')->willReturn($search_response);
+		$this->api->search('test jql', 0, 5, 'description', [])->willReturn($search_response);
 
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
@@ -93,7 +93,7 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 	public function testDefaultPerPageUsed()
 	{
 		$search_response = $this->generateSearchResponse('PRJ', 50);
-		$this->api->search('test jql', 0, 50, 'description')->willReturn($search_response);
+		$this->api->search('test jql', 0, 50, 'description', [])->willReturn($search_response);
 
 		$walker = $this->createWalker();
 		$walker->push('test jql', 'description');
@@ -114,11 +114,11 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 	{
 		// Full 1st page.
 		$search_response1 = $this->generateSearchResponse('PRJ1', 5, 7);
-		$this->api->search('test jql', 0, 5, 'description')->willReturn($search_response1);
+		$this->api->search('test jql', 0, 5, 'description', [])->willReturn($search_response1);
 
 		// Incomplete 2nd page.
 		$search_response2 = $this->generateSearchResponse('PRJ2', 2, 7);
-		$this->api->search('test jql', 5, 5, 'description')->willReturn($search_response2);
+		$this->api->search('test jql', 5, 5, 'description', [])->willReturn($search_response2);
 
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
@@ -141,7 +141,7 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testUnauthorizedExceptionOnFirstPage()
 	{
-		$this->api->search('test jql', 0, 5, 'description')->willThrow(new UnauthorizedException('Unauthorized'));
+		$this->api->search('test jql', 0, 5, 'description', [])->willThrow(new UnauthorizedException('Unauthorized'));
 
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
@@ -153,7 +153,7 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 
 	public function testAnyExceptionOnFirstPage()
 	{
-		$this->api->search('test jql', 0, 5, 'description')->willThrow(new \Exception('Anything'));
+		$this->api->search('test jql', 0, 5, 'description', [])->willThrow(new \Exception('Anything'));
 
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
@@ -173,10 +173,10 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 	{
 		// Full 1st page.
 		$search_response1 = $this->generateSearchResponse('PRJ1', 5, 7);
-		$this->api->search('test jql', 0, 5, 'description')->willReturn($search_response1);
+		$this->api->search('test jql', 0, 5, 'description', [])->willReturn($search_response1);
 
 		// Incomplete 2nd page.
-		$this->api->search('test jql', 5, 5, 'description')->willThrow(new UnauthorizedException('Unauthorized'));
+		$this->api->search('test jql', 5, 5, 'description', [])->willThrow(new UnauthorizedException('Unauthorized'));
 
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
@@ -190,10 +190,10 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 	{
 		// Full 1st page.
 		$search_response1 = $this->generateSearchResponse('PRJ1', 5, 7);
-		$this->api->search('test jql', 0, 5, 'description')->willReturn($search_response1);
+		$this->api->search('test jql', 0, 5, 'description', [])->willReturn($search_response1);
 
 		// Incomplete 2nd page.
-		$this->api->search('test jql', 5, 5, 'description')->willThrow(new \Exception('Anything'));
+		$this->api->search('test jql', 5, 5, 'description', [])->willThrow(new \Exception('Anything'));
 
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
@@ -218,7 +218,7 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 	public function testIssuesPassedThroughDelegate()
 	{
 		$search_response = $this->generateSearchResponse('PRJ', 2);
-		$this->api->search('test jql', 0, 2, 'description')->willReturn($search_response);
+		$this->api->search('test jql', 0, 2, 'description', [])->willReturn($search_response);
 
 		$walker = $this->createWalker(2);
 		$walker->push('test jql', 'description');
@@ -242,11 +242,11 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 	{
 		// Full 1st page.
 		$search_response1 = $this->generateSearchResponse('PRJ1', 5, 7);
-		$this->api->search('test jql', 0, 5, 'description')->willReturn($search_response1);
+		$this->api->search('test jql', 0, 5, 'description', [])->willReturn($search_response1);
 
 		// Incomplete 2nd page.
 		$search_response2 = $this->generateSearchResponse('PRJ2', 2, 7);
-		$this->api->search('test jql', 5, 5, 'description')->willReturn($search_response2);
+		$this->api->search('test jql', 5, 5, 'description', [])->willReturn($search_response2);
 
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
@@ -263,6 +263,11 @@ class WalkerTest extends \PHPUnit_Framework_TestCase
 			array_merge($search_response1->getIssues(), $search_response2->getIssues()),
 			$found_issues
 		);
+	}
+
+	public function testYouCanSpecifyFieldsetsToExpandWithASearch()
+	{
+
 	}
 
 	/**
