@@ -27,7 +27,13 @@ To be able to run integration tests locally please follow these steps once:
 2. copy `phpunit.xml.dist` file into `phpunit.xml` file
 3. in the `phpunit.xml` file:
  * uncomment part, where `REPO_URL` environment variable is defined
- * set `REPO_URL` environment variable value to URL, from where repository can be accessed (e.g. `http://localhost/path/to/repository/`)
+ * set `REPO_URL` environment variable value to URL, from where repository can be accessed (e.g. `http://localhost/path/to/repository/[:<portNumber>]`)
+ 
+Before running tests, change directory to the root of your repository, run `php -S localhost[:<portNumber>]`
+
+Then run the unit tests as per normal. The port number is optional but can be specified if you have other http services running on the default port 80.
+
+N.B. you can study the `travis.yml` file to see how we run these tests on our build servers by way of example.
 
 ### Running Test Suite
 
