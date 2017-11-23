@@ -551,20 +551,27 @@ class Api
 	 * @param integer $start_at    Start at.
 	 * @param integer $max_results Max results.
 	 * @param string  $fields      Fields.
+     * @param array   $expanded    Fieldsets to expand in returned data
 	 *
 	 * @return Result|false
 	 */
-	public function search($jql, $start_at = 0, $max_results = 20, $fields = '*navigable')
+	public function search($jql, $start_at = 0, $max_results = 20, $fields = '*navigable', $expanded = array())
 	{
+	    $data = array(
+            'jql' => $jql,
+            'startAt' => $start_at,
+            'maxResults' => $max_results,
+            'fields' => $fields
+        );
+
+	    if (count($expanded) > 0) {
+	        $data['expand'] = implode(',', $expanded);
+        }
+
 		$result = $this->api(
 			self::REQUEST_GET,
 			'/rest/api/2/search',
-			array(
-				'jql' => $jql,
-				'startAt' => $start_at,
-				'maxResults' => $max_results,
-				'fields' => $fields,
-			)
+            $data
 		);
 
 		return $result;
