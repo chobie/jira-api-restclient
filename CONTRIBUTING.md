@@ -33,7 +33,7 @@ Before running tests, change directory to the root of your repository, run `php 
 
 Then run the unit tests as per normal. The port number is optional but can be specified if you have other http services running on the default port 80.
 
-N.B. you can study the travis.yml file to see how we run these tests on our build servers by way of example.
+N.B. you can study the `travis.yml` file to see how we run these tests on our build servers by way of example.
 
 ### Running Test Suite
 
