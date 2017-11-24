@@ -6,9 +6,9 @@ $api = getApiClient();
  * Jira_Issues_Walker implicitly paging search request.
  * you don't need to care about paging request
  *
- * push(string $jql, string $navigable)
+ * push(string $jql, string $navigable = null, array $expanded = [])
  *
- * `push` function calls Jira_Api::search($jql, $startAt = 0, $maxResult = 20, $fields = '*navigable') internally.
+ * `push` function calls Jira_Api::search($jql, $startAt = 0, $maxResult = 20, $fields = '*navigable', $expanded = []) internally.
  *
  * @see https://developer.atlassian.com/static/rest/jira/5.0.html#id202584
  */
@@ -19,3 +19,23 @@ $walker->push('project = TICKETACEG AND  updated > -1d ORDER BY priority DESC', 
 foreach ( $walker as $issue ) {
 	var_dump($issue);
 }
+
+/**
+ * You can also set fieldsets to be expanded
+ *
+ * push(string $jql, string $navigable = null, array $expanded = [])
+ */
+
+$walker->push(
+    'project = TICKETACEG AND  updated > -1d ORDER BY priority DESC',
+    null,
+    ['history','changelog']
+);
+foreach ( $walker as $issue ) {
+    var_dump($issue);
+}
+
+/**
+ * You can set the paging size when constructing the Walker by passing a second parameter
+ * e.g. $walker = new Walker($api, 50);
+ */
