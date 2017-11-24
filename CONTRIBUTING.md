@@ -17,13 +17,25 @@ JIRA REST API Client is an open source, community-driven project. If you'd like 
 
 ## Running the Tests
 
-To be able to run integration tests locally (optional) please follow these steps once:
+### OPTIONAL: Configuration for Integration Tests
+
+The `repository` term used below refers to your clone of current project GitHub repository fork and not JIRA instance.
+
+To be able to run integration tests locally please follow these steps once:
 
 1. make sure repository is located in web server document root (or it's sub-folder)
 2. copy `phpunit.xml.dist` file into `phpunit.xml` file
 3. in the `phpunit.xml` file:
  * uncomment part, where `REPO_URL` environment variable is defined
- * set `REPO_URL` environment variable value to URL, from where repository can be accessed (e.g. `http://localhost/path/to/repository/`)
+ * set `REPO_URL` environment variable value to URL, from where repository can be accessed (e.g. `http://localhost/path/to/repository/[:<portNumber>]`)
+ 
+Before running tests, change directory to the root of your repository, run `php -S localhost[:<portNumber>]`
+
+Then run the unit tests as per normal. The port number is optional but can be specified if you have other http services running on the default port 80.
+
+N.B. you can study the `travis.yml` file to see how we run these tests on our build servers by way of example.
+
+### Running Test Suite
 
 Make sure that you don't break anything with your changes by running:
 
