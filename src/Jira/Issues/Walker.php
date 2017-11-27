@@ -108,6 +108,13 @@ class Walker implements \Iterator, \Countable
 	protected $fields = null;
 
 	/**
+	 * List of fieldsets to return expanded information for
+	 *
+	 * @var array
+	 */
+	protected $expanded = array();
+
+	/**
 	 * Callback.
 	 *
 	 * @var callable
@@ -134,13 +141,15 @@ class Walker implements \Iterator, \Countable
 	 *
 	 * @param string            $jql    JQL.
 	 * @param string|array|null $fields Fields.
+	 * @param array             $expanded List of fieldsets to provide expansions for.
 	 *
 	 * @return void
 	 */
-	public function push($jql, $fields = null)
+	public function push($jql, $fields = null, array $expanded = array())
 	{
 		$this->jql = $jql;
 		$this->fields = $fields;
+		$this->expanded = $expanded;
 	}
 
 	/**
@@ -201,12 +210,12 @@ class Walker implements \Iterator, \Countable
 	public function valid()
 	{
 		if ( is_null($this->jql) ) {
-			throw new \Exception('you have to call Jira_Walker::push($jql, $fields) at first');
+			throw new \Exception('you have to call Jira_Walker::push($jql, $fields, $expanded) at first');
 		}
 
 		if ( !$this->executed ) {
 			try {
-				$result = $this->api->search($this->getQuery(), $this->key(), $this->perPage, $this->fields);
+				$result = $this->api->search($this->getQuery(), $this->key(), $this->perPage, $this->fields, $this->expanded);
 
 				$this->setResult($result);
 				$this->executed = true;
@@ -229,7 +238,7 @@ class Walker implements \Iterator, \Countable
 		else {
 			if ( $this->offset >= $this->max && $this->key() < $this->total ) {
 				try {
-					$result = $this->api->search($this->getQuery(), $this->key(), $this->perPage, $this->fields);
+					$result = $this->api->search($this->getQuery(), $this->key(), $this->perPage, $this->fields, $this->expanded);
 					$this->setResult($result);
 
 					return true;

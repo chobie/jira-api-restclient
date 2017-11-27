@@ -88,6 +88,32 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(new Result($response_decoded), $this->api->search('test', 0, 2, 'description'));
 	}
 
+	/**
+	 * @todo this requires a different data set that displays expanded data
+	 */
+	public function testYouCanRetrieveExpandedFieldSetsWithASearch()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_search.json');
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/search',
+			array(
+				'jql' => 'test',
+				'startAt' => 0,
+				'maxResults' => 2,
+				'fields' => 'description',
+				'expand' => 'changelog,history'
+			),
+			$response
+		);
+
+		$response_decoded = json_decode($response, true);
+
+		$this->api->setOptions(0); // Don't auto-expand fields, because it makes another API call.
+		$this->assertEquals(new Result($response_decoded), $this->api->search('test', 0, 2, 'description', ['changelog', 'history']));
+	}
+
 	public function testUpdateVersion()
 	{
 		$params = array(
