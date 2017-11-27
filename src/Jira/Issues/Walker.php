@@ -107,11 +107,11 @@ class Walker implements \Iterator, \Countable
 	 */
 	protected $fields = null;
 
-    /**
-     * List of fieldsets to return expanded information for
-     *
-     * @var array
-     */
+	/**
+	 * List of fieldsets to return expanded information for
+	 *
+	 * @var array
+	 */
 	protected $expanded = array();
 
 	/**
@@ -141,11 +141,11 @@ class Walker implements \Iterator, \Countable
 	 *
 	 * @param string            $jql    JQL.
 	 * @param string|array|null $fields Fields.
-     * @param array $expanded   List of fieldsets to provide expansions for
+	 * @param array             $expanded List of fieldsets to provide expansions for.
 	 *
 	 * @return void
 	 */
-	public function push($jql, $fields = null, $expanded = array())
+	public function push($jql, $fields = null, array $expanded = array())
 	{
 		$this->jql = $jql;
 		$this->fields = $fields;

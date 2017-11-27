@@ -551,7 +551,7 @@ class Api
 	 * @param integer $start_at    Start at.
 	 * @param integer $max_results Max results.
 	 * @param string  $fields      Fields.
-     * @param array   $expanded    Fieldsets to expand in returned data
+	 * @param array   $expanded    Fieldsets to expand in returned data
 	 *
 	 * @return Result|false
 	 */
@@ -564,8 +564,8 @@ class Api
             'fields' => $fields
         );
 
-	    if (count($expanded) > 0) {
-	        $data['expand'] = implode(',', $expanded);
+        if (count($expanded) > 0) {
+            $data['expand'] = implode(',', $expanded);
         }
 
 		$result = $this->api(
