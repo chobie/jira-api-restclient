@@ -52,3 +52,8 @@ $> ./vendor/bin/phpcs --standard="vendor/aik099/coding-standard/CodingStandard" 
 ```
 
 or by making your IDE ([instructions for PhpStorm](http://www.jetbrains.com/phpstorm/webhelp/using-php-code-sniffer-tool.html)) to check them automatically.
+
+As an aid to code formatting, a `.editorconfig` file is supplied.  If your IDE can support it, (instructions for 
+PHPStorm are [here](https://www.jetbrains.com/help/webstorm/configuring-code-style.html) and 
+[here](https://plugins.jetbrains.com/plugin/7294-editorconfig),) then please use it.  Alternatively, open the 
+`.editorconfig` file and set your editor to respect the rules in the file. 
