@@ -139,8 +139,9 @@ class Walker implements \Iterator, \Countable
 	 */
 	public function push($jql, $fields = null)
 	{
+		if (is_string($fields)) $fields=[$fields];
 		$this->jql = $jql;
-		$this->fields = $fields;
+		$this->fields = is_string($fields) ? [$fields] : $fields;
 	}
 
 	/**
