@@ -141,7 +141,7 @@ class Walker implements \Iterator, \Countable
 	{
 		if (is_string($fields)) $fields=[$fields];
 		$this->jql = $jql;
-		$this->fields = is_string($fields) ? [$fields] : $fields;
+		$this->fields = is_string($fields) ? [$fields] : (array) $fields;
 	}
 
 	/**
