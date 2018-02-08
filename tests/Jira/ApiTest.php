@@ -85,7 +85,14 @@ class ApiTest extends TestCase
 
 		$response_decoded = json_decode($response, true);
 
-		$this->api->setOptions(0); // Don't auto-expand fields, because it makes another API call.
+		// Field auto-expanding would trigger this call.
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/field',
+			array(),
+			file_get_contents(__DIR__ . '/resources/api_field.json')
+		);
+
 		$this->assertEquals(new Result($response_decoded), $this->api->search('test', 0, 2, 'description'));
 	}
 
