@@ -26,7 +26,9 @@ install:
   - if [ "$TRAVIS_PHP_VERSION" != "5.5" ]; then composer install --prefer-dist; fi;
 
 before_script:
-  - ~/.phpenv/versions/5.6/bin/php -S localhost:8000 -t $(pwd) > /dev/null 2> /tmp/webserver_output.txt &
+  - WEBSERVER_PHP_VERSION="5.6"
+  - if [ ! -d "$HOME/.phpenv/versions/5.6" ]; then WEBSERVER_PHP_VERSION="5.4"; fi;
+  - ~/.phpenv/versions/${WEBSERVER_PHP_VERSION}/bin/php -S localhost:8000 -t $(pwd) > /dev/null 2> /tmp/webserver_output.txt &
   - export REPO_URL=http://localhost:8000/
   - while ! curl $REPO_URL >/dev/null 2>&1; do sleep 1; done
 
