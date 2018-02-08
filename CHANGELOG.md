@@ -41,6 +41,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Attempt to make a `DELETE` API call using `CurlClient` wasn't working by [@aik099].
 - Clearing local caches (statuses, priorities, fields and resolutions) on endpoint change by [@jpastoor].
 - Error details from failed API calls were not available back from `Api::api method` call by [@betterphp].
+- Warning about `count()` function usage on PHP 7.2, when searching for issues by [@aik099].
 
 ## [1.0.0] - 2014-07-27
 ### Added
