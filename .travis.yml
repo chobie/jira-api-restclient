@@ -22,7 +22,7 @@ matrix:
     - php: 5.3
 
 install:
-  - if [ "$TRAVIS_PHP_VERSION" = "5.5" ]; then composer require "phpunit/phpunit:5.*" --dev; fi;
+  - if [ "$TRAVIS_PHP_VERSION" = "5.5" ]; then composer require "phpunit/phpunit:^4.8" --dev; fi;
   - if [ "$TRAVIS_PHP_VERSION" != "5.5" ]; then composer install --prefer-dist; fi;
 
 before_script:
