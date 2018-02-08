@@ -3,15 +3,14 @@
 namespace Tests\chobie\Jira\Issues;
 
 
-use chobie\Jira\Api;
-use chobie\Jira\Api\Authentication\Basic;
 use chobie\Jira\Api\Result;
 use chobie\Jira\Api\UnauthorizedException;
 use chobie\Jira\Issue;
 use chobie\Jira\Issues\Walker;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 
-class WalkerTest extends \PHPUnit_Framework_TestCase
+class WalkerTest extends TestCase
 {
 
 	/**

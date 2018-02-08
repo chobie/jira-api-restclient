@@ -4,8 +4,9 @@ namespace Tests\chobie\Jira;
 
 
 use chobie\Jira\IssueType;
+use PHPUnit\Framework\TestCase;
 
-class IssueTypeTest extends \PHPUnit_Framework_TestCase
+class IssueTypeTest extends TestCase
 {
 
 	public function testHandlesSingleIssueTypeWithAvatarId()

@@ -8,8 +8,9 @@ use chobie\Jira\Api\Authentication\Anonymous;
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Authentication\Basic;
 use chobie\Jira\Api\Client\ClientInterface;
+use PHPUnit\Framework\TestCase;
 
-abstract class AbstractClientTestCase extends \PHPUnit_Framework_TestCase
+abstract class AbstractClientTestCase extends TestCase
 {
 
 	/**
@@ -145,10 +146,18 @@ abstract class AbstractClientTestCase extends \PHPUnit_Framework_TestCase
 		$client_class_parts = explode('\\', get_class($this->client));
 		$credential = $this->prophesize('chobie\Jira\Api\Authentication\AuthenticationInterface')->reveal();
 
-		$this->setExpectedException(
-			'InvalidArgumentException',
-			end($client_class_parts) . ' does not support ' . get_class($credential) . ' authentication.'
-		);
+		if ( \method_exists($this, 'setExpectedException') ) {
+			$this->setExpectedException(
+				'InvalidArgumentException',
+				end($client_class_parts) . ' does not support ' . get_class($credential) . ' authentication.'
+			);
+		}
+		else {
+			$this->expectException('InvalidArgumentException');
+			$this->expectExceptionMessage(
+				end($client_class_parts) . ' does not support ' . get_class($credential) . ' authentication.'
+			);
+		}
 
 		$this->client->sendRequest(Api::REQUEST_GET, 'url', array(), 'endpoint', $credential);
 	}
