@@ -28,7 +28,7 @@ before_script:
   - while ! curl $REPO_URL >/dev/null 2>&1; do sleep 1; done
 
 script:
-  - ./vendor/bin/phpunit
+  - phpunit
 
 after_failure:
     - cat /tmp/webserver_output.txt

@@ -6,6 +6,7 @@ namespace Tests\chobie\Jira;
 use chobie\Jira\Api;
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Result;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 
 /**
@@ -13,7 +14,7 @@ use Prophecy\Prophecy\ObjectProphecy;
  *
  * @package Tests\chobie\Jira
  */
-class ApiTest extends \PHPUnit_Framework_TestCase
+class ApiTest extends TestCase
 {
 
 	const ENDPOINT = 'http://jira.company.com';
