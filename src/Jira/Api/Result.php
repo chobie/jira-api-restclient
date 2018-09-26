@@ -70,7 +70,7 @@ class Result
 	 *
 	 * @param array $result Result.
 	 */
-	public function __construct(array $result)
+	public function __construct(array $result = array())
 	{
 		if ( isset($result['expand']) ) {
 			$this->expand = explode(',', $result['expand']);
