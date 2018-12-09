@@ -24,8 +24,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Minimal supported PHP version changed from 5.2 to 5.3 by [@chobie].
 - The `Api::getPriorties` renamed into `Api::getPriorities` by [@josevh].
 - Remove trailing slash from endpoint url by [@Procta].
-- Added local cache to getResolutions by [@jpastoor].
-- Renamed Api::api() parameter $return_as_json to $return_as_array by [@jpastoor].
+- Added local cache to `Api::getResolutions` by [@jpastoor].
+- Renamed `Api::api` parameter $return_as_json to $return_as_array by [@jpastoor].
+- Changed default `Api::api` parameter $return_as_array to TRUE by [@jpastoor].
+- Api methods (except those that return issue lists) now consistently return as associative arrays instead of Result class instance by [@jpastoor].
 
 ### Removed
 ...

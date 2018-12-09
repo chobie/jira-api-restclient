@@ -173,14 +173,14 @@ class Api
 	/**
 	 * Get fields definitions.
 	 *
-	 * @return array
+	 * @return array|false
 	 */
 	public function getFields()
 	{
 		// Fetch fields when the method is called for the first time.
 		if ( $this->fields === null ) {
 			$fields = array();
-			$result = $this->api(self::REQUEST_GET, '/rest/api/2/field', array(), true);
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/field');
 
 			/* set hash key as custom field id */
 			foreach ( $result as $field ) {
@@ -199,7 +199,7 @@ class Api
 	 * @param string $issue_key Issue key should be "YOURPROJ-221".
 	 * @param string $expand    Expand.
 	 *
-	 * @return Result|false
+	 * @return array|false
 	 */
 	public function getIssue($issue_key, $expand = '')
 	{
@@ -212,7 +212,7 @@ class Api
 	 * @param string $issue_key Issue key.
 	 * @param array  $params    Params.
 	 *
-	 * @return Result|false
+	 * @return array|false
 	 */
 	public function editIssue($issue_key, array $params)
 	{
@@ -222,7 +222,7 @@ class Api
 	/**
 	 * Gets attachments meta information.
 	 *
-	 * @return array
+	 * @return array|false
 	 * @since  2.0.0
 	 */
 	public function getAttachmentsMetaInformation()
@@ -239,13 +239,13 @@ class Api
 	 */
 	public function getAttachment($attachment_id)
 	{
-		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/attachment/%s', $attachment_id), array(), true);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/attachment/%s', $attachment_id));
 	}
 
 	/**
 	 * Returns all projects.
 	 *
-	 * @return Result|false
+	 * @return array|false
 	 */
 	public function getProjects()
 	{
@@ -255,43 +255,38 @@ class Api
 	/**
 	 * Returns one project.
 	 *
-	 * @param string $project_key Project key.
+	 * @param string $project_id_or_key Project ID or key.
 	 *
 	 * @return array|false
 	 */
-	public function getProject($project_key)
+	public function getProject($project_id_or_key)
 	{
-		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s', $project_key), array(), true);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s', $project_id_or_key));
 	}
 
 	/**
 	 * Returns all roles of a project.
 	 *
-	 * @param string $project_key Project key.
+	 * @param string $project_id_or_key Project ID or key.
 	 *
 	 * @return array|false
 	 */
-	public function getRoles($project_key)
+	public function getRoles($project_id_or_key)
 	{
-		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/role', $project_key), array(), true);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/role', $project_id_or_key));
 	}
 
 	/**
 	 * Returns role details.
 	 *
-	 * @param string $project_key Project key.
-	 * @param string $role_id     Role ID.
+	 * @param string $project_id_or_key Project ID or key.
+	 * @param string $role_id           Role ID.
 	 *
 	 * @return array|false
 	 */
-	public function getRoleDetails($project_key, $role_id)
+	public function getRoleDetails($project_id_or_key, $role_id)
 	{
-		return $this->api(
-			self::REQUEST_GET,
-			sprintf('/rest/api/2/project/%s/role/%s', $project_key, $role_id),
-			array(),
-			true
-		);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/role/%s', $project_id_or_key, $role_id));
 	}
 
 	/**
@@ -350,16 +345,16 @@ class Api
 			$data['expand'] = implode(',', $expand);
 		}
 
-		return $this->api(self::REQUEST_GET, '/rest/api/2/issue/createmeta', $data, true);
+		return $this->api(self::REQUEST_GET, '/rest/api/2/issue/createmeta', $data);
 	}
 
 	/**
 	 * Add a comment to a ticket.
 	 *
 	 * @param string       $issue_key Issue key should be "YOURPROJ-221".
-	 * @param array|string $params    Params.
+	 * @param array|string $params    Params or body string.
 	 *
-	 * @return Result|false
+	 * @return array|false
 	 */
 	public function addComment($issue_key, $params)
 	{
@@ -379,10 +374,10 @@ class Api
 	 * @param string $issue_key Issue key should be "YOURPROJ-22".
 	 * @param array  $params    Params.
 	 *
-	 * @return Result|false
+	 * @return array|false
 	 * @since  2.0.0
 	 */
-	public function getWorklogs($issue_key, array $params)
+	public function getWorklogs($issue_key, array $params = array())
 	{
 		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/issue/%s/worklog', $issue_key), $params);
 	}
@@ -393,9 +388,9 @@ class Api
 	 * @param string $issue_key Issue key should be "YOURPROJ-22".
 	 * @param array  $params    Params.
 	 *
-	 * @return Result|false
+	 * @return array|false
 	 */
-	public function getTransitions($issue_key, array $params)
+	public function getTransitions($issue_key, array $params = array())
 	{
 		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/issue/%s/transitions', $issue_key), $params);
 	}
@@ -406,7 +401,7 @@ class Api
 	 * @param string $issue_key Issue key should be "YOURPROJ-22".
 	 * @param array  $params    Params.
 	 *
-	 * @return Result|false
+	 * @return array|false
 	 */
 	public function transition($issue_key, array $params)
 	{
@@ -421,7 +416,7 @@ class Api
 	public function getIssueTypes()
 	{
 		$result = array();
-		$types = $this->api(self::REQUEST_GET, '/rest/api/2/issuetype', array(), true);
+		$types = $this->api(self::REQUEST_GET, '/rest/api/2/issuetype');
 
 		foreach ( $types as $issue_type ) {
 			$result[] = new IssueType($issue_type);
@@ -439,7 +434,7 @@ class Api
 	 */
 	public function getVersions($project_key)
 	{
-		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/versions', $project_key), array(), true);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/versions', $project_key));
 	}
 
 	/**
@@ -473,7 +468,7 @@ class Api
 	/**
 	 * Get available priorities.
 	 *
-	 * @return array
+	 * @return array|false
 	 * @since  2.0.0
 	 */
 	public function getPriorities()
@@ -481,7 +476,7 @@ class Api
 		// Fetch priorities when the method is called for the first time.
 		if ( $this->priorities === null ) {
 			$priorities = array();
-			$result = $this->api(self::REQUEST_GET, '/rest/api/2/priority', array(), true);
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/priority');
 
 			/* set hash key as custom field id */
 			foreach ( $result as $priority ) {
@@ -504,7 +499,7 @@ class Api
 		// Fetch statuses when the method is called for the first time.
 		if ( $this->statuses === null ) {
 			$statuses = array();
-			$result = $this->api(self::REQUEST_GET, '/rest/api/2/status', array(), true);
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/status');
 
 			/* set hash key as custom field id */
 			foreach ( $result as $status ) {
@@ -525,7 +520,7 @@ class Api
 	 * @param string $issue_type  Issue type.
 	 * @param array  $options     Options.
 	 *
-	 * @return Result|false
+	 * @return array|false
 	 */
 	public function createIssue($project_key, $summary, $issue_type, array $options = array())
 	{
@@ -564,7 +559,7 @@ class Api
 				'startAt' => $start_at,
 				'maxResults' => $max_results,
 				'fields' => $fields,
-			)
+			), false
 		);
 
 		return $result;
@@ -577,7 +572,7 @@ class Api
 	 * @param string $version     Version.
 	 * @param array  $options     Options.
 	 *
-	 * @return Result|false
+	 * @return array|false
 	 */
 	public function createVersion($project_key, $version, array $options = array())
 	{
@@ -603,7 +598,7 @@ class Api
 	 * @param integer $version_id Version ID.
 	 * @param array   $params     Key->Value list to update the version with.
 	 *
-	 * @return false
+	 * @return array|false
 	 * @since  2.0.0
 	 * @link   https://docs.atlassian.com/jira/REST/latest/#api/2/version-updateVersion
 	 */
@@ -646,7 +641,7 @@ class Api
 	 * @param string $filename  Filename.
 	 * @param string $name      Name.
 	 *
-	 * @return Result|false
+	 * @return array|false
 	 */
 	public function createAttachment($issue_key, $filename, $name = null)
 	{
@@ -659,7 +654,7 @@ class Api
 			self::REQUEST_POST,
 			sprintf('/rest/api/2/issue/%s/attachments', $issue_key),
 			$options,
-			false,
+			true,
 			true
 		);
 	}
@@ -693,7 +688,7 @@ class Api
 			$options['application'] = $application;
 		}
 
-		return $this->api(self::REQUEST_POST, sprintf('/rest/api/2/issue/%s/remotelink', $issue_key), $options, true);
+		return $this->api(self::REQUEST_POST, sprintf('/rest/api/2/issue/%s/remotelink', $issue_key), $options);
 	}
 
 	/**
@@ -712,7 +707,7 @@ class Api
 		$method = self::REQUEST_GET,
 		$url,
 		$data = array(),
-		$return_as_array = false,
+		$return_as_array = true,
 		$is_file = false,
 		$debug = false
 	) {
@@ -808,7 +803,7 @@ class Api
 	 * @param string $issue_key Issue key.
 	 * @param array  $watchers  Watchers.
 	 *
-	 * @return Result|false
+	 * @return array|false
 	 */
 	public function setWatchers($issue_key, array $watchers)
 	{
@@ -826,7 +821,7 @@ class Api
 	 *
 	 * @param string $issue_key Issue key.
 	 *
-	 * @return Result|array
+	 * @return array|false
 	 * @TODO:  Should have parameters? (e.g comment)
 	 */
 	public function closeIssue($issue_key)
@@ -834,12 +829,10 @@ class Api
 		$result = array();
 
 		// Get available transitions.
-		$tmp_transitions = $this->getTransitions($issue_key, array());
-		$tmp_transitions_result = $tmp_transitions->getResult();
-		$transitions = $tmp_transitions_result['transitions'];
+		$transitions = $this->getTransitions($issue_key, array());
 
 		// Look for "Close Issue" transition in issue transitions.
-		foreach ( $transitions as $v ) {
+		foreach ( $transitions['transitions'] as $v ) {
 			// Close issue if required id was found.
 			if ( $v['name'] == 'Close Issue' ) {
 				$result = $this->transition(
@@ -860,12 +853,12 @@ class Api
 	 *
 	 * @param string $project_key Project key.
 	 *
-	 * @return array
+	 * @return array|false
 	 * @since  2.0.0
 	 */
 	public function getProjectComponents($project_key)
 	{
-		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/components', $project_key), array(), true);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/components', $project_key));
 	}
 
 	/**
@@ -873,18 +866,18 @@ class Api
 	 *
 	 * @param string $project_key Project key.
 	 *
-	 * @return array
+	 * @return array|false
 	 * @since  2.0.0
 	 */
 	public function getProjectIssueTypes($project_key)
 	{
-		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/statuses', $project_key), array(), true);
+		return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/project/%s/statuses', $project_key));
 	}
 
 	/**
 	 * Returns a list of all resolutions.
 	 *
-	 * @return array
+	 * @return array|false
 	 * @since  2.0.0
 	 */
 	public function getResolutions()
@@ -892,7 +885,7 @@ class Api
 		// Fetch resolutions when the method is called for the first time.
 		if ( $this->resolutions === null ) {
 			$resolutions = array();
-			$result = $this->api(self::REQUEST_GET, '/rest/api/2/resolution', array(), true);
+			$result = $this->api(self::REQUEST_GET, '/rest/api/2/resolution');
 
 			foreach ( $result as $resolution ) {
 				$resolutions[$resolution['id']] = $resolution;

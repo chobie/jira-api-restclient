@@ -1,0 +1,30 @@
+[
+  {
+    "self": "https://test.atlassian.net/rest/api/2/role/10002",
+    "name": "Administrators",
+    "id": 10002,
+    "description": "A project role that represents administrators in a project",
+    "actors": [
+      {
+        "id": 10002,
+        "displayName": "administrators",
+        "type": "atlassian-group-role-actor",
+        "name": "administrators"
+      }
+    ]
+  },
+  {
+    "self": "https://test.atlassian.net/rest/api/2/role/10000",
+    "name": "Users",
+    "id": 10000,
+    "description": "A project role that represents users in a project",
+    "actors": [
+      {
+        "id": 10000,
+        "displayName": "users",
+        "type": "atlassian-group-role-actor",
+        "name": "users"
+      }
+    ]
+  }
+]

@@ -288,6 +288,187 @@ class ApiTest extends TestCase
 		$this->assertEquals($expected, $this->api->getPriorities(), 'Calling twice did not yield the same results');
 	}
 
+	public function testGetIssue()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_get_issue.json');
+
+		$issue_key = 'POR-1';
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/issue/' . $issue_key,
+			array('expand' => ''),
+			$response
+		);
+
+		$actual = $this->api->getIssue($issue_key);
+
+		$expected = json_decode($response, true);
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testEditIssue()
+	{
+		$issue_key = 'POR-1';
+		$params = array('update' => (object) array('summary' => array( (object) array("set" => "Bug in business logic"))));
+		$this->expectClientCall(
+			Api::REQUEST_PUT,
+			'/rest/api/2/issue/' . $issue_key,
+			$params,
+			false // False is returned because there is no content (204).
+		);
+
+		$actual = $this->api->editIssue($issue_key, $params);
+		$this->assertEquals(false, $actual);
+	}
+
+	public function testGetAttachmentsMetaInformation()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_get_attachments_meta.json');
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/attachment/meta',
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getAttachmentsMetaInformation();
+
+		$expected = json_decode($response, true);
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetAttachment()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_get_attachment.json');
+		$attachment_id = '18700';
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/attachment/' . $attachment_id,
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getAttachment($attachment_id);
+
+		$expected = json_decode($response, true);
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetProjects()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_get_projects.json');
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/project',
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getProjects();
+
+		$expected = json_decode($response, true);
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetProject()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_get_project.json');
+		$project_id = '10500';
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/project/' . $project_id,
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getProject($project_id);
+
+		$expected = json_decode($response, true);
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetRoles()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_get_roles_of_project.json');
+		$project_id = '10500';
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/project/' . $project_id . '/role',
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getRoles($project_id);
+
+		$expected = json_decode($response, true);
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetRoleDetails()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_get_role_of_project_by_id.json');
+		$project_id = '10500';
+		$role_id = '10200';
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/project/' . $project_id . '/role/' . $role_id,
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getRoleDetails($project_id, $role_id);
+
+		$expected = json_decode($response, true);
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testAddComment()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_add_comment.json');
+		$issue_key = 'POR-1';
+
+		// Testing the case where the description is provided directly instead of params
+		$description = 'testdesc';
+
+		$this->expectClientCall(
+			Api::REQUEST_POST,
+			'/rest/api/2/issue/' . $issue_key . '/comment',
+			array('body' => $description),
+			$response
+		);
+
+		$actual = $this->api->addComment($issue_key, $description);
+
+		$expected = json_decode($response, true);
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetWorklog()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_get_roles_of_project.json');
+		$issue_key = 'POR-1';
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/issue/' . $issue_key . '/worklog',
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getWorklogs($issue_key);
+
+		$expected = json_decode($response, true);
+		$this->assertEquals($expected, $actual);
+	}
+
+
 	/**
 	 * Expects a particular client call.
 	 *
