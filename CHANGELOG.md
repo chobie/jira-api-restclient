@@ -42,6 +42,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Clearing local caches (statuses, priorities, fields and resolutions) on endpoint change by [@jpastoor].
 - Error details from failed API calls were not available back from `Api::api method` call by [@betterphp].
 - Warning about `count()` function usage on PHP 7.2, when searching for issues by [@aik099].
+- Capitalize `globalId` properly in `createRemotelink` [@glensc].
 
 ## [1.0.0] - 2014-07-27
 ### Added
@@ -65,3 +66,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [@DerMika]: https://github.com/DerMika
 [@aik099]: https://github.com/aik099
 [@betterphp]: https://github.com/betterphp
+[@glensc]: https://github.com/glensc
