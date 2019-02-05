@@ -90,6 +90,7 @@ class IssueType
 		'name',
 		'subtask',
 		'avatarId',
+		'scope',
 	);
 
 	/**
