@@ -198,7 +198,7 @@ class Walker implements \Iterator, \Countable
 	 */
 	public function valid()
 	{
-		if ( is_null($this->jql) ) {
+		if ( $this->jql === null ) {
 			throw new \Exception('you have to call Jira_Walker::push($jql, $fields) at first');
 		}
 

@@ -110,7 +110,7 @@ class Api
 		$this->setEndPoint($endpoint);
 		$this->authentication = $authentication;
 
-		if ( is_null($client) ) {
+		if ( $client === null ) {
 			$client = new CurlClient();
 		}
 
@@ -689,7 +689,7 @@ class Api
 						'object' => $object,
 					);
 
-		if ( !is_null($application) ) {
+		if ( $application !== null ) {
 			$options['application'] = $application;
 		}
 
