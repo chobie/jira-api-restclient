@@ -157,9 +157,8 @@ class Walker implements \Iterator, \Countable
 
 			return $callback($tmp);
 		}
-		else {
-			return $this->issues[$this->offset];
-		}
+
+		return $this->issues[$this->offset];
 	}
 
 	/**
@@ -184,9 +183,8 @@ class Walker implements \Iterator, \Countable
 		if ( $this->startAt > 0 ) {
 			return $this->offset + (($this->startAt - 1) * $this->perPage);
 		}
-		else {
-			return 0;
-		}
+
+		return 0;
 	}
 
 	/**
@@ -247,9 +245,8 @@ class Walker implements \Iterator, \Countable
 				if ( ($this->startAt - 1) * $this->perPage + $this->offset < $this->total ) {
 					return true;
 				}
-				else {
-					return false;
-				}
+
+				return false;
 			}
 		}
 	}
