@@ -33,7 +33,7 @@ Before running tests, change directory to the root of your repository and run `p
 
 Then run the unit tests as per normal.
 
-N.B. you can study the `travis.yml` file to see how we run these tests on our build servers by way of example.
+N.B. you can study the `.travis.yml` file to see how we run these tests on our build servers by way of example.
 
 ### Running Test Suite
 
