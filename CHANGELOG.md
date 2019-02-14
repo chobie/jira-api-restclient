@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Allow configuring issues queried per page in `Walker` class by [@aik099].
 - Added optional override for the filename in `Api::createAttachment` by [@betterphp]
 - Allow getting issue count back from `Walker` class by [@aik099].
+- Setup `.gitattributes` for better `CHANGELOG.md` merging by [@glensc].
 
 ### Changed
 - Classes/interfaces were renamed to use namespaces by [@chobie].
