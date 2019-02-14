@@ -676,7 +676,7 @@ class Api
 	 * @return array|false
 	 * @since  2.0.0
 	 */
-	public function createRemotelink(
+	public function createRemoteLink(
 		$issue_key,
 		array $object = array(),
 		$relationship = null,
