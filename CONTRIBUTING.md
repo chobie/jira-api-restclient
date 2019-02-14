@@ -8,7 +8,7 @@ JIRA REST API Client is an open source, community-driven project. If you'd like 
 ## Working with Pull Requests
 1. Create your feature addition or a bug fix branch based on __`master`__ branch in your repository's fork.
 2. Make necessary changes, but __don't mix__ code reformatting with code changes on topic.
-3. Add entry in `CHANGELOG.md` file following http://keepachangelog.com/ format (if applicable).
+3. Add entry in `CHANGELOG.md` file following https://keepachangelog.com/en/1.0.0/ format (if applicable).
 4. Add tests for those changes (please look into `tests/` folder for some examples). This is important so we don't break it in a future version unintentionally.
 5. Check your code using "Coding Standard" (see below).
 6. Commit your code.
@@ -29,18 +29,18 @@ To be able to run integration tests locally please follow these steps once:
  * uncomment part, where `REPO_URL` environment variable is defined
  * set `REPO_URL` environment variable value to URL, from where repository can be accessed (e.g. `http://localhost/path/to/repository/[:<portNumber>]`)
  
-Before running tests, change directory to the root of your repository, run `php -S localhost[:<portNumber>]`
+Before running tests, change directory to the root of your repository and run `php -S localhost:<portNumber>`
 
-Then run the unit tests as per normal. The port number is optional but can be specified if you have other http services running on the default port 80.
+Then run the unit tests as per normal.
 
-N.B. you can study the `travis.yml` file to see how we run these tests on our build servers by way of example.
+N.B. you can study the `.travis.yml` file to see how we run these tests on our build servers by way of example.
 
 ### Running Test Suite
 
 Make sure that you don't break anything with your changes by running:
 
 ```bash
-$> ./vendor/bin/phpunit
+$> vendor/bin/phpunit
 ```
 
 ## Checking coding standard violations
@@ -48,7 +48,7 @@ $> ./vendor/bin/phpunit
 This library uses [Coding Standard](https://github.com/aik099/CodingStandard) to ensure consistent formatting across the code base. Make sure you haven't introduced any Coding Standard violations by running following command in the root folder of the library:
 
 ```bash
-$> ./vendor/bin/phpcs --standard="vendor/aik099/coding-standard/CodingStandard" src tests
+$> vendor/bin/phpcs --standard="vendor/aik099/coding-standard/CodingStandard" src tests
 ```
 
-or by making your IDE ([instructions for PhpStorm](http://www.jetbrains.com/phpstorm/webhelp/using-php-code-sniffer-tool.html)) to check them automatically.
+or by making your IDE ([instructions for PhpStorm](https://www.jetbrains.com/help/phpstorm/using-php-code-sniffer.html)) to check them automatically.
