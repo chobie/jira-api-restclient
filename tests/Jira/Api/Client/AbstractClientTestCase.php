@@ -9,9 +9,12 @@ use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Authentication\Basic;
 use chobie\Jira\Api\Client\ClientInterface;
 use PHPUnit\Framework\TestCase;
+use Yoast\PHPUnitPolyfills\Polyfills\ExpectException;
 
 abstract class AbstractClientTestCase extends TestCase
 {
+
+	use ExpectException;
 
 	/**
 	 * Client.
@@ -20,10 +23,11 @@ abstract class AbstractClientTestCase extends TestCase
 	 */
 	protected $client;
 
-	protected function setUp()
+	/**
+	 * @before
+	 */
+	protected function setUpTest()
 	{
-		parent::setUp();
-
 		if ( empty($_SERVER['REPO_URL']) ) {
 			$this->markTestSkipped('The "REPO_URL" environment variable not set.');
 		}
@@ -52,12 +56,11 @@ abstract class AbstractClientTestCase extends TestCase
 		);
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 * @expectedExceptionMessage Data must be an array.
-	 */
 	public function testGetRequestError()
 	{
+		$this->expectException('\InvalidArgumentException');
+		$this->expectExceptionMessage('Data must be an array.');
+
 		$this->traceRequest(Api::REQUEST_GET, 'param1=value1&param2=value2');
 	}
 
@@ -180,21 +183,19 @@ abstract class AbstractClientTestCase extends TestCase
 		$this->markTestIncomplete('TODO');
 	}
 
-	/**
-	 * @expectedException \chobie\Jira\Api\UnauthorizedException
-	 * @expectedExceptionMessage Unauthorized
-	 */
 	public function testUnauthorizedRequest()
 	{
+		$this->expectException('\chobie\Jira\Api\UnauthorizedException');
+		$this->expectExceptionMessage('Unauthorized');
+
 		$this->traceRequest(Api::REQUEST_GET, array('http_code' => 401));
 	}
 
-	/**
-	 * @expectedException \chobie\Jira\Api\Exception
-	 * @expectedExceptionMessage JIRA Rest server returns unexpected result.
-	 */
 	public function testEmptyResponseWithUnknownHttpCode()
 	{
+		$this->expectException('\chobie\Jira\Api\Exception');
+		$this->expectExceptionMessage('JIRA Rest server returns unexpected result.');
+
 		$this->traceRequest(Api::REQUEST_GET, array('response_mode' => 'empty'));
 	}
 

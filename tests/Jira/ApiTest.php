@@ -40,10 +40,11 @@ class ApiTest extends TestCase
 	 */
 	protected $client;
 
-	protected function setUp()
+	/**
+	 * @before
+	 */
+	protected function setUpTest()
 	{
-		parent::setUp();
-
 		$this->credential = $this->prophesize('chobie\Jira\Api\Authentication\AuthenticationInterface')->reveal();
 		$this->client = $this->prophesize('chobie\Jira\Api\Client\ClientInterface');
 

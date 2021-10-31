@@ -9,9 +9,12 @@ use chobie\Jira\Issue;
 use chobie\Jira\Issues\Walker;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Yoast\PHPUnitPolyfills\Polyfills\ExpectException;
 
 class WalkerTest extends TestCase
 {
+
+	use ExpectException;
 
 	/**
 	 * API.
@@ -27,10 +30,11 @@ class WalkerTest extends TestCase
 	 */
 	protected $errorLogFile;
 
-	protected function setUp()
+	/**
+	 * @before
+	 */
+	protected function setUpTest()
 	{
-		parent::setUp();
-
 		$this->api = $this->prophesize('chobie\Jira\Api');
 
 		if ( $this->captureErrorLog() ) {
@@ -41,10 +45,11 @@ class WalkerTest extends TestCase
 		}
 	}
 
-	protected function tearDown()
+	/**
+	 * @after
+	 */
+	protected function tearDownTest()
 	{
-		parent::tearDown();
-
 		if ( $this->captureErrorLog() ) {
 			ini_restore('error_log');
 			unlink($this->errorLogFile);
@@ -61,12 +66,11 @@ class WalkerTest extends TestCase
 		return strpos($this->getName(false), 'AnyException') !== false;
 	}
 
-	/**
-	 * @expectedException \Exception
-	 * @expectedExceptionMessage you have to call Jira_Walker::push($jql, $fields) at first
-	 */
 	public function testErrorWithoutJQL()
 	{
+		$this->expectException('\Exception');
+		$this->expectExceptionMessage('you have to call Jira_Walker::push($jql, $fields) at first');
+
 		foreach ( $this->createWalker() as $issue ) {
 			echo '';
 		}
@@ -134,12 +138,11 @@ class WalkerTest extends TestCase
 		);
 	}
 
-	/**
-	 * @expectedException \chobie\Jira\Api\UnauthorizedException
-	 * @expectedExceptionMessage Unauthorized
-	 */
 	public function testUnauthorizedExceptionOnFirstPage()
 	{
+		$this->expectException('\chobie\Jira\Api\UnauthorizedException');
+		$this->expectExceptionMessage('Unauthorized');
+
 		$this->api->search('test jql', 0, 5, 'description')->willThrow(new UnauthorizedException('Unauthorized'));
 
 		$walker = $this->createWalker(5);
@@ -164,12 +167,11 @@ class WalkerTest extends TestCase
 		$this->assertContains('Anything', file_get_contents($this->errorLogFile));
 	}
 
-	/**
-	 * @expectedException \chobie\Jira\Api\UnauthorizedException
-	 * @expectedExceptionMessage Unauthorized
-	 */
 	public function testUnauthorizedExceptionOnSecondPage()
 	{
+		$this->expectException('\chobie\Jira\Api\UnauthorizedException');
+		$this->expectExceptionMessage('Unauthorized');
+
 		// Full 1st page.
 		$search_response1 = $this->generateSearchResponse('PRJ1', 5, 7);
 		$this->api->search('test jql', 0, 5, 'description')->willReturn($search_response1);
@@ -204,12 +206,11 @@ class WalkerTest extends TestCase
 		$this->assertContains('Anything', file_get_contents($this->errorLogFile));
 	}
 
-	/**
-	 * @expectedException \Exception
-	 * @expectedExceptionMessage passed argument is not callable
-	 */
 	public function testSetDelegateError()
 	{
+		$this->expectException('\Exception');
+		$this->expectExceptionMessage('passed argument is not callable');
+
 		$walker = $this->createWalker();
 		$walker->setDelegate('not a callable');
 	}
