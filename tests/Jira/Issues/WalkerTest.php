@@ -9,12 +9,13 @@ use chobie\Jira\Issue;
 use chobie\Jira\Issues\Walker;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Yoast\PHPUnitPolyfills\Polyfills\AssertStringContains;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectException;
 
 class WalkerTest extends TestCase
 {
 
-	use ExpectException;
+	use ExpectException, AssertStringContains;
 
 	/**
 	 * API.
@@ -164,7 +165,7 @@ class WalkerTest extends TestCase
 			echo '';
 		}
 
-		$this->assertContains('Anything', file_get_contents($this->errorLogFile));
+		$this->assertStringContainsString('Anything', file_get_contents($this->errorLogFile));
 	}
 
 	public function testUnauthorizedExceptionOnSecondPage()
@@ -203,7 +204,7 @@ class WalkerTest extends TestCase
 			echo '';
 		}
 
-		$this->assertContains('Anything', file_get_contents($this->errorLogFile));
+		$this->assertStringContainsString('Anything', file_get_contents($this->errorLogFile));
 	}
 
 	public function testSetDelegateError()
