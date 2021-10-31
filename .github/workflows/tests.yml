@@ -44,8 +44,8 @@ jobs:
 
       - name: Setup test web server
         run: |
-          - php -S localhost:8002 -t $(pwd) > /dev/null 2> /tmp/webserver_output.txt &
-          - export REPO_URL=http://localhost:8002/
+          php -S localhost:8002 -t $(pwd) > /dev/null 2> /tmp/webserver_output.txt &
+          export REPO_URL=http://localhost:8002/
 
       - name: Wait for browser & PHP to start
         run: |
