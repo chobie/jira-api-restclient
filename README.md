@@ -1,6 +1,6 @@
 # JIRA REST API Client
 
-[![Build Status](https://secure.travis-ci.org/chobie/jira-api-restclient.png)](http://travis-ci.org/chobie/jira-api-restclient)
+[![CI](https://github.com/chobie/jira-api-restclient/actions/workflows/tests.yml/badge.svg)](https://github.com/chobie/jira-api-restclient/actions/workflows/tests.yml)
 
 You all know that JIRA supports REST API, right? It can be very useful, for example, during automation job creation and notification sending.
 
