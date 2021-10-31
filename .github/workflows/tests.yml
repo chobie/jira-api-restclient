@@ -17,6 +17,8 @@ jobs:
       matrix:
         php: [ '5.4', '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0' ]
       fail-fast: false
+    env:
+      REPO_URL: http://localhost:8002/
 
     steps:
       - name: Checkout
@@ -27,7 +29,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          coverage: "xdebug"
+          coverage: "none"
           php-version: "${{ matrix.php }}"
           tools: composer
           # PHP 7.1 development web server segfaults if timezone not set.
@@ -45,7 +47,6 @@ jobs:
       - name: Setup test web server
         run: |
           php -S localhost:8002 -t $(pwd) > /dev/null 2> /tmp/webserver_output.txt &
-          export REPO_URL=http://localhost:8002/
 
       - name: Wait for browser & PHP to start
         run: |
@@ -53,16 +54,4 @@ jobs:
 
       - name: Run tests
         run: |
-          vendor/bin/phpunit -v --coverage-clover=coverage.clover
-
-      - name: Upload Coverage to Scrutinizer CI (PHP < 8.0)
-        if: "${{ matrix.php < '8.0' }}"
-        run: |
-          wget https://scrutinizer-ci.com/ocular.phar
-          php ocular.phar code-coverage:upload --repository=g/chobie/jira-api-restclient --format=php-clover coverage.clover
-
-      - name: Upload Coverage to Scrutinizer CI (PHP >= 8.0)
-        if: "${{ matrix.php >= '8.0' }}"
-        run: |
-           composer require scrutinizer/ocular
-           vendor/bin/ocular code-coverage:upload --repository=g/chobie/jira-api-restclient --format=php-clover coverage.clover
+          vendor/bin/phpunit -v
