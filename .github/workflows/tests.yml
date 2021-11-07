@@ -4,6 +4,11 @@ on:
   push:
   pull_request:
 
+# Cancels all previous workflow runs for the same branch that have not yet completed.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 defaults:
   run:
     shell: bash
@@ -41,8 +46,9 @@ jobs:
           composer require --no-update --dev symfony/error-handler "^4.4 || ^5.0"
 
       - name: Install dependencies
-        run: |
-          composer update --no-interaction --prefer-dist
+        uses: "ramsey/composer-install@v1"
+        with:
+          dependency-versions: "highest"
 
       - name: Setup test web server
         run: |
