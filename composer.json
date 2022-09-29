@@ -22,12 +22,12 @@
     },
     "autoload": {
         "psr-4" : {
-            "chobie\\" : "src"
+            "chobie\\" : "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\chobie\\": "tests"
+            "Tests\\chobie\\": "tests/"
         }
     },
     "extra": {
