@@ -75,7 +75,7 @@ class MemcacheProxyClient implements ClientInterface
 	public function sendRequest(
 		$method,
 		$url,
-		$data = array(),
+		$data,
 		$endpoint,
 		AuthenticationInterface $credential,
 		$is_file = false,

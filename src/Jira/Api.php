@@ -766,7 +766,7 @@ class Api
 			self::REQUEST_GET,
 			$url,
 			array(),
-			null,
+			'',
 			$this->authentication,
 			true,
 			false
@@ -808,7 +808,7 @@ class Api
 	 * @param string $issue_key Issue key.
 	 * @param array  $watchers  Watchers.
 	 *
-	 * @return Result|false
+	 * @return array<Result|false>
 	 */
 	public function setWatchers($issue_key, array $watchers)
 	{

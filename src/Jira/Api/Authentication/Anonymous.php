@@ -37,7 +37,7 @@ class Anonymous implements AuthenticationInterface
 	/**
 	 * Returns credential string.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function getCredential()
 	{
@@ -47,7 +47,7 @@ class Anonymous implements AuthenticationInterface
 	/**
 	 * Returns user id.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function getId()
 	{
@@ -57,7 +57,7 @@ class Anonymous implements AuthenticationInterface
 	/**
 	 * Returns password.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function getPassword()
 	{

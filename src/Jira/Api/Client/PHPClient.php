@@ -95,7 +95,7 @@ class PHPClient implements ClientInterface
 	public function sendRequest(
 		$method,
 		$url,
-		$data = array(),
+		$data,
 		$endpoint,
 		AuthenticationInterface $credential,
 		$is_file = false,
@@ -201,11 +201,13 @@ class PHPClient implements ClientInterface
 	{
 		$this->_lastErrorMessage = '';
 
-		set_error_handler(array($this, 'errorHandler'));
+        /** @var callable $callable */
+        $callable = array($this, 'errorHandler');
+		set_error_handler($callable);
 		$response = file_get_contents($url, false, stream_context_create($context));
 		restore_error_handler();
 
-		if ( isset($http_response_header) ) {
+		if ( $http_response_header ) {
 			preg_match('#HTTP/\d+\.\d+ (\d+)#', $http_response_header[0], $matches);
 			$http_code = $matches[1];
 		}

@@ -322,7 +322,7 @@ class Issue
 	 *
 	 * @param string $field_key Field key.
 	 *
-	 * @return array
+	 * @return array|null
 	 */
 	public function get($field_key)
 	{

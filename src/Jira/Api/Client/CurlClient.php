@@ -62,7 +62,7 @@ class CurlClient implements ClientInterface
 	public function sendRequest(
 		$method,
 		$url,
-		$data = array(),
+		$data,
 		$endpoint,
 		AuthenticationInterface $credential,
 		$is_file = false,
@@ -146,7 +146,7 @@ class CurlClient implements ClientInterface
 		}
 
 		// @codeCoverageIgnoreStart
-		if ( is_null($response) ) {
+		if ( $response === false ) {
 			throw new Exception('JIRA Rest server returns unexpected result.');
 		}
 		// @codeCoverageIgnoreEnd

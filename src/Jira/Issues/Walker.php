@@ -40,7 +40,7 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * JQL.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $jql = null;
 
@@ -61,7 +61,7 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Total issue count.
 	 *
-	 * @var integer
+	 * @var integer|null
 	 */
 	protected $total = null;
 
@@ -110,7 +110,7 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Callback.
 	 *
-	 * @var callable
+	 * @var callable|null
 	 */
 	protected $callback;
 
@@ -149,6 +149,7 @@ class Walker implements \Iterator, \Countable
 	 * @return mixed Can return any type.
 	 * @link   http://php.net/manual/en/iterator.current.php
 	 */
+    #[\ReturnTypeWillChange]
 	public function current()
 	{
 		if ( is_callable($this->callback) ) {
@@ -157,9 +158,8 @@ class Walker implements \Iterator, \Countable
 
 			return $callback($tmp);
 		}
-		else {
-			return $this->issues[$this->offset];
-		}
+
+        return $this->issues[$this->offset];
 	}
 
 	/**
@@ -168,6 +168,7 @@ class Walker implements \Iterator, \Countable
 	 * @return void Any returned value is ignored.
 	 * @link   http://php.net/manual/en/iterator.next.php
 	 */
+    #[\ReturnTypeWillChange]
 	public function next()
 	{
 		$this->offset++;
@@ -179,6 +180,7 @@ class Walker implements \Iterator, \Countable
 	 * @return mixed scalar on success, or null on failure.
 	 * @link   http://php.net/manual/en/iterator.key.php
 	 */
+    #[\ReturnTypeWillChange]
 	public function key()
 	{
 		if ( $this->startAt > 0 ) {
@@ -198,6 +200,7 @@ class Walker implements \Iterator, \Countable
 	 * @throws Api\UnauthorizedException When it happens.
 	 * @link   http://php.net/manual/en/iterator.valid.php
 	 */
+    #[\ReturnTypeWillChange]
 	public function valid()
 	{
 		if ( is_null($this->jql) ) {
@@ -260,6 +263,7 @@ class Walker implements \Iterator, \Countable
 	 * @return void Any returned value is ignored.
 	 * @link   http://php.net/manual/en/iterator.rewind.php
 	 */
+    #[\ReturnTypeWillChange]
 	public function rewind()
 	{
 		$this->offset = 0;
@@ -277,6 +281,7 @@ class Walker implements \Iterator, \Countable
 	 * @return integer The custom count as an integer.
 	 * @link   http://php.net/manual/en/countable.count.php
 	 */
+    #[\ReturnTypeWillChange]
 	public function count()
 	{
 		if ( $this->total === null ) {
@@ -289,19 +294,18 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Sets callable.
 	 *
-	 * @param callable $callable Callable.
+	 * @param mixed $callable Callable.
 	 *
 	 * @return void
 	 * @throws \Exception When not a callable passed.
 	 */
 	public function setDelegate($callable)
 	{
-		if ( is_callable($callable) ) {
-			$this->callback = $callable;
+		if ( !is_callable($callable) ) {
+            throw new \Exception('passed argument is not callable');
 		}
-		else {
-			throw new \Exception('passed argument is not callable');
-		}
+
+        $this->callback = $callable;
 	}
 
 	/**
