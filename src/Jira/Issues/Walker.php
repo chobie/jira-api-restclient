@@ -117,7 +117,7 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Creates walker instance.
 	 *
-	 * @param Api          $api      API.
+	 * @param Api		  $api	  API.
 	 * @param integer|null $per_page Per page.
 	 */
 	public function __construct(Api $api, $per_page = null)
@@ -132,7 +132,7 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Pushes JQL.
 	 *
-	 * @param string            $jql    JQL.
+	 * @param string			$jql	JQL.
 	 * @param string|array|null $fields Fields.
 	 *
 	 * @return void
@@ -149,7 +149,7 @@ class Walker implements \Iterator, \Countable
 	 * @return mixed Can return any type.
 	 * @link   http://php.net/manual/en/iterator.current.php
 	 */
-    #[\ReturnTypeWillChange]
+	#[\ReturnTypeWillChange]
 	public function current()
 	{
 		if ( is_callable($this->callback) ) {
@@ -159,7 +159,7 @@ class Walker implements \Iterator, \Countable
 			return $callback($tmp);
 		}
 
-        return $this->issues[$this->offset];
+		return $this->issues[$this->offset];
 	}
 
 	/**
@@ -168,7 +168,7 @@ class Walker implements \Iterator, \Countable
 	 * @return void Any returned value is ignored.
 	 * @link   http://php.net/manual/en/iterator.next.php
 	 */
-    #[\ReturnTypeWillChange]
+	#[\ReturnTypeWillChange]
 	public function next()
 	{
 		$this->offset++;
@@ -180,7 +180,7 @@ class Walker implements \Iterator, \Countable
 	 * @return mixed scalar on success, or null on failure.
 	 * @link   http://php.net/manual/en/iterator.key.php
 	 */
-    #[\ReturnTypeWillChange]
+	#[\ReturnTypeWillChange]
 	public function key()
 	{
 		if ( $this->startAt > 0 ) {
@@ -195,12 +195,12 @@ class Walker implements \Iterator, \Countable
 	 * Checks if current position is valid.
 	 *
 	 * @return boolean The return value will be casted to boolean and then evaluated.
-	 *                 Returns true on success or false on failure.
+	 *				 Returns true on success or false on failure.
 	 * @throws \Exception When "Walker::push" method wasn't called.
 	 * @throws Api\UnauthorizedException When it happens.
 	 * @link   http://php.net/manual/en/iterator.valid.php
 	 */
-    #[\ReturnTypeWillChange]
+	#[\ReturnTypeWillChange]
 	public function valid()
 	{
 		if ( is_null($this->jql) ) {
@@ -263,7 +263,7 @@ class Walker implements \Iterator, \Countable
 	 * @return void Any returned value is ignored.
 	 * @link   http://php.net/manual/en/iterator.rewind.php
 	 */
-    #[\ReturnTypeWillChange]
+	#[\ReturnTypeWillChange]
 	public function rewind()
 	{
 		$this->offset = 0;
@@ -281,7 +281,7 @@ class Walker implements \Iterator, \Countable
 	 * @return integer The custom count as an integer.
 	 * @link   http://php.net/manual/en/countable.count.php
 	 */
-    #[\ReturnTypeWillChange]
+	#[\ReturnTypeWillChange]
 	public function count()
 	{
 		if ( $this->total === null ) {
@@ -302,10 +302,10 @@ class Walker implements \Iterator, \Countable
 	public function setDelegate($callable)
 	{
 		if ( !is_callable($callable) ) {
-            throw new \Exception('passed argument is not callable');
+			throw new \Exception('passed argument is not callable');
 		}
 
-        $this->callback = $callable;
+		$this->callback = $callable;
 	}
 
 	/**
