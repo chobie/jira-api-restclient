@@ -201,8 +201,8 @@ class PHPClient implements ClientInterface
 	{
 		$this->_lastErrorMessage = '';
 
-        /** @var callable $callable */
-        $callable = array($this, 'errorHandler');
+		/** @var callable $callable */
+		$callable = array($this, 'errorHandler');
 		set_error_handler($callable);
 		$response = file_get_contents($url, false, stream_context_create($context));
 		restore_error_handler();

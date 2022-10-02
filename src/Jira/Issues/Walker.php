@@ -117,7 +117,7 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Creates walker instance.
 	 *
-	 * @param Api		  $api	  API.
+	 * @param Api          $api	  API.
 	 * @param integer|null $per_page Per page.
 	 */
 	public function __construct(Api $api, $per_page = null)
@@ -132,7 +132,7 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Pushes JQL.
 	 *
-	 * @param string			$jql	JQL.
+	 * @param string            $jql	JQL.
 	 * @param string|array|null $fields Fields.
 	 *
 	 * @return void
