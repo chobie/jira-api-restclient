@@ -61,4 +61,4 @@ jobs:
           vendor/bin/phpunit
 
       - name: Run phpstan
-        run: vendor/bin/phpstan analyse --error-format=github
+        run: composer stan-setup && vendor/bin/phpstan analyse --error-format=github
