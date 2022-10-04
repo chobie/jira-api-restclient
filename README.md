@@ -1,14 +1,14 @@
-# JIRA REST API Client
+# Jira REST API Client
 
 [![CI](https://github.com/chobie/jira-api-restclient/actions/workflows/tests.yml/badge.svg)](https://github.com/chobie/jira-api-restclient/actions/workflows/tests.yml)
 
-You all know that JIRA supports REST API, right? It can be very useful, for example, during automation job creation and notification sending.
+You all know that Jira supports REST API, right? It can be very useful, for example, during automation job creation and notification sending.
 
-This library will ensure unforgettable expirience when working with JIRA through REST API. Hope you'll enjoy it.
+This library will ensure unforgettable experience when working with Jira through REST API. Hope you'll enjoy it.
 
 ## Usage
 
-* JIRA Rest API Documents: https://docs.atlassian.com/jira/REST/latest/
+* Jira REST API Documents: https://docs.atlassian.com/jira/REST/latest/
 
 ```php
 <?php
@@ -44,4 +44,4 @@ php composer.phar require chobie/jira-api-restclient ^2.0@dev
 
 ## License
 
-JIRA REST API Client is released under the MIT License. See the bundled [LICENSE](LICENSE) file for details.
+Jira REST API Client is released under the MIT License. See the bundled [LICENSE](LICENSE) file for details.
