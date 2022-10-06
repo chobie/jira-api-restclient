@@ -11,6 +11,7 @@
          stopOnFailure="false"
          stopOnIncomplete="false"
          stopOnSkipped="false"
+		 beStrict="true"
          verbose="true">
 
     <testsuites>

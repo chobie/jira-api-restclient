@@ -294,7 +294,7 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Sets callable.
 	 *
-	 * @param mixed $callable Callable.
+	 * @param callable|null $callable Callable.
 	 *
 	 * @return void
 	 * @throws \Exception When not a callable passed.
