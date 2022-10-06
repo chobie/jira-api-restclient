@@ -68,7 +68,7 @@ class IssueType
 	 *
 	 * @var string
 	 */
-	protected $subTask;
+	protected $subtask;
 
 	/**
 	 * Avatar ID.
@@ -129,7 +129,7 @@ class IssueType
 	 */
 	public function isSubtask()
 	{
-		return $this->subTask;
+		return $this->subtask;
 	}
 
 	/**
