@@ -19,4 +19,8 @@ class CurlClientTest extends AbstractClientTestCase
 		return new CurlClient();
 	}
 
+	protected function testTimeout()
+	{
+		return new CurlClient();
+	}
 }
