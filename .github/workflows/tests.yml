@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php: [ '7.3', '7.4', '8.0', '8.1' ]
+        php: [ '7.3', '7.4', '8.0', '8.1', '8.2' ]
       fail-fast: false
     env:
       REPO_URL: http://localhost:8002/
@@ -41,12 +41,11 @@ jobs:
       - name: Configure for PHP >= 7.3
         if: "${{ matrix.php >= '7.3' }}"
         run: |
-          composer require --no-update --dev symfony/error-handler "^4.4 || ^5.0"
+          composer require --no-update --dev symfony/error-handler "^4.4 || ^5.0" --ignore-platform-req=php
 
       - name: Install dependencies
-        uses: "ramsey/composer-install@v1"
-        with:
-          dependency-versions: "highest"
+        run: |
+          composer install --ignore-platform-req=php
 
       - name: Setup test web server
         run: |

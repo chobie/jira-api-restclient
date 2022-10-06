@@ -1,4 +1,5 @@
-vendor
+vendor/
 phpunit.xml
-.idea
+.idea/
 .phpunit.result.cache
+composer.lock
