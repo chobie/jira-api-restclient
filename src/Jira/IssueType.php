@@ -25,57 +25,29 @@
 namespace chobie\Jira;
 
 
+/**
+ * The issue type.
+ *
+ * @method integer getAvatarId() Gets avatar ID.
+ * @method string getDescription() Gets description.
+ * @method string getEntityId() Gets Unique ID for next-gen projects.
+ * @method integer getHierarchyLevel() Gets hierarchy level.
+ * @method string getIconUrl() Gets icon url.
+ * @method string getId() Gets ID.
+ * @method string getName() Gets name.
+ * @method string getUntranslatedName() Gets untranslated name.
+ * @method array getScope() Gets details of the next-gen projects the issue type is available in.
+ * @method string getSelf() Gets the URL of these issue type details.
+ */
 class IssueType
 {
 
 	/**
-	 * Self.
+	 * Data.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	protected $self;
-
-	/**
-	 * ID.
-	 *
-	 * @var string
-	 */
-	protected $id;
-
-	/**
-	 * Description.
-	 *
-	 * @var string
-	 */
-	protected $description;
-
-	/**
-	 * Icon URL.
-	 *
-	 * @var string
-	 */
-	protected $iconUrl;
-
-	/**
-	 * Name.
-	 *
-	 * @var string
-	 */
-	protected $name;
-
-	/**
-	 * Sub-task.
-	 *
-	 * @var string
-	 */
-	protected $subTask;
-
-	/**
-	 * Avatar ID.
-	 *
-	 * @var string
-	 */
-	protected $avatarId;
+	private $_data;
 
 	/**
 	 * Acceptable keys.
@@ -83,93 +55,70 @@ class IssueType
 	 * @var array
 	 */
 	private $_acceptableKeys = array(
-		'self',
-		'id',
-		'description',
-		'iconUrl',
-		'name',
-		'subtask',
 		'avatarId',
+		'description',
+		'entityId',
+		'hierarchyLevel',
+		'iconUrl',
+		'id',
+		'name',
 		'scope',
+		'self',
+		'subtask',
+
+		'untranslatedName',
 	);
 
 	/**
 	 * Creates issue instance.
 	 *
-	 * @param array $types Types.
+	 * @param array $data Data.
 	 *
-	 * @throws \Exception When unknown type is given.
+	 * @throws \Exception When an unknown data field is given.
 	 */
-	public function __construct(array $types)
+	public function __construct(array $data)
 	{
-		foreach ( $types as $key => $value ) {
-			if ( in_array($key, $this->_acceptableKeys) ) {
-				$this->$key = $value;
-			}
-			else {
-				throw new \Exception('the key ' . $key . ' does not support');
-			}
-		}
-	}
+		$unknown_fields = array_diff(array_keys($data), $this->_acceptableKeys);
 
-	/**
-	 * Gets name.
-	 *
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->name;
+		if ( $unknown_fields ) {
+			throw new \Exception(
+				'The "' . implode('", "', $unknown_fields) . '" issue type keys are not supported.'
+			);
+		}
+
+		$this->_data = $data;
 	}
 
 	/**
 	 * Gets sub-task.
 	 *
-	 * @return string
+	 * @return boolean
 	 */
 	public function isSubtask()
 	{
-		return $this->subTask;
+		return $this->_data['subtask'];
 	}
 
 	/**
-	 * Gets ID.
+	 * Allows accessing issue type properties.
 	 *
-	 * @return string
+	 * @param string $method Method name.
+	 * @param array  $params Params.
+	 *
+	 * @return mixed
+	 * @throws \Exception When requested method wasn't found.
 	 */
-	public function getId()
+	public function __call($method, array $params)
 	{
-		return $this->id;
-	}
+		if ( preg_match('/^get(.+)$/', $method, $regs) ) {
+			$data_key = lcfirst($regs[1]);
 
-	/**
-	 * Gets description.
-	 *
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		return $this->description;
-	}
+			if ( in_array($data_key, $this->_acceptableKeys) ) {
+				return array_key_exists($data_key, $this->_data) ? $this->_data[$data_key] : null;
+			}
+		}
 
-	/**
-	 * Gets icon url.
-	 *
-	 * @return string
-	 */
-	public function getIconUrl()
-	{
-		return $this->iconUrl;
-	}
-
-	/**
-	 * Gets avatar id.
-	 *
-	 * @return string
-	 */
-	public function getAvatarId()
-	{
-		return $this->avatarId;
+		throw new \Exception('The "' . __CLASS__ . '::' . $method . '" method does not exist.');
 	}
 
 }
