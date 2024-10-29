@@ -28,6 +28,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Added local cache to getResolutions by [@jpastoor].
 - Renamed Api::api() parameter $return_as_json to $return_as_array by [@jpastoor].
 - Renamed `Api::createRemotelink` to `Api::createRemoteLink` by [@glensc].
+- Minimal supported PHP version changed from 5.3 to 5.6 by [@aik099].
 
 ### Removed
 ...
