@@ -21,6 +21,12 @@
         </testsuite>
     </testsuites>
 
+	<filter>
+		<whitelist>
+			<directory>src</directory>
+		</whitelist>
+	</filter>
+
     <!--
         <php>
             <server name="REPO_URL" value="http://localhost/"/>
