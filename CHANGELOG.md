@@ -46,6 +46,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Error details from failed API calls were not available back from `Api::api method` call by [@betterphp].
 - Warning about `count()` function usage on PHP 7.2, when searching for issues by [@aik099].
 - Capitalize `globalId` properly in `createRemotelink` [@glensc].
+- The `Api::getIssueTypes` was always returning an error by [@aik099].
 
 ## [1.0.0] - 2014-07-27
 ### Added

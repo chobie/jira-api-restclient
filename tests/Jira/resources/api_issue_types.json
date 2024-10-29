@@ -1,0 +1,23 @@
+[
+	{
+		"self": "https://test.atlassian.net/rest/api/2/issuetype/10000",
+		"id": "10000",
+		"description": "A big user story that needs to be broken down. Created by Jira Software - do not edit or delete.",
+		"iconUrl": "https://test.atlassian.net/images/icons/issuetypes/epic.svg",
+		"name": "Epic",
+		"untranslatedName": "Epic",
+		"subtask": false,
+		"hierarchyLevel": 1
+	},
+	{
+		"self": "https://test.atlassian.net/rest/api/2/issuetype/10034",
+		"id": "10034",
+		"description": "A problem which impairs or prevents the functions of the product. (Migrated on 31 Aug 2024 07:01 UTC)",
+		"iconUrl": "https://test.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+		"name": "Bug Report",
+		"untranslatedName": "Bug Report",
+		"subtask": false,
+		"avatarId": 10300,
+		"hierarchyLevel": 0
+	}
+]

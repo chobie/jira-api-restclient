@@ -6,6 +6,7 @@ namespace Tests\chobie\Jira;
 use chobie\Jira\Api;
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Result;
+use chobie\Jira\IssueType;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 
@@ -287,6 +288,28 @@ class ApiTest extends TestCase
 		$this->client->sendRequest(Api::REQUEST_GET, '/rest/api/2/priority', array(), self::ENDPOINT, $this->credential)
 			->shouldNotBeCalled();
 		$this->assertEquals($expected, $this->api->getPriorities(), 'Calling twice did not yield the same results');
+	}
+
+	public function testGetIssueTypes()
+	{
+		$response = file_get_contents(__DIR__ . '/resources/api_issue_types.json');
+
+		$this->expectClientCall(
+			Api::REQUEST_GET,
+			'/rest/api/2/issuetype',
+			array(),
+			$response
+		);
+
+		$actual = $this->api->getIssueTypes();
+
+		$response_decoded = json_decode($response, true);
+
+		$expected = array(
+			new IssueType($response_decoded[0]),
+			new IssueType($response_decoded[1]),
+		);
+		$this->assertEquals($expected, $actual);
 	}
 
 	/**
